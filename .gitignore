@@ -1,0 +1,24 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Windows
+Thumbs.db
+
+# Database
+System/Data/*.db
+System/Data/*.db-journal
+
+# Documents uploaded *y users
+System/Documents/
+
+# Backu* files
+*.bak

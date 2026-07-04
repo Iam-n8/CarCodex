@@ -14,7 +14,9 @@ class EventCreate(BaseModel):
     category: str
     event_type: str
     description: str
+    location: str
     cost: int
+
 
 
 @router.get("/events")
@@ -33,7 +35,9 @@ def get_events():
             "category": event.category,
             "event_type": event.event_type,
             "description": event.description,
-            "mileage": event.mileage
+            "location": event.location,
+            "mileage": event.mileage,
+            "cost": event.cost
         })
 
     db.close()
@@ -53,6 +57,7 @@ def create_event(event: EventCreate):
         category=event.category,
         event_type=event.event_type,
         description=event.description,
+        location=event.location,
         cost=event.cost
     )
 

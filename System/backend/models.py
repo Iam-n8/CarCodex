@@ -54,6 +54,7 @@ class ServiceRecord(Base):
 
     next_service_date = Column(String)
     
+
 class Event(Base):
     __tablename__ = "events"
 
@@ -71,7 +72,10 @@ class Event(Base):
 
     description = Column(String)
 
+    location = Column(String)
+
     cost = Column(Integer)
+
 class Snapshot(Base):
     __tablename__ = "snapshots"
 

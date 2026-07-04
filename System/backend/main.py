@@ -9,6 +9,8 @@ from database import engine, SessionLocal
 
 from routers import mileage
 from routers import events
+from routers import documents
+from routers import costs
 
 
 from models import (
@@ -27,6 +29,8 @@ app.include_router(vehicles.router)
 app.include_router(services.router) 
 app.include_router(mileage.router)
 app.include_router(events.router)
+app.include_router(documents.router)
+app.include_router(costs.router)
 
 
 Base.metadata.create_all(bind=engine)
@@ -205,7 +209,6 @@ def create_vehicle(vehicle: VehicleCreate):
 
     return results
 
-
 # --------------------------------------------------
 # Services
 # --------------------------------------------------
@@ -221,22 +224,3 @@ def create_vehicle(vehicle: VehicleCreate):
 # --------------------------------------------------
 # Documents
 # --------------------------------------------------
-
-@app.get("/documents")
-def get_documents():
-
-    db = SessionLocal()
-
-    docs = db.query(Document).all()
-
-    results = []
-
-    for doc in docs:
-        results.append({
-            "id": doc.id,
-            "file_name": doc.file_name
-        })
-
-    db.close()
-
-    return results

@@ -1,16 +1,11 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
 
 from database import SessionLocal
+from schemas.mileage import MileageCreate
+
 from models import MileageHistory
 
 router = APIRouter()
-
-
-class MileageCreate(BaseModel):
-    vehicle_id: int
-    mileage: int
-    entry_date: str
 
 
 @router.get("/mileage")

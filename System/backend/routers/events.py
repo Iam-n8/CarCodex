@@ -1,22 +1,10 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
 
+from schemas.event import EventCreate
 from database import SessionLocal
 from models import Event
 
 router = APIRouter()
-
-
-class EventCreate(BaseModel):
-    vehicle_id: int
-    event_date: str
-    mileage: int
-    category: str
-    event_type: str
-    description: str
-    location: str
-    cost: int
-
 
 
 @router.get("/events")

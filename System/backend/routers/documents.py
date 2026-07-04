@@ -1,20 +1,10 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
+from schemas.document import DocumentCreate
 
 from database import SessionLocal
 from models import Document
 
 router = APIRouter()
-
-
-class DocumentCreate(BaseModel):
-    vehicle_id: int
-    document_type: str
-    file_name: str
-    file_path: str
-    upload_date: str
-    notes: str
-
 
 @router.get("/documents")
 def get_documents():

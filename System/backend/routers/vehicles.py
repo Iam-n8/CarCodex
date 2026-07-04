@@ -1,20 +1,10 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
+from schemas.vehicle import VehicleCreate
 
 from database import SessionLocal
 from models import Vehicle
 
 router = APIRouter()
-
-
-class VehicleCreate(BaseModel):
-    nickname: str
-    vin: str
-    year: int
-    make: str
-    model: str
-    trim: str
-    current_mileage: int
 
 
 @router.get("/vehicles")

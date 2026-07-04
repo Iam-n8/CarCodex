@@ -1,20 +1,10 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
+from schemas.cost import OwnershipCostCreate 
 
 from database import SessionLocal
 from models import OwnershipCost
 
 router = APIRouter()
-
-
-class OwnershipCostCreate(BaseModel):
-    vehicle_id: int
-    cost_date: str
-    category: str
-    description: str
-    vendor: str
-    amount: float
-    mileage: int
 
 
 @router.get("/ownership-costs")

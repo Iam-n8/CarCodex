@@ -1,17 +1,10 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
 
+from schemas.snapshot import SnapshotCreate
 from database import SessionLocal
 from models import Snapshot
 
 router = APIRouter()
-
-
-class SnapshotCreate(BaseModel):
-    timestamp: str
-    action: str
-    description: str
-    vehicle_id: int
 
 
 @router.get("/snapshots")

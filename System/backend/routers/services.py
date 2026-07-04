@@ -1,23 +1,11 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
+
+from schemas.service import ServiceCreate
 
 from database import SessionLocal
 from models import ServiceRecord
 
 router = APIRouter()
-
-
-class ServiceCreate(BaseModel):
-    vehicle_id: int
-    service_type: str
-    service_date: str
-    mileage: int
-    provider: str
-    cost: int
-    notes: str
-    next_service_mileage: int
-    next_service_date: str
-
 
 @router.get("/services")
 def get_services():

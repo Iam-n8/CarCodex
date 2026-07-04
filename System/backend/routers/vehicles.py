@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from schemas.vehicle import VehicleCreate
+from helpers.filesystem import create_vehicle_folders
 
 from database import SessionLocal
 from models import Vehicle
@@ -45,6 +46,8 @@ def create_vehicle(vehicle: VehicleCreate):
     )
 
     db.add(new_vehicle)
+    db.refresh(new_vehicle)
+    create_vehicle_folders(new_vehicle.id)
     db.commit()
     db.refresh(new_vehicle)
 

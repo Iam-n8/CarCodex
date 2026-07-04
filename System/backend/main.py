@@ -1,6 +1,8 @@
 import os
+from routers import vehicles
 
 from fastapi import FastAPI
+
 from pydantic import BaseModel
 
 from database import engine, SessionLocal
@@ -17,6 +19,7 @@ from models import (
 )
 
 app = FastAPI()
+app.include_router(vehicles.router)
 
 Base.metadata.create_all(bind=engine)
 
@@ -173,8 +176,6 @@ def create_vehicle(vehicle: VehicleCreate):
     }
 
 
-@app.get("/vehicles")
-def get_vehicles():
 
     db = SessionLocal()
 

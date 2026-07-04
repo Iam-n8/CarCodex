@@ -1,0 +1,21 @@
+Step 1: Open Command Prompt
+C:\CarCodex
+
+Step 2: Activate the Virtual Environment
+.venv\Scripts\activate.bat
+
+Step 3: Start CarCodex
+Go to the backend folder:
+cd System\backend
+
+Start FastAPI:
+uvicorn main:app --reload
+
+You should see something similar to:
+Plain TextINFO: Uvicorn running on http://127.0.0.1:8000Show more lines
+
+Step 4: Open Browser
+Navigate to:
+Plain Texthttp://127.0.0.1:8000Show more lines
+or
+Plain Texthttp://127.0.0.1:8000/docsShow more lines

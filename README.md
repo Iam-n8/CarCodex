@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 
 \# CarCodex
@@ -32,3 +33,7 @@ Features:
 
 
 
+=======
+# CarCodex
+CarCodex
+>>>>>>> f67ff872a52aab19d8f0c082a6615ee1b32252bf

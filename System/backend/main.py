@@ -7,6 +7,8 @@ from pydantic import BaseModel
 
 from database import engine, SessionLocal
 
+
+
 from models import (
     Base,
     Vehicle,
@@ -17,9 +19,10 @@ from models import (
     OwnershipCost,
     Document
 )
-
+from routers import services
 app = FastAPI()
 app.include_router(vehicles.router)
+app.include_router(services.router) 
 
 Base.metadata.create_all(bind=engine)
 
@@ -202,25 +205,7 @@ def create_vehicle(vehicle: VehicleCreate):
 # Services
 # --------------------------------------------------
 
-@app.get("/services")
-def get_services():
 
-    db = SessionLocal()
-
-    services = db.query(ServiceRecord).all()
-
-    results = []
-
-    for service in services:
-        results.append({
-            "id": service.id,
-            "vehicle_id": service.vehicle_id,
-            "service_type": service.service_type
-        })
-
-    db.close()
-
-    return results
 
 
 # --------------------------------------------------

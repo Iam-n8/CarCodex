@@ -11,6 +11,7 @@ from routers import mileage
 from routers import events
 from routers import documents
 from routers import costs
+from routers import snapshots
 
 
 from models import (
@@ -23,6 +24,9 @@ from models import (
     OwnershipCost,
     Document
 )
+# --------------------------------------------------
+# Routers
+# --------------------------------------------------
 from routers import services
 app = FastAPI()
 app.include_router(vehicles.router)
@@ -31,6 +35,7 @@ app.include_router(mileage.router)
 app.include_router(events.router)
 app.include_router(documents.router)
 app.include_router(costs.router)
+app.include_router(snapshots.router)
 
 
 Base.metadata.create_all(bind=engine)
@@ -159,55 +164,6 @@ def root():
 # Vehicles
 # --------------------------------------------------
 
-@app.post("/vehicles")
-def create_vehicle(vehicle: VehicleCreate):
-
-    db = SessionLocal()
-
-    new_vehicle = Vehicle(
-        nickname=vehicle.nickname,
-        vin=vehicle.vin,
-        year=vehicle.year,
-        make=vehicle.make,
-        model=vehicle.model,
-        trim=vehicle.trim,
-        current_mileage=vehicle.current_mileage
-    )
-
-    db.add(new_vehicle)
-    db.commit()
-    db.refresh(new_vehicle)
-
-    create_vehicle_folders(new_vehicle.id)
-
-    db.close()
-
-    return {
-        "message": "Vehicle added",
-        "id": new_vehicle.id
-    }
-
-
-
-    db = SessionLocal()
-
-    vehicles = db.query(Vehicle).all()
-
-    results = []
-
-    for vehicle in vehicles:
-        results.append({
-            "id": vehicle.id,
-            "nickname": vehicle.nickname,
-            "year": vehicle.year,
-            "make": vehicle.make,
-            "model": vehicle.model,
-            "mileage": vehicle.current_mileage
-        })
-
-    db.close()
-
-    return results
 
 # --------------------------------------------------
 # Services

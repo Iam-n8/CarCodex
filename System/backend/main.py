@@ -7,6 +7,8 @@ from pydantic import BaseModel
 
 from database import engine, SessionLocal
 
+from routers import mileage
+from routers import events
 
 
 from models import (
@@ -23,6 +25,9 @@ from routers import services
 app = FastAPI()
 app.include_router(vehicles.router)
 app.include_router(services.router) 
+app.include_router(mileage.router)
+app.include_router(events.router)
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -205,57 +210,13 @@ def create_vehicle(vehicle: VehicleCreate):
 # Services
 # --------------------------------------------------
 
-
-
-
 # --------------------------------------------------
 # Mileage
 # --------------------------------------------------
 
-@app.get("/mileage")
-def get_mileage():
-
-    db = SessionLocal()
-
-    records = db.query(MileageHistory).all()
-
-    results = []
-
-    for record in records:
-        results.append({
-            "vehicle_id": record.vehicle_id,
-            "mileage": record.mileage,
-            "entry_date": record.entry_date
-        })
-
-    db.close()
-
-    return results
-
-
 # --------------------------------------------------
 # Events
 # --------------------------------------------------
-
-@app.get("/events")
-def get_events():
-
-    db = SessionLocal()
-
-    events = db.query(Event).all()
-
-    results = []
-
-    for event in events:
-        results.append({
-            "id": event.id,
-            "event_type": event.event_type
-        })
-
-    db.close()
-
-    return results
-
 
 # --------------------------------------------------
 # Documents

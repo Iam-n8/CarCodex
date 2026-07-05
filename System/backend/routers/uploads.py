@@ -1,11 +1,10 @@
-
 from fastapi import APIRouter
 from fastapi import UploadFile
-from fastapi import Form
-from database import SessionLocal
-from models import Vehicle
-
 from fastapi import File
+from fastapi import Form
+
+from database import SessionLocal
+from models import Vehicle, Document
 
 import os
 import shutil
@@ -17,57 +16,90 @@ router = APIRouter()
 def upload_test(
     vehicle_id: int = Form(...),
     category: str = Form(...),
+    description: str = Form(...),
+    upload_date: str = Form(...),
     file: UploadFile = File(...)
 ):
 
     db = SessionLocal()
 
-    vehicle = db.query(Vehicle).filter(
-        Vehicle.id == vehicle_id
-    ).first()
+    try:
 
-    if not vehicle:
-        db.close()
+        vehicle = db.query(Vehicle).filter(
+            Vehicle.id == vehicle_id
+        ).first()
+
+        if not vehicle:
+            return {
+                "error": "Vehicle not found"
+            }
+
+        vehicle_folder = os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__),
+                "..",
+                "..",
+                "Documents",
+                f"VEH_{vehicle_id:06d}",
+                category
+            )
+        )
+
+        os.makedirs(
+            vehicle_folder,
+            exist_ok=True
+        )
+
+        extension = os.path.splitext(
+            file.filename
+        )[1]
+
+        new_filename = (
+            f"{vehicle.nickname}_"
+            f"{category}_"
+            f"{description}_"
+            f"{upload_date}"
+            f"{extension}"
+        )
+
+        new_filename = new_filename.replace(
+            " ",
+            "_"
+        )
+
+        destination = os.path.join(
+            vehicle_folder,
+            new_filename
+        )
+
+        print("Destination:", destination)
+
+        with open(destination, "wb") as buffer:
+            shutil.copyfileobj(
+                file.file,
+                buffer
+            )
+
+        new_document = Document(
+            vehicle_id=vehicle_id,
+            document_type=category,
+            file_name=new_filename,
+            file_path=destination,
+            upload_date=upload_date,
+            notes=description
+        )
+
+        db.add(new_document)
+        db.commit()
+        db.refresh(new_document)
+
+        print("Document record created:", new_document.id)
 
         return {
-            "error": "Vehicle not found"
+            "message": "Document uploaded",
+            "document_id": new_document.id,
+            "filename": new_filename
         }
 
-    vehicle_folder = os.path.abspath(
-        os.path.join(
-            os.path.dirname(__file__),
-            "..",
-            "..",
-            "Documents",
-            f"VEH_{vehicle_id:06d}",
-            category
-        )
-    )
-
-    os.makedirs(
-        vehicle_folder,
-        exist_ok=True
-    )
-
-    destination = os.path.join(
-        vehicle_folder,
-        file.filename
-    )
-
-    print("Vehicle Folder:", vehicle_folder)
-    print("Destination:", destination)
-
-    with open(destination, "wb") as buffer:
-        shutil.copyfileobj(
-            file.file,
-            buffer
-        )
-
-    db.close()
-
-    return {
-        "message": "File saved",
-        "vehicle_id": vehicle_id,
-        "category": category,
-        "filename": file.filename
-    }
+    finally:
+        db.close()

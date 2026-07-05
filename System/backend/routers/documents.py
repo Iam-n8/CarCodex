@@ -16,10 +16,15 @@ def get_documents():
     results = []
 
     for document in documents:
+    
         results.append({
             "id": document.id,
-            "file_name": document.file_name
+            "vehicle_id": document.vehicle_id,
+            "document_type": document.document_type,
+            "file_name": document.file_name,
+            "upload_date": document.upload_date
         })
+
 
     db.close()
 

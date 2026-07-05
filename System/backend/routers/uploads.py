@@ -11,8 +11,19 @@ import shutil
 
 router = APIRouter()
 
+ALLOWED_EXTENSIONS = [
+    "pdf",
+    "jpg",
+    "jpeg",
+    "png",
+    "txt",
+    "csv",
+    "docx",
+    "xlsx"
+]
 
-@router.post("/upload-test")
+
+@router.post("/upload")
 def upload_test(
     vehicle_id: int = Form(...),
     category: str = Form(...),
@@ -30,6 +41,18 @@ def upload_test(
         ).first()
 
         if not vehicle:
+            
+            extension = os.path.splitext(
+                file.filename
+            )[1].lower().replace(".", "")
+
+            if extension not in ALLOWED_EXTENSIONS:
+                db.close()
+
+                return {
+                    "error": f"File type '{extension}' not allowed"
+                }
+
             return {
                 "error": "Vehicle not found"
             }
@@ -96,9 +119,12 @@ def upload_test(
         print("Document record created:", new_document.id)
 
         return {
-            "message": "Document uploaded",
+            "message": "Document uploaded successfully",
             "document_id": new_document.id,
+            "vehicle_id": vehicle_id,
+            "category": category,
             "filename": new_filename
+
         }
 
     finally:

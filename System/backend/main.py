@@ -8,6 +8,8 @@ from routers import documents
 from routers import costs
 from routers import snapshots
 from models import Base
+from routers import uploads
+
 
 
 
@@ -23,16 +25,9 @@ app.include_router(events.router)
 app.include_router(documents.router)
 app.include_router(costs.router)
 app.include_router(snapshots.router)
-
+app.include_router(uploads.router)
 
 Base.metadata.create_all(bind=engine)
-
-
-# --------------------------------------------------
-# Helpers
-# --------------------------------------------------
-
-
 
 # --------------------------------------------------
 # Root

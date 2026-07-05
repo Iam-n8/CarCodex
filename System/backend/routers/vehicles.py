@@ -46,10 +46,12 @@ def create_vehicle(vehicle: VehicleCreate):
     )
 
     db.add(new_vehicle)
-    db.refresh(new_vehicle)
-    create_vehicle_folders(new_vehicle.id)
+
     db.commit()
+
     db.refresh(new_vehicle)
+
+    create_vehicle_folders(new_vehicle.id)
 
     db.close()
 

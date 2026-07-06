@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float
+# models.py
+
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, Boolean
 from database import Base
 
 
@@ -107,6 +109,7 @@ class OwnershipCost(Base):
     amount = Column(Float)
 
     mileage = Column(Integer)
+
 class Document(Base):
     __tablename__ = "documents"
 
@@ -121,5 +124,43 @@ class Document(Base):
     file_path = Column(String)
 
     upload_date = Column(String)
+
+    notes = Column(String)
+
+    archived = Column(Boolean, default=False)
+class MaintenanceSchedule(Base):
+    __tablename__ = "maintenance_schedule"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
+
+    service_type = Column(String)
+
+    interval_miles = Column(Integer)
+
+    interval_months = Column(Integer)
+
+    estimated_cost = Column(Float)
+
+    uses_health_indicator = Column(String)
+
+    notes = Column(String)
+class MaintenanceVisit(Base):
+    __tablename__ = "maintenance_visits"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
+
+    visit_date = Column(String)
+
+    mileage = Column(Integer)
+
+    vendor = Column(String)
+
+    invoice_number = Column(String)
+
+    total_cost = Column(Float)
 
     notes = Column(String)

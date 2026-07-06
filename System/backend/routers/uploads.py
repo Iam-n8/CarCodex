@@ -23,8 +23,8 @@ ALLOWED_EXTENSIONS = [
 ]
 
 
-@router.post("/upload")
-def upload_test(
+@router.post("/documents/upload")
+def upload(
     vehicle_id: int = Form(...),
     category: str = Form(...),
     description: str = Form(...),
@@ -41,20 +41,17 @@ def upload_test(
         ).first()
 
         if not vehicle:
-            
-            extension = os.path.splitext(
-                file.filename
-            )[1].lower().replace(".", "")
-
-            if extension not in ALLOWED_EXTENSIONS:
-                db.close()
-
-                return {
-                    "error": f"File type '{extension}' not allowed"
-                }
-
             return {
                 "error": "Vehicle not found"
+            }
+
+        extension = os.path.splitext(
+            file.filename
+        )[1].lower().replace(".", "")
+
+        if extension not in ALLOWED_EXTENSIONS:
+            return {
+                "error": f"File type '{extension}' not allowed"
             }
 
         vehicle_folder = os.path.abspath(
@@ -73,9 +70,7 @@ def upload_test(
             exist_ok=True
         )
 
-        extension = os.path.splitext(
-            file.filename
-        )[1]
+        extension = "." + extension
 
         new_filename = (
             f"{vehicle.nickname}_"
@@ -94,8 +89,6 @@ def upload_test(
             vehicle_folder,
             new_filename
         )
-
-        print("Destination:", destination)
 
         with open(destination, "wb") as buffer:
             shutil.copyfileobj(
@@ -116,15 +109,12 @@ def upload_test(
         db.commit()
         db.refresh(new_document)
 
-        print("Document record created:", new_document.id)
-
         return {
             "message": "Document uploaded successfully",
             "document_id": new_document.id,
             "vehicle_id": vehicle_id,
             "category": category,
             "filename": new_filename
-
         }
 
     finally:

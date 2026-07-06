@@ -19,3 +19,11 @@ Navigate to:
 Plain Texthttp://127.0.0.1:8000Show more lines
 or
 Plain Texthttp://127.0.0.1:8000/docsShow more lines
+
+
+New CMD
+cd \
+cd C:\carcodex\
+git add .
+git commit "things"
+git push

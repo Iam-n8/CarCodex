@@ -1,5 +1,6 @@
 # models.py
 
+
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, Boolean
 from database import Base
 
@@ -39,6 +40,18 @@ class ServiceRecord(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
+
+    maintenance_visit_id = Column(
+        Integer,
+        ForeignKey("maintenance_visits.id"),
+        nullable=True
+    )
+    service_status = Column(
+        String,
+        default="COMPLETED"
+    )
+
+
 
     service_type = Column(String)
 

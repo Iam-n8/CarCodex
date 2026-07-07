@@ -1,3 +1,6 @@
+# service.py
+# Routers   
+
 from fastapi import APIRouter
 
 from schemas.service import ServiceCreate
@@ -35,6 +38,11 @@ def create_service(service: ServiceCreate):
 
     new_service = ServiceRecord(
         vehicle_id=service.vehicle_id,
+        maintenance_visit_id=service.maintenance_visit_id,
+        
+        service_status=
+            service.service_status,
+
         service_type=service.service_type,
         service_date=service.service_date,
         mileage=service.mileage,

@@ -21,6 +21,7 @@ sys.path.append(
 )
 
 from database import Base
+import models
 
 
 # this is the Alembic Config object, which provides

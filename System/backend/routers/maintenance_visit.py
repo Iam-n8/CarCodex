@@ -2,7 +2,7 @@
 from fastapi import APIRouter
 
 from database import SessionLocal
-from models import MaintenanceVisit
+from models import MaintenanceVisit, ServiceRecord
 
 from schemas.maintenance_visit import (
     MaintenanceVisitCreate
@@ -68,3 +68,54 @@ def create_maintenance_visit(
         "message": "Maintenance visit added",
         "id": new_visit.id
     }
+@router.get("/maintenance-visits/{visit_id}")
+def get_maintenance_visit(
+    visit_id: int
+):
+
+    db = SessionLocal()
+
+    visit = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.id == visit_id
+    ).first()
+
+    if not visit:
+
+        db.close()
+
+        return {
+            "error": "Maintenance visit not found"
+        }
+
+    services = db.query(
+        ServiceRecord
+    ).filter(
+        ServiceRecord.maintenance_visit_id == visit_id
+    ).all()
+
+    service_list = []
+
+    for service in services:
+
+        service_list.append({
+            "service": service.service_type,
+            "status": service.service_status
+        })
+
+    result = {
+        "visit_id": visit.id,
+        "vehicle_id": visit.vehicle_id,
+        "visit_date": visit.visit_date,
+        "mileage": visit.mileage,
+        "vendor": visit.vendor,
+        "invoice_number": visit.invoice_number,
+        "total_cost": visit.total_cost,
+        "notes": visit.notes,
+        "services": service_list
+    }
+
+    db.close()
+
+    return result

@@ -1,3 +1,6 @@
+# documents.py
+
+
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from schemas.document import DocumentCreate
@@ -42,6 +45,10 @@ def create_document(document: DocumentCreate):
 
     new_document = Document(
         vehicle_id=document.vehicle_id,
+
+        maintenance_visit_id=
+            document.maintenance_visit_id,
+
         document_type=document.document_type,
         file_name=document.file_name,
         file_path=document.file_path,

@@ -41,11 +41,12 @@ class ServiceRecord(Base):
 
     vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
 
+
     maintenance_visit_id = Column(
         Integer,
-        ForeignKey("maintenance_visits.id"),
         nullable=True
     )
+
     service_status = Column(
         String,
         default="COMPLETED"
@@ -130,6 +131,12 @@ class Document(Base):
 
     vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
 
+    
+    maintenance_visit_id = Column(
+        Integer,
+        nullable=True
+    )
+
     document_type = Column(String)
 
     file_name = Column(String)
@@ -177,3 +184,32 @@ class MaintenanceVisit(Base):
     total_cost = Column(Float)
 
     notes = Column(String)
+
+class Vendor(Base):
+    __tablename__ = "vendors"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String)
+
+    vendor_type = Column(String)
+
+    address_1 = Column(String)
+    address_2 = Column(String)
+
+    city = Column(String)
+    state = Column(String)
+    zip_code = Column(String)
+
+    phone = Column(String)
+    email = Column(String)
+
+    website = Column(String)
+
+    primary_contact = Column(String)
+
+    notes = Column(String)
+
+    is_preferred = Column(Boolean, default=False)
+
+    archived = Column(Boolean, default=False)

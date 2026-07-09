@@ -14,6 +14,8 @@ from routers import uploads
 from routers import maintenance
 from routers import maintenance_schedule
 from routers import maintenance_visit
+from routers import vendor
+
 
 
 # --------------------------------------------------
@@ -36,6 +38,7 @@ app.include_router(
 app.include_router(
     maintenance_visit.router
 )
+app.include_router(vendor.router)
 
 
 

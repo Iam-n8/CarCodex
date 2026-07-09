@@ -1,8 +1,15 @@
 # maintenance_visit.py
+
 from fastapi import APIRouter
 
 from database import SessionLocal
-from models import MaintenanceVisit, ServiceRecord
+
+from models import (
+    MaintenanceVisit,
+    ServiceRecord,
+    Document
+)
+
 
 from schemas.maintenance_visit import (
     MaintenanceVisitCreate
@@ -95,6 +102,14 @@ def get_maintenance_visit(
         ServiceRecord.maintenance_visit_id == visit_id
     ).all()
 
+
+    documents = db.query(
+        Document
+    ).filter(
+        Document.maintenance_visit_id == visit_id
+    ).all()
+
+
     service_list = []
 
     for service in services:
@@ -114,6 +129,31 @@ def get_maintenance_visit(
         "total_cost": visit.total_cost,
         "notes": visit.notes,
         "services": service_list
+    }
+
+    document_list = []
+
+    for document in documents:
+
+        document_list.append({
+            "id": document.id,
+            "file_name": document.file_name,
+            "document_type": document.document_type
+        })
+
+    result["documents"] = document_list
+    
+    result = {
+        "visit_id": visit.id,
+        "vehicle_id": visit.vehicle_id,
+        "visit_date": visit.visit_date,
+        "mileage": visit.mileage,
+        "vendor": visit.vendor,
+        "invoice_number": visit.invoice_number,
+        "total_cost": visit.total_cost,
+        "notes": visit.notes,
+        "services": service_list,
+        "documents": document_list
     }
 
     db.close()

@@ -166,12 +166,18 @@ class MaintenanceSchedule(Base):
     uses_health_indicator = Column(String)
 
     notes = Column(String)
+
 class MaintenanceVisit(Base):
     __tablename__ = "maintenance_visits"
 
     id = Column(Integer, primary_key=True, index=True)
 
     vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
+
+    vendor_id = Column(
+        Integer,
+        nullable=True
+    )
 
     visit_date = Column(String)
 

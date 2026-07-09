@@ -8,6 +8,8 @@ class MaintenanceVisitCreate(BaseModel):
 
     vehicle_id: int
 
+    vendor_id: int | None = None
+
     visit_date: str
 
     mileage: int

@@ -7,7 +7,8 @@ from database import SessionLocal
 from models import (
     MaintenanceVisit,
     ServiceRecord,
-    Document
+    Document,
+    Vendor
 )
 
 
@@ -55,6 +56,9 @@ def create_maintenance_visit(
 
     new_visit = MaintenanceVisit(
         vehicle_id=visit.vehicle_id,
+
+        vendor_id=visit.vendor_id,
+
         visit_date=visit.visit_date,
         mileage=visit.mileage,
         vendor=visit.vendor,
@@ -96,19 +100,28 @@ def get_maintenance_visit(
             "error": "Maintenance visit not found"
         }
 
+    vendor_name = None
+
+    if visit.vendor_id:
+
+        vendor = db.query(Vendor).filter(
+            Vendor.id == visit.vendor_id
+        ).first()
+
+        if vendor:
+            vendor_name = vendor.name
+
     services = db.query(
         ServiceRecord
     ).filter(
         ServiceRecord.maintenance_visit_id == visit_id
     ).all()
 
-
     documents = db.query(
         Document
     ).filter(
         Document.maintenance_visit_id == visit_id
     ).all()
-
 
     service_list = []
 
@@ -118,18 +131,6 @@ def get_maintenance_visit(
             "service": service.service_type,
             "status": service.service_status
         })
-
-    result = {
-        "visit_id": visit.id,
-        "vehicle_id": visit.vehicle_id,
-        "visit_date": visit.visit_date,
-        "mileage": visit.mileage,
-        "vendor": visit.vendor,
-        "invoice_number": visit.invoice_number,
-        "total_cost": visit.total_cost,
-        "notes": visit.notes,
-        "services": service_list
-    }
 
     document_list = []
 
@@ -141,21 +142,74 @@ def get_maintenance_visit(
             "document_type": document.document_type
         })
 
-    result["documents"] = document_list
-    
     result = {
         "visit_id": visit.id,
         "vehicle_id": visit.vehicle_id,
+
+        "vendor_id": visit.vendor_id,
+        "vendor_name": vendor_name,
+
         "visit_date": visit.visit_date,
         "mileage": visit.mileage,
+
         "vendor": visit.vendor,
+
         "invoice_number": visit.invoice_number,
         "total_cost": visit.total_cost,
+
         "notes": visit.notes,
+
         "services": service_list,
+
         "documents": document_list
     }
 
     db.close()
 
     return result
+
+@router.put("/maintenance-visits/{visit_id}")
+def update_maintenance_visit(
+    visit_id: int,
+    visit_data: MaintenanceVisitCreate
+):
+
+    db = SessionLocal()
+
+    visit = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.id == visit_id
+    ).first()
+
+    if not visit:
+
+        db.close()
+
+        return {
+            "error": "Maintenance visit not found"
+        }
+
+    visit.vehicle_id = visit_data.vehicle_id
+
+    visit.vendor_id = visit_data.vendor_id
+
+    visit.visit_date = visit_data.visit_date
+
+    visit.mileage = visit_data.mileage
+
+    visit.vendor = visit_data.vendor
+
+    visit.invoice_number = visit_data.invoice_number
+
+    visit.total_cost = visit_data.total_cost
+
+    visit.notes = visit_data.notes
+
+    db.commit()
+
+    db.close()
+
+    return {
+        "message": "Maintenance visit updated"
+    }

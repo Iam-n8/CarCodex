@@ -1,9 +1,7 @@
 # maintenance_visit.py
 
 from fastapi import APIRouter
-
 from database import SessionLocal
-
 from models import (
     MaintenanceVisit,
     ServiceRecord,
@@ -11,13 +9,11 @@ from models import (
     Vendor
 )
 
-
 from schemas.maintenance_visit import (
     MaintenanceVisitCreate
 )
 
 router = APIRouter()
-
 
 @router.get("/maintenance-visits")
 def get_maintenance_visits():
@@ -26,25 +22,46 @@ def get_maintenance_visits():
 
     visits = db.query(
         MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.archived == False
     ).all()
 
     results = []
 
     for visit in visits:
 
+        vendor_name = None
+
+        if visit.vendor_id:
+
+            vendor = db.query(Vendor).filter(
+                Vendor.id == visit.vendor_id
+            ).first()
+
+            if vendor:
+                vendor_name = vendor.name
+
         results.append({
             "id": visit.id,
             "vehicle_id": visit.vehicle_id,
+
+            "vendor_id": visit.vendor_id,
+            "vendor_name": vendor_name,
+
             "visit_date": visit.visit_date,
             "mileage": visit.mileage,
+
             "vendor": visit.vendor,
+
             "invoice_number": visit.invoice_number,
+
             "total_cost": visit.total_cost
         })
 
     db.close()
 
     return results
+
 
 
 @router.post("/maintenance-visits")
@@ -213,3 +230,64 @@ def update_maintenance_visit(
     return {
         "message": "Maintenance visit updated"
     }
+@router.put("/maintenance-visits/{visit_id}/archive")
+def archive_maintenance_visit(
+    visit_id: int
+):
+
+    db = SessionLocal()
+
+    visit = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.id == visit_id
+    ).first()
+
+    if not visit:
+
+        db.close()
+
+        return {
+            "error": "Maintenance visit not found"
+        }
+
+    visit.archived = True
+
+    db.commit()
+
+    db.close()
+
+    return {
+        "message": "Maintenance visit archived"
+    }
+@router.put("/maintenance-visits/{visit_id}/restore")
+def restore_maintenance_visit(
+    visit_id: int
+):
+
+    db = SessionLocal()
+
+    visit = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.id == visit_id
+    ).first()
+
+    if not visit:
+
+        db.close()
+
+        return {
+            "error": "Maintenance visit not found"
+        }
+
+    visit.archived = False
+
+    db.commit()
+
+    db.close()
+
+    return {
+        "message": "Maintenance visit restored"
+    }
+

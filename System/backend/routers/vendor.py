@@ -169,3 +169,63 @@ def update_vendor(
     return {
         "message": "Vendor updated"
     }
+@router.put("/vendors/{vendor_id}/archive")
+def archive_vendor(
+    vendor_id: int
+):
+
+    db = SessionLocal()
+
+    vendor = db.query(
+        Vendor
+    ).filter(
+        Vendor.id == vendor_id
+    ).first()
+
+    if not vendor:
+
+        db.close()
+
+        return {
+            "error": "Vendor not found"
+        }
+
+    vendor.archived = True
+
+    db.commit()
+
+    db.close()
+
+    return {
+        "message": "Vendor archived"
+    }
+@router.put("/vendors/{vendor_id}/restore")
+def restore_vendor(
+    vendor_id: int
+):
+
+    db = SessionLocal()
+
+    vendor = db.query(
+        Vendor
+    ).filter(
+        Vendor.id == vendor_id
+    ).first()
+
+    if not vendor:
+
+        db.close()
+
+        return {
+            "error": "Vendor not found"
+        }
+
+    vendor.archived = False
+
+    db.commit()
+
+    db.close()
+
+    return {
+        "message": "Vendor restored"
+    }

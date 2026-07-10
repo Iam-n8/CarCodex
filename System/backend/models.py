@@ -21,6 +21,10 @@ class Vehicle(Base):
 
     current_mileage = Column(Integer)
 
+    archived = Column(
+        Boolean,
+        default=False
+)
 
 class MileageHistory(Base):
     __tablename__ = "mileage_history"
@@ -148,6 +152,7 @@ class Document(Base):
     notes = Column(String)
 
     archived = Column(Boolean, default=False)
+
 class MaintenanceSchedule(Base):
     __tablename__ = "maintenance_schedule"
 
@@ -166,6 +171,11 @@ class MaintenanceSchedule(Base):
     uses_health_indicator = Column(String)
 
     notes = Column(String)
+
+    archived = Column(
+        Boolean,
+        default=False
+)
 
 class MaintenanceVisit(Base):
     __tablename__ = "maintenance_visits"
@@ -190,6 +200,11 @@ class MaintenanceVisit(Base):
     total_cost = Column(Float)
 
     notes = Column(String)
+
+    archived = Column(
+    Boolean,
+    default=False
+)
 
 class Vendor(Base):
     __tablename__ = "vendors"

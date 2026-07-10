@@ -17,10 +17,13 @@ def get_maintenance_schedule():
 
     db = SessionLocal()
 
+ #
     schedules = db.query(
         MaintenanceSchedule
+    ).filter(
+        MaintenanceSchedule.archived == False
     ).all()
-
+#
     results = []
 
     for schedule in schedules:
@@ -73,12 +76,13 @@ def get_vehicle_maintenance_schedule(
 ):
 
     db = SessionLocal()
-
+#
     schedules = db.query(
         MaintenanceSchedule
     ).filter(
-        MaintenanceSchedule.vehicle_id == vehicle_id
+        MaintenanceSchedule.archived == False
     ).all()
+#
 
     results = []
 
@@ -102,4 +106,95 @@ def get_vehicle_maintenance_schedule(
     return {
         "message": "Maintenance schedule added",
         "id": new_schedule.id
+    }
+@router.put("/maintenance-schedule/{schedule_id}")
+def update_maintenance_schedule(
+    schedule_id: int,
+    schedule_data: MaintenanceScheduleCreate
+):
+
+    db = SessionLocal()
+
+    schedule = db.query(
+        MaintenanceSchedule
+    ).filter(
+        MaintenanceSchedule.id == schedule_id
+    ).first()
+
+    if not schedule:
+
+        db.close()
+
+        return {
+            "error": "Schedule not found"
+        }
+
+    schedule.vehicle_id = schedule_data.vehicle_id
+
+    schedule.service_type = schedule_data.service_type
+
+    schedule.interval_miles = schedule_data.interval_miles
+
+    schedule.interval_months = schedule_data.interval_months
+
+    schedule.estimated_cost = schedule_data.estimated_cost
+
+    schedule.uses_health_indicator = (
+        schedule_data.uses_health_indicator
+    )
+
+    schedule.notes = schedule_data.notes
+
+    db.commit()
+
+    db.close()
+
+    return {
+        "message": "Maintenance schedule updated"
+    }
+@router.put("/maintenance-schedule/{schedule_id}/archive")
+def archive_maintenance_schedule(schedule_id: int):
+
+    db = SessionLocal()
+
+    schedule = db.query(
+        MaintenanceSchedule
+    ).filter(
+        MaintenanceSchedule.id == schedule_id
+    ).first()
+
+    if not schedule:
+        db.close()
+        return {"error": "Schedule not found"}
+
+    schedule.archived = True
+
+    db.commit()
+    db.close()
+
+    return {
+        "message": "Maintenance schedule archived"
+    }
+@router.put("/maintenance-schedule/{schedule_id}/restore")
+def restore_maintenance_schedule(schedule_id: int):
+
+    db = SessionLocal()
+
+    schedule = db.query(
+        MaintenanceSchedule
+    ).filter(
+        MaintenanceSchedule.id == schedule_id
+    ).first()
+
+    if not schedule:
+        db.close()
+        return {"error": "Schedule not found"}
+
+    schedule.archived = False
+
+    db.commit()
+    db.close()
+
+    return {
+        "message": "Maintenance schedule restored"
     }

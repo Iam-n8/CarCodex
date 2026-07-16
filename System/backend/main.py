@@ -16,6 +16,10 @@ from routers import maintenance_schedule
 from routers import maintenance_visit
 from routers import vendor
 
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi import Request
+
 
 
 # --------------------------------------------------
@@ -23,6 +27,11 @@ from routers import vendor
 # --------------------------------------------------
 from routers import services
 app = FastAPI()
+
+templates = Jinja2Templates(
+    directory="templates"
+)
+
 app.include_router(vehicles.router)
 app.include_router(services.router) 
 app.include_router(mileage.router)
@@ -48,12 +57,20 @@ Base.metadata.create_all(bind=engine)
 # Root
 # --------------------------------------------------
 
-@app.get("/")
-def root():
-    return {
-        "app": "CarCodex",
-        "version": "1.0.1",
-        "status": "running"
-    }
+@app.get(
+    "/ui",
+    response_class=HTMLResponse
+)
+def dashboard(
+    request: Request
+):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="dashboard.html",
+        context={
+            "request": request
+        }
+    )
 
 

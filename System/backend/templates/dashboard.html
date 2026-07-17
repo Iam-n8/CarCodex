@@ -2,12 +2,123 @@
 <html>
 <head>
     <title>CarCodex</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+        }
+
+        .header {
+            background: #1f2937;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #1f2937;
+            padding: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 0;
+        }
+
+        .sidebar a:hover {
+            color: #60a5fa;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .card {
+            background: #1f2937;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+    </style>
 </head>
+
 <body>
 
-    <h1>CarCodex Dashboard</h1>
+<div class="header">
+    CarCodex
+</div>
 
-    <p>Hello CarCodex!</p>
+<div class="container">
+
+    <div class="sidebar">
+
+        #🏠 Dashboard</a>
+
+        #>
+
+        #
+
+        #
+
+        #📄 Documents</a>
+
+    </div>
+
+<div class="content">
+
+    <div class="card">
+
+        <h2>Dashboard</h2>
+
+        <div style="font-size:48px; font-weight:bold;">
+            {{ vehicle_count }}
+        </div>
+
+        <div>
+            Active Vehicles
+        </div>
+
+    </div>
+<div class="card">
+    <h2>Vehicles</h2>
+    <h1>{{ vehicle_count }}</h1>
+</div>
+
+<div class="card">
+    <h2>Vendors</h2>
+    <h1>{{ vendor_count }}</h1>
+</div>
+
+<div class="card">
+    <h2>Maintenance Visits</h2>
+    <h1>{{ visit_count }}</h1>
+</div>
+
+<div class="card">
+    <h2>Documents</h2>
+    <h1>{{ document_count }}</h1>
+</div>	
+	
+	
+	
+
+</div>
+
+</div>
 
 </body>
 </html>

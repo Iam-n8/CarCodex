@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Vehicles - CarCodex</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+        }
+
+        .header {
+            background: #1f2937;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .vehicle-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .vehicle-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .vehicle-card {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            width: 300px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .vehicle-card:hover {
+            background: #374151;
+            transform: translateY(-3px);
+            cursor: pointer;
+        }
+
+        .nav-link {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">
+        CarCodex - Vehicles
+    </div>
+
+    <div class="content">
+
+        <h1>Vehicles</h1>
+
+        <p>
+            /ui
+                ← Back to Dashboard
+            </a>
+        </p>
+
+        <div class="vehicle-grid">
+
+            {% for vehicle in vehicles %}
+
+            /vehicle/{{ vehicle.id }}
+
+                <div class="vehicle-card">
+
+                    <h2>{{ vehicle.nickname }}</h2>
+
+                    <p>
+                        {{ vehicle.year }}
+                        {{ vehicle.make }}
+                        {{ vehicle.model }}
+                    </p>
+
+                    <p>
+                        Mileage: {{ vehicle.current_mileage }}
+                    </p>
+
+                </div>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

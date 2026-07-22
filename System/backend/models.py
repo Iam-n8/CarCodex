@@ -24,6 +24,7 @@ class Vehicle(Base):
     archived = Column(
         Boolean,
         default=False
+    
 )
 
 class MileageHistory(Base):

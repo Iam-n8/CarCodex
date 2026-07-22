@@ -4,8 +4,10 @@
 from routers import vehicles
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from fastapi import Request
+
+from fastapi.templating import Jinja2Templates
+
 
 from database import engine
 from database import SessionLocal
@@ -38,6 +40,9 @@ app = FastAPI()
 templates = Jinja2Templates(
     directory="templates"
 )
+
+# templates = Jinja2Templates(directory=r"C:\CarCodex\System\backend\templates")
+
 
 app.include_router(vehicles.router)
 app.include_router(services.router) 
@@ -97,5 +102,89 @@ def dashboard(
             "vendor_count": vendor_count,
             "visit_count": visit_count,
             "document_count": document_count
+        }
+    )
+@app.get(
+    "/vehicles-ui",
+    response_class=HTMLResponse
+)
+def vehicles_ui(
+    request: Request
+):
+
+    db = SessionLocal()
+
+    vehicles = db.query(Vehicle).all()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicles.html",
+        context={
+            "request": request,
+            "vehicles": vehicles
+        }
+    )
+""" @app.get(
+    "/vehicle/{vehicle_id}",
+    response_class=HTMLResponse
+)
+def vehicle_detail(
+    request: Request,
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicle_detail.html",
+        context={
+            "request": request,
+            "vehicle": vehicle
+        }
+    ) """
+@app.get(
+    "/vehicle/{vehicle_id}",
+    response_class=HTMLResponse
+)
+def vehicle_detail(
+    request: Request,
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    visits = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.vehicle_id == vehicle_id
+    ).all()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicle_detail.html",
+        context={
+            "request": request,
+            "vehicle": vehicle,
+            "visits": visits
         }
     )

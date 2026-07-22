@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>{{ vehicle.nickname }}</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+        }
+
+        .header {
+            background: #1f2937;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .card {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">
+        CarCodex - Vehicle Detail
+    </div>
+
+    <div class="content">
+
+        <p>
+            <a href="/vehicles-ui" class="back-link">
+                ← Back to Vehicles
+            </a>
+        </p>
+
+        <h1>{{ vehicle.nickname }}</h1>
+
+        <!-- Vehicle Information -->
+
+        <div class="card">
+
+            <h2>Vehicle Information</h2>
+
+            <p><strong>Year:</strong> {{ vehicle.year }}</p>
+
+            <p><strong>Make:</strong> {{ vehicle.make }}</p>
+
+            <p><strong>Model:</strong> {{ vehicle.model }}</p>
+
+            <p><strong>Trim:</strong> {{ vehicle.trim }}</p>
+
+            <p><strong>Mileage:</strong> {{ vehicle.current_mileage }}</p>
+
+            <p><strong>VIN:</strong> {{ vehicle.vin }}</p>
+
+        </div>
+
+        <!-- Quick Stats -->
+
+        <div class="card">
+
+            <h2>Quick Stats</h2>
+
+            <p>
+                Maintenance Visits:
+                {{ visits|length }}
+            </p>
+
+        </div>
+
+        <!-- Recent Maintenance -->
+
+        <div class="card">
+
+            <h2>Maintenance Visits</h2>
+
+            {% if visits %}
+
+                {% for visit in visits %}
+
+                    <p>
+
+                        {{ visit.visit_date }}
+
+                        -
+
+                        {{ visit.vendor }}
+
+                    </p>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No maintenance visits recorded.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

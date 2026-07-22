@@ -1,153 +1,47 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>CarCodex Dashboard</title>
+{% block content %}
 
-    <style>
+<h1>Dashboard</h1>
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #111827;
-            color: white;
-        }
+<div class="card-container">
 
-        .header {
-            background: #1f2937;
-            padding: 20px;
-            font-size: 28px;
-            font-weight: bold;
-        }
+    <a href="/vehicles-ui" class="dashboard-link">
 
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
+        <div class="card">
 
-        .sidebar {
-            width: 250px;
-            background: #1f2937;
-            padding: 20px;
-        }
+            <h1>{{ vehicle_count }}</h1>
 
-        .sidebar a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            padding: 12px 0;
-        }
-
-        .sidebar a:hover {
-            color: #60a5fa;
-        }
-
-        .content {
-            flex: 1;
-            padding: 30px;
-        }
-
-        .card-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .card {
-            background: #1f2937;
-            border-radius: 10px;
-            padding: 20px;
-            width: 200px;
-            text-align: center;
-        }
-
-        .card h1 {
-            margin: 10px 0;
-            font-size: 48px;
-        }
-
-        .card p {
-            color: #9ca3af;
-            margin: 0;
-        }
-
-        .dashboard-link {
-            text-decoration: none;
-            color: inherit;
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-    <div class="header">
-        CarCodex
-    </div>
-
-    <div class="container">
-
-        <div class="sidebar">
-
-            <a href="/ui" class="nav-link">
-                🏠 Dashboard
-            </a>
-
-            <a href="/vehicles-ui" class="nav-link">
-                🚗 Vehicles
-            </a>
-
-            <a href="/vendors-ui" class="nav-link">
-                🏢 Vendors
-            </a>
-
-            <a href="/maintenance-visits-ui" class="nav-link">
-                🔧 Maintenance Visits
-            </a>
-
-            <a href="/documents-ui" class="nav-link">
-                📄 Documents
-            </a>
+            <p>Vehicles</p>
 
         </div>
 
-        <div class="content">
+    </a>
 
-            <h1>Dashboard</h1>
+    <div class="card">
 
-            <div class="card-container">
+        <h1>{{ vendor_count }}</h1>
 
-                <a href="/vehicles-ui" class="dashboard-link">
-                    <div class="card">
-                        <h1>{{ vehicle_count }}</h1>
-                        <p>Vehicles</p>
-                    </div>
-                </a>
-
-                <a href="/vendors-ui" class="dashboard-link">
-                    <div class="card">
-                        <h1>{{ vendor_count }}</h1>
-                        <p>Vendors</p>
-                    </div>
-                </a>
-
-                <div class="card">
-                    <h1>{{ visit_count }}</h1>
-                    <p>Maintenance Visits</p>
-                </div>
-
-                <div class="card">
-                    <h1>{{ document_count }}</h1>
-                    <p>Documents</p>
-                </div>
-
-            </div>
-
-        </div>
+        <p>Vendors</p>
 
     </div>
 
-</body>
+    <div class="card">
 
-</html>
+        <h1>{{ visit_count }}</h1>
+
+        <p>Maintenance Visits</p>
+
+    </div>
+
+    <div class="card">
+
+        <h1>{{ document_count }}</h1>
+
+        <p>Documents</p>
+
+    </div>
+
+</div>
+
+{% endblock %}

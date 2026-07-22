@@ -1,132 +1,115 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
+{% block content %}
 
-    <title>{{ vehicle.nickname }}</title>
+<h1>{{ vehicle.nickname }}</h1>
 
-    <style>
+<p>
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #111827;
-            color: white;
-        }
+    <a href="/vehicles-ui" class="nav-link">
 
-        .header {
-            background: #1f2937;
-            padding: 20px;
-            font-size: 28px;
-            font-weight: bold;
-        }
+        ← Back to Vehicles
 
-        .content {
-            padding: 30px;
-        }
+    </a>
 
-        .card {
-            background: #1f2937;
-            border: 1px solid #374151;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+</p>
 
-        .back-link {
-            color: #60a5fa;
-            text-decoration: none;
-        }
+<!-- Vehicle Information -->
 
-        .back-link:hover {
-            text-decoration: underline;
-        }
+<div class="card">
 
-    </style>
+    <h2>Vehicle Information</h2>
 
-</head>
+    <p>
+        <strong>Year:</strong>
+        {{ vehicle.year }}
+    </p>
 
-<body>
+    <p>
+        <strong>Make:</strong>
+        {{ vehicle.make }}
+    </p>
 
-    <div class="header">
-        CarCodex - Vehicle Detail
-    </div>
+    <p>
+        <strong>Model:</strong>
+        {{ vehicle.model }}
+    </p>
 
-    <div class="content">
+    <p>
+        <strong>Trim:</strong>
+        {{ vehicle.trim }}
+    </p>
 
-        <p>
-            <a href="/vehicles-ui" class="back-link">
-                ← Back to Vehicles
-            </a>
-        </p>
+    <p>
+        <strong>Mileage:</strong>
+        {{ vehicle.current_mileage }}
+    </p>
 
-        <h1>{{ vehicle.nickname }}</h1>
+    <p>
+        <strong>VIN:</strong>
+        {{ vehicle.vin }}
+    </p>
 
-        <!-- Vehicle Information -->
+</div>
 
-        <div class="card">
+<!-- Quick Stats -->
 
-            <h2>Vehicle Information</h2>
+<div class="card">
 
-            <p><strong>Year:</strong> {{ vehicle.year }}</p>
+    <h2>Quick Stats</h2>
 
-            <p><strong>Make:</strong> {{ vehicle.make }}</p>
+    <p>
+        Maintenance Visits:
+        {{ visits|length }}
+    </p>
 
-            <p><strong>Model:</strong> {{ vehicle.model }}</p>
+</div>
 
-            <p><strong>Trim:</strong> {{ vehicle.trim }}</p>
+<!-- Maintenance Visits -->
 
-            <p><strong>Mileage:</strong> {{ vehicle.current_mileage }}</p>
+<div class="card">
 
-            <p><strong>VIN:</strong> {{ vehicle.vin }}</p>
+    <h2>Maintenance Visits</h2>
 
-        </div>
+    {% if visits %}
 
-        <!-- Quick Stats -->
-
-        <div class="card">
-
-            <h2>Quick Stats</h2>
+        {% for visit in visits %}
 
             <p>
-                Maintenance Visits:
-                {{ visits|length }}
+
+                {{ visit.visit_date }}
+
+                -
+
+                {{ visit.vendor }}
+
             </p>
 
-        </div>
+        {% endfor %}
 
-        <!-- Recent Maintenance -->
+    {% else %}
 
-        <div class="card">
+        <p>No maintenance visits recorded.</p>
 
-            <h2>Maintenance Visits</h2>
+    {% endif %}
 
-            {% if visits %}
+</div>
 
-                {% for visit in visits %}
+<style>
 
-                    <p>
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
 
-                        {{ visit.visit_date }}
+    .nav-link:hover {
+        text-decoration: underline;
+    }
 
-                        -
+    .card {
+        margin-bottom: 20px;
+    }
 
-                        {{ visit.vendor }}
+</style>
 
-                    </p>
-
-                {% endfor %}
-
-            {% else %}
-
-                <p>No maintenance visits recorded.</p>
-
-            {% endif %}
-
-        </div>
-
-    </div>
-
-</body>
-
-</html>
+{% endblock %}

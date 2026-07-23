@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Maintenance Visit</h1>
+
+<p>
+    vehicle/{{ visit.vehicle_id }}"
+       class="nav-link">
+
+        ← Back To Vehicle
+
+    </a>
+</p>
+
+<!-- Visit Information -->
+
+<div class="card">
+
+    <h2>Visit Information</h2>
+
+    <p>
+        <strong>Date:</strong>
+        {{ visit.visit_date }}
+    </p>
+
+    <p>
+        <strong>Mileage:</strong>
+        {{ visit.mileage }}
+    </p>
+
+    <p>
+        <strong>Vendor:</strong>
+        {{ visit.vendor }}
+    </p>
+
+    <p>
+        <strong>Invoice:</strong>
+        {{ visit.invoice_number }}
+    </p>
+
+    <p>
+        <strong>Total Cost:</strong>
+        ${{ visit.total_cost }}
+    </p>
+
+    <p>
+        <strong>Notes:</strong>
+        {{ visit.notes }}
+    </p>
+
+</div>
+
+<!-- Services Performed -->
+
+<div class="card">
+
+    <h2>Services Performed</h2>
+
+    {% if services %}
+
+        {% for service in services %}
+
+            <div class="service-item">
+
+                <strong>
+                    {{ service.service_type }}
+                </strong>
+
+                <br>
+
+                Status:
+                {{ service.status }}
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            No services recorded.
+        </p>
+
+    {% endif %}
+
+</div>
+
+<style>
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .service-item {
+        background: #374151;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+
+</style>
+
+{% endblock %}

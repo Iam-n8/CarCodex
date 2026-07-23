@@ -2,7 +2,63 @@
 
 {% block content %}
 
+<!-- =====================================
+     Vehicle Title
+====================================== -->
+
 <h1>{{ vehicle.nickname }}</h1>
+
+<!-- =====================================
+     Vehicle Stats Dashboard
+====================================== -->
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <h3>Mileage</h3>
+
+        <div class="stat-value">
+            {{ vehicle.current_mileage }}
+        </div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h3>Visits</h3>
+
+        <div class="stat-value">
+            {{ visit_count }}
+        </div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h3>Documents</h3>
+
+        <div class="stat-value">
+            {{ document_count }}
+        </div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h3>Vendors</h3>
+
+        <div class="stat-value">
+            {{ vendor_count }}
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================
+     Navigation
+====================================== -->
 
 <p>
 
@@ -14,7 +70,9 @@
 
 </p>
 
-<!-- Vehicle Information -->
+<!-- =====================================
+     Vehicle Information
+====================================== -->
 
 <div class="card">
 
@@ -52,36 +110,80 @@
 
 </div>
 
-<!-- Quick Stats -->
+<!-- =====================================
+     Recent Maintenance Visits
+====================================== -->
 
 <div class="card">
 
-    <h2>Quick Stats</h2>
+    <h2>Recent Maintenance Visits</h2>
 
-    <p>
-        Maintenance Visits:
-        {{ visits|length }}
-    </p>
+    <div class="visit-grid">
+
+        {% if visits %}
+
+            {% for visit in visits %}
+
+                <a href="/maintenance-visit/{{ visit.id }}"
+                   class="visit-link">
+
+                    <div class="visit-card">
+
+                        <h3>{{ visit.visit_date }}</h3>
+
+                        <p>
+                            <strong>Vendor:</strong>
+                            {{ visit.vendor }}
+                        </p>
+
+                        <p>
+                            <strong>Mileage:</strong>
+                            {{ visit.mileage }}
+                        </p>
+
+                        <p>
+                            <strong>Invoice:</strong>
+                            {{ visit.invoice_number }}
+                        </p>
+
+                        <p>
+                            <strong>Cost:</strong>
+                            ${{ visit.total_cost }}
+                        </p>
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No maintenance visits recorded.</p>
+
+        {% endif %}
+
+    </div>
 
 </div>
 
-<!-- Maintenance Visits -->
+<!-- =====================================
+     Upcoming Maintenance
+====================================== -->
 
 <div class="card">
 
-    <h2>Maintenance Visits</h2>
+    <h2>Upcoming Maintenance</h2>
 
-    {% if visits %}
+    {% if schedules %}
 
-        {% for visit in visits %}
+        {% for schedule in schedules %}
 
             <p>
 
-                {{ visit.visit_date }}
-
-                -
-
-                {{ visit.vendor }}
+                <strong>
+                    {{ schedule.service_type }}
+                </strong>
 
             </p>
 
@@ -89,11 +191,17 @@
 
     {% else %}
 
-        <p>No maintenance visits recorded.</p>
+        <p>
+            No maintenance schedule found.
+        </p>
 
     {% endif %}
 
 </div>
+
+<!-- =====================================
+     Page Specific Styles
+====================================== -->
 
 <style>
 
@@ -108,6 +216,64 @@
 
     .card {
         margin-bottom: 20px;
+    }
+
+    /* -------------------------------------
+       Top Dashboard Cards
+    -------------------------------------- */
+
+    .stats-grid {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .stat-card {
+        background: #1f2937;
+        border-radius: 10px;
+        padding: 20px;
+        width: 180px;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 36px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    /* -------------------------------------
+       Maintenance Visit Cards
+    -------------------------------------- */
+
+    .visit-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .visit-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .visit-card {
+        background: #374151;
+        border-radius: 10px;
+        padding: 20px;
+        width: 250px;
+        transition: all 0.2s ease;
+    }
+
+    .visit-card:hover {
+        background: #4b5563;
+        transform: translateY(-2px);
+        cursor: pointer;
+    }
+
+    .visit-card h3 {
+        margin-top: 0;
     }
 
 </style>

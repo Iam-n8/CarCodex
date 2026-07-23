@@ -17,7 +17,7 @@ from routers import events
 from routers import documents
 from routers import costs
 from routers import snapshots
-from models  import Base
+from models  import Base, ServiceRecord
 from routers import uploads
 from routers import maintenance
 from routers import maintenance_schedule
@@ -27,7 +27,8 @@ from models import (
     Vehicle,
     Vendor,
     MaintenanceVisit,
-    Document
+    Document,
+    MaintenanceSchedule
 )
 
 
@@ -126,34 +127,6 @@ def vehicles_ui(
             "vehicles": vehicles
         }
     )
-""" @app.get(
-    "/vehicle/{vehicle_id}",
-    response_class=HTMLResponse
-)
-def vehicle_detail(
-    request: Request,
-    vehicle_id: int
-):
-
-    db = SessionLocal()
-
-    vehicle = db.query(
-        Vehicle
-    ).filter(
-        Vehicle.id == vehicle_id
-    ).first()
-
-
-    db.close()
-
-    return templates.TemplateResponse(
-        request=request,
-        name="vehicle_detail.html",
-        context={
-            "request": request,
-            "vehicle": vehicle
-        }
-    ) """
 @app.get(
     "/vehicle/{vehicle_id}",
     response_class=HTMLResponse
@@ -177,14 +150,64 @@ def vehicle_detail(
         MaintenanceVisit.vehicle_id == vehicle_id
     ).all()
 
+    schedules = db.query(
+        MaintenanceSchedule
+    ).filter(
+        MaintenanceSchedule.vehicle_id == vehicle_id
+    ).all()
+
     db.close()
 
     return templates.TemplateResponse(
         request=request,
         name="vehicle_detail.html",
+
         context={
             "request": request,
             "vehicle": vehicle,
-            "visits": visits
+            "visits": visits,
+
+            "schedules": schedules,
+
+            "visit_count": len(visits),
+
+            "document_count": 0,
+
+            "vendor_count": 0
+        }       
+    )
+@app.get(
+    "/maintenance-visit/{visit_id}",
+    response_class=HTMLResponse
+)
+def maintenance_visit_detail(
+    request: Request,
+    visit_id: int
+):
+
+    db = SessionLocal()
+
+    visit = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.id == visit_id
+    ).first()
+    services = db.query(
+        ServiceRecord
+    ).filter(
+        ServiceRecord.maintenance_visit_id == visit_id
+    ).all()
+
+
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="maintenance_visit_detail.html",
+        context={
+            "request": request,
+            "visit": visit,
+            "services": services
         }
     )

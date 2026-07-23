@@ -3,8 +3,14 @@
 # import os
 from routers import vehicles
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-from fastapi import Request
+from fastapi.responses import (
+    HTMLResponse,
+    RedirectResponse
+)
+from fastapi import (
+    Request,
+    Form
+)
 
 from fastapi.templating import Jinja2Templates
 
@@ -210,4 +216,80 @@ def maintenance_visit_detail(
             "visit": visit,
             "services": services
         }
+    )
+# --------------------------------------------------
+# Add Vehicle Page
+# --------------------------------------------------
+
+@app.get(
+    "/vehicle-add",
+    response_class=HTMLResponse
+)
+def vehicle_add_page(
+    request: Request
+):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicle_add.html",
+        context={
+            "request": request
+        }
+    )
+
+
+# --------------------------------------------------
+# Add Vehicle Submit
+# --------------------------------------------------
+
+@app.post(
+    "/vehicle-add"
+)
+def vehicle_add_submit(
+
+    nickname: str = Form(...),
+
+    year: int = Form(...),
+
+    make: str = Form(...),
+
+    model: str = Form(...),
+
+    trim: str = Form(...),
+
+    vin: str = Form(...),
+
+    current_mileage: int = Form(...)
+
+):
+
+    db = SessionLocal()
+
+    vehicle = Vehicle(
+
+        nickname=nickname,
+
+        year=year,
+
+        make=make,
+
+        model=model,
+
+        trim=trim,
+
+        vin=vin,
+
+        current_mileage=current_mileage
+
+    )
+
+    db.add(vehicle)
+
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url="/vehicles-ui",
+        status_code=303
     )

@@ -1,0 +1,67 @@
+<!-- vehicle_add.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h1>Add Vehicle</h1>
+
+<p>
+
+<a href="/vehicles-ui" class="nav-link">
+
+        ← Back to Vehicles
+
+    </a>
+
+</p>
+
+<form method="post" action="/vehicle-add"></form>
+
+    <p>
+        Nickname<br>
+        <input type="text" name="nickname">
+    </p>
+
+    <p>
+        Year<br>
+        <input type="number" name="year">
+    </p>
+
+    <p>
+        Make<br>
+        <input type="text" name="make">
+    </p>
+
+    <p>
+        Model<br>
+        <input type="text" name="model">
+    </p>
+
+    <p>
+        Trim<br>
+        <input type="text" name="trim">
+    </p>
+
+    <p>
+        VIN<br>
+        <input type="text" name="vin">
+    </p>
+
+    <p>
+        Current Mileage<br>
+        <input type="number" name="current_mileage">
+    </p>
+
+</form>
+<p>
+
+    <button type="submit">
+
+        Save Vehicle
+
+    </button>
+
+</p>
+{% endblock %}

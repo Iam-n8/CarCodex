@@ -293,3 +293,85 @@ def vehicle_add_submit(
         url="/vehicles-ui",
         status_code=303
     )
+# --------------------------------------------------
+# Edit Vehicle Page
+# --------------------------------------------------
+
+@app.get(
+    "/vehicle-edit/{vehicle_id}",
+    response_class=HTMLResponse
+)
+def vehicle_edit_page(
+    request: Request,
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicle_edit.html",
+        context={
+            "request": request,
+            "vehicle": vehicle
+        }
+    )
+# --------------------------------------------------
+# Edit Vehicle Submit
+# --------------------------------------------------
+
+@app.post(
+    "/vehicle-edit/{vehicle_id}"
+)
+def vehicle_edit_submit(
+
+    vehicle_id: int,
+
+    nickname: str = Form(...),
+
+    year: int = Form(...),
+
+    make: str = Form(...),
+
+    model: str = Form(...),
+
+    trim: str = Form(...),
+
+    vin: str = Form(...),
+
+    current_mileage: int = Form(...)
+
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    vehicle.nickname = nickname
+    vehicle.year = year
+    vehicle.make = make
+    vehicle.model = model
+    vehicle.trim = trim
+    vehicle.vin = vin
+    vehicle.current_mileage = current_mileage
+
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url=f"/vehicle/{vehicle_id}",
+        status_code=303
+    )

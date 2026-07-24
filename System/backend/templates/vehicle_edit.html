@@ -1,0 +1,89 @@
+<!-- vehicle_edit.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Edit Vehicle</h1>
+
+<p>
+
+    <a href="/vehicle/{{ vehicle.id }}"
+       class="nav-link">
+
+        ← Back To Vehicle
+
+    </a>
+
+</p>
+
+<form method="post" action="/vehicle-edit/{{ vehicle.id }}">
+
+
+    <p>
+        Nickname<br>
+        <input
+            type="text"
+            name="nickname"
+            value="{{ vehicle.nickname }}">
+    </p>
+
+    <p>
+        Year<br>
+        <input
+            type="number"
+            name="year"
+            value="{{ vehicle.year }}">
+    </p>
+
+    <p>
+        Make<br>
+        <input
+            type="text"
+            name="make"
+            value="{{ vehicle.make }}">
+    </p>
+
+    <p>
+        Model<br>
+        <input
+            type="text"
+            name="model"
+            value="{{ vehicle.model }}">
+    </p>
+
+    <p>
+        Trim<br>
+        <input
+            type="text"
+            name="trim"
+            value="{{ vehicle.trim }}">
+    </p>
+
+    <p>
+        VIN<br>
+        <input
+            type="text"
+            name="vin"
+            value="{{ vehicle.vin }}">
+    </p>
+
+    <p>
+        Current Mileage<br>
+        <input
+            type="number"
+            name="current_mileage"
+            value="{{ vehicle.current_mileage }}">
+    </p>
+
+    <p>
+        <button type="submit">
+
+            Save Changes
+
+        </button>
+    </p>
+
+</form>
+
+{% endblock %}

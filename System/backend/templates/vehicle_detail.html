@@ -8,6 +8,21 @@
 ====================================== -->
 
 <h1>{{ vehicle.nickname }}</h1>
+{% if vehicle.archived %}
+
+<div class="card">
+
+    <h2>⚠ Archived Vehicle</h2>
+
+    <p>
+
+        This vehicle is currently archived.
+
+    </p>
+
+</div>
+
+{% endif %}
 
 <!-- =====================================
      Vehicle Stats Dashboard
@@ -63,7 +78,8 @@
 
 <p>
 
-    <a href="/vehicles-ui" class="nav-link">
+    <a href="/vehicles-ui" 
+        class="nav-link">
 
         ← Back to Vehicles
         <p>
@@ -74,7 +90,30 @@
         ✏ Edit Vehicle
 
     </a>
+    <p>
 
+    <a href="/vehicle-archive/{{ vehicle.id }}" 
+        class="nav-link">
+
+        🗑 Archive Vehicle
+
+    </a>
+
+    </p>
+    {% if vehicle.archived %}
+
+    <p>
+
+        <a href="/vehicle-restore/{{ vehicle.id }}"
+           class="nav-link">
+
+            ♻ Restore Vehicle
+
+        </a>
+
+    </p>
+
+{% endif %}
 </p>
 
     </a>

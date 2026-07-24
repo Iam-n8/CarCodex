@@ -121,7 +121,11 @@ def vehicles_ui(
 
     db = SessionLocal()
 
-    vehicles = db.query(Vehicle).all()
+    vehicles = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.archived == False
+    ).all()
 
     db.close()
 
@@ -373,5 +377,151 @@ def vehicle_edit_submit(
 
     return RedirectResponse(
         url=f"/vehicle/{vehicle_id}",
+        status_code=303
+    )
+# --------------------------------------------------
+# Archive Vehicle Page
+# --------------------------------------------------
+
+@app.get(
+    "/vehicle-archive/{vehicle_id}",
+    response_class=HTMLResponse
+)
+def vehicle_archive_page(
+    request: Request,
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicle_archive.html",
+        context={
+            "request": request,
+            "vehicle": vehicle
+        }
+    )
+# --------------------------------------------------
+# Archive Vehicle Submit
+# --------------------------------------------------
+
+@app.post(
+    "/vehicle-archive/{vehicle_id}"
+)
+def vehicle_archive_submit(
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    vehicle.archived = True
+
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url="/vehicles-ui",
+        status_code=303
+    )
+# --------------------------------------------------
+# Archived Vehicles
+# --------------------------------------------------
+
+@app.get(
+    "/vehicles-archived",
+    response_class=HTMLResponse
+)
+def archived_vehicles(
+    request: Request
+):
+
+    db = SessionLocal()
+
+    vehicles = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.archived == True
+    ).all()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicles_archived.html",
+        context={
+            "request": request,
+            "vehicles": vehicles
+        }
+    )
+# --------------------------------------------------
+# Restore Vehicle Page
+# --------------------------------------------------
+
+@app.get(
+    "/vehicle-restore/{vehicle_id}",
+    response_class=HTMLResponse
+)
+def vehicle_restore_page(
+    request: Request,
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicle_restore.html",
+        context={
+            "request": request,
+            "vehicle": vehicle
+        }
+    )
+@app.post(
+    "/vehicle-restore/{vehicle_id}"
+)
+def vehicle_restore_submit(
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    vehicle.archived = False
+
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url="/vehicles-ui",
         status_code=303
     )

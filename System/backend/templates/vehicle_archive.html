@@ -1,0 +1,51 @@
+<!-- vehicle_archive.html  -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Archive Vehicle</h1>
+
+<p>
+
+    <a href="/vehicle/{{ vehicle.id }}" class="nav-link">
+
+        ← Back To Vehicle   
+    </a>        
+</p>
+
+<div class="card">
+
+    <h2>{{ vehicle.nickname }}</h2>
+
+    <p>
+
+        Are you sure you want to archive this vehicle?
+
+    </p>
+
+    <p>
+
+        Archived vehicles will be hidden from the
+        active vehicle list but will remain in
+        CarCodex.
+
+    </p>
+    <form method="post">
+
+        <p>
+
+            <button type="submit">
+
+                📦 Archive Vehicle
+
+            </button>
+
+        </p>
+
+    </form>
+
+
+</div>
+
+{% endblock %}

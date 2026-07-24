@@ -1,0 +1,31 @@
+<!-- vehicle_restore.html -->
+ 
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Restore Vehicle</h1>
+
+<div class="card">
+
+    <h2>{{ vehicle.nickname }}</h2>
+
+    <p>
+
+        Restore this vehicle to the active vehicle list?
+
+    </p>
+
+    <form method="post">
+
+        <button type="submit">
+
+            ♻ Restore Vehicle
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

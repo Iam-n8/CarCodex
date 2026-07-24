@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Archived Vehicles</h1>
+
+<p>
+
+    Archived vehicles remain in CarCodex and can
+    be restored later.
+
+</p>
+
+<div class="vehicle-grid">
+
+    {% for vehicle in vehicles %}
+
+        <a href="/vehicle/{{ vehicle.id }}"
+           class="vehicle-link">
+
+            <div class="vehicle-card">
+
+                <h2>{{ vehicle.nickname }}</h2>
+
+                <p>
+                    {{ vehicle.year }}
+                    {{ vehicle.make }}
+                    {{ vehicle.model }}
+                </p>
+
+                <p>
+                    📦 Archived
+                </p>
+
+            </div>
+
+        </a>
+
+    {% endfor %}
+
+</div>
+
+<style>
+
+.vehicle-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.vehicle-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.vehicle-card {
+    background: #1f2937;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+}
+
+.vehicle-card:hover {
+    background: #374151;
+    cursor: pointer;
+}
+
+</style>
+
+{% endblock %}

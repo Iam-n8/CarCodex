@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Add Vendor</h1>
+
+<p>
+
+    <a href="/vendors-ui"
+       class="nav-link">
+
+        ← Back To Vendors
+
+    </a>
+
+</p>
+
+<form action="/vendor-add" method="post">
+
+    <p>
+        Vendor Name<br>
+        <input type="text"
+        name="name">
+    </p>
+
+    <p>
+        Address<br>
+        <input type="text"
+        name="address">
+    </p>
+
+    <p>
+        Phone<br>
+        <input type="text"
+        name="phone">
+    </p>
+
+    <p>
+        Website<br>
+        <input type="text"
+        name="website">
+    </p>
+
+    <p>
+        Notes<br>
+        <textarea name="notes"></textarea>
+    </p>
+
+    <p>
+        <button type="submit">
+
+            Save Vendor
+
+        </button>
+    </p>
+
+</form>
+
+{% endblock %}

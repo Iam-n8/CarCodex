@@ -1,0 +1,76 @@
+<!-- vendor_edit.html -->
+ 
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Edit Vendor</h1>
+
+<p>
+
+    <a href="/vendor/{{ vendor.id }}"
+       class="nav-link">
+
+        ← Back To Vendor
+
+    </a>
+
+</p>
+
+<form method="post" action="/vendor-edit/{{ vendor.id }}">
+
+    <p>
+        Vendor Name<br>
+        <input
+            type="text"
+            name="name"
+            value="{{ vendor.name }}">
+    </p>
+
+    <p>
+        Address<br>
+        <input
+            type="text"
+            name="address"
+            value="{{ vendor.address }}">
+    </p>
+
+    <p>
+        Phone<br>
+        <input
+            type="text"
+            name="phone"
+            value="{{ vendor.phone }}">
+    </p>
+
+    <p>
+        Website<br>
+        <input
+            type="text"
+            name="website"
+            value="{{ vendor.website }}">
+    </p>
+
+    <p>
+        Notes<br>
+
+        <textarea
+            name="notes"
+            rows="5"
+            cols="50">{{ vendor.notes }}</textarea>
+
+    </p>
+
+    <p>
+
+        <button type="submit">
+
+            Save Changes
+
+        </button>
+
+    </p>
+
+</form>
+
+{% endblock %}

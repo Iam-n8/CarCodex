@@ -1,0 +1,39 @@
+<!-- vendors.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Vendors</h1>
+
+<p>
+
+    <a href="/vendor-add"
+       class="nav-link">
+
+        + Add Vendor
+
+    </a>
+
+</p>
+
+{% for vendor in vendors %}
+
+<div class="card">
+
+    <a href="/vendor/{{ vendor.id }}"
+       class="vendor-link">
+
+        <div class="card">
+
+            <h2>{{ vendor.name }}</h2>
+
+        </div>
+
+    </a>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

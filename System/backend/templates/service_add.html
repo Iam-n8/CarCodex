@@ -1,0 +1,217 @@
+<!-- =====================================
+     Add Service Record
+===================================== -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- =====================================
+     Add Service Record
+===================================== -->
+
+<h1>Add Service Record</h1>
+
+<!-- =====================================
+     Back Link
+===================================== -->
+
+<p>
+
+    <a href="/maintenance-visit/{{ visit_id }}">
+
+        ← Back To Maintenance Visit
+
+    </a>
+
+</p>
+
+<!-- =====================================
+     Service Record Form
+===================================== -->
+
+<form method="post" action="/service-add/{{ visit_id }}">
+
+    <!-- =================================
+         Primary Reason
+    ================================== -->
+
+    <p>
+
+        Primary Reason For Service
+
+        <br>
+
+        <select
+            name="primary_reason"
+            id="primary_reason">
+
+            {% for service_type in service_types %}
+
+                <option>
+                    {{ service_type.name }}
+                </option>
+
+            {% endfor %}
+
+            <option>Other</option>
+
+        </select>
+
+    </p>
+
+    <!-- =================================
+         Custom Service Name
+    ================================== -->
+
+    <div
+        id="other-service-container"
+        style="display:none;">
+
+        <p>
+
+            New Service Name
+
+            <br>
+
+            <input
+                type="text"
+                id="other_service"
+                name="other_service">
+
+        </p>
+
+    </div>
+
+    <!-- =================================
+         Parts Used
+    ================================== -->
+
+    <p>
+
+        Parts Used
+
+        <br>
+
+        <textarea
+            name="parts_used"
+            rows="5"></textarea>
+
+    </p>
+
+    <!-- =================================
+         Additional Services
+    ================================== -->
+
+    <p>
+
+        Additional Services
+
+        <br>
+
+        <textarea
+            name="additional_services"
+            rows="5"></textarea>
+
+    </p>
+
+    <!-- =================================
+         Notes
+    ================================== -->
+
+    <p>
+
+        Notes
+
+        <br>
+
+        <textarea
+            name="notes"
+            rows="5"></textarea>
+
+    </p>
+
+    <!-- =================================
+         Buttons
+    ================================== -->
+
+    <p>
+
+        <button type="submit">
+
+            Save Service Record
+
+        </button>
+
+    </p>
+
+</form>
+
+<!-- =====================================
+     Styling
+===================================== -->
+
+<style>
+
+.nav-link {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+textarea {
+    width: 100%;
+    max-width: 700px;
+}
+
+#other_service {
+    width: 400px;
+}
+
+</style>
+
+<!-- =====================================
+     Other Service Logic
+===================================== -->
+
+<script>
+
+window.onload = function () {
+
+    const reason =
+        document.getElementById(
+            "primary_reason"
+        );
+
+    const container =
+        document.getElementById(
+            "other-service-container"
+        );
+
+    reason.onchange = function () {
+
+        if (
+            reason.value === "Other"
+        ) {
+
+            container.style.display =
+                "block";
+
+        }
+        else {
+
+            container.style.display =
+                "none";
+
+        }
+
+    };
+
+};
+
+</script>
+
+{% endblock %}

@@ -54,20 +54,67 @@
 
     <h2>Services Performed</h2>
 
+    <p>
+
+        <a href="/service-add/{{ visit.id }}" class="nav-link">
+
+            ➕ Add Service Record
+
+        </a>
+
+    </p>    
+
     {% if services %}
 
         {% for service in services %}
 
             <div class="service-item">
 
-                <strong>
-                    {{ service.service_type }}
-                </strong>
+                <p>
 
-                <br>
+                    <strong>
+                        Primary Reason:
+                    </strong>
 
-                Status:
-                {{ service.status }}
+                    {{ service.primary_reason }}
+
+                </p>
+
+                <p>
+
+                    <strong>
+                        Parts Used:
+                    </strong>
+
+                    <br>
+
+                    {{ service.parts_used }}
+
+                </p>
+
+                <p>
+
+                    <strong>
+                        Additional Services:
+                    </strong>
+
+                    <br>
+
+                    {{ service.additional_services }}
+
+                </p>
+
+                <p>
+
+                    <strong>
+                        Notes:
+                    </strong>
+
+                    <br>
+
+                    {{ service.notes }}
+
+                </p>
 
             </div>
 
@@ -85,7 +132,7 @@
 
 <p>
 
-<a href="/maintenance-edit/{{ visit.id }}" class="nav-link">
+    <a href="/maintenance-edit/{{ visit.id }}" class="nav-link">
 
         ✏ Edit Maintenance Visit
 

@@ -220,6 +220,22 @@ class ServiceRecord(Base):
     next_service_date = Column(
         String
     )
+class ServiceType(Base):
+
+    __tablename__ = "service_types"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    name = Column(String)
+
+    archived = Column(
+        Boolean,
+        default=False
+    )
 
 
 class Event(Base):

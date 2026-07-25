@@ -1,0 +1,154 @@
+<!-- =====================================
+     Add Maintenance Visit
+===================================== -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- =====================================
+     Page Title
+===================================== -->
+
+<h1>Add Maintenance Visit</h1>
+
+<!-- =====================================
+     Back Link
+===================================== -->
+
+<p>
+
+    <a href="/maintenance" class="nav-link">
+
+        ← Back To Maintenance
+
+    </a>
+
+</p>
+
+<!-- =====================================
+     Maintenance Visit Form
+===================================== -->
+
+<form method="post" action="/maintenance-add">
+
+    <!-- Vehicle -->
+
+    <p>
+
+        Vehicle
+
+        <br>
+
+        <select name="vehicle_id">
+
+            {% for vehicle in vehicles %}
+
+                <option value="{{ vehicle.id }}">
+
+                    {{ vehicle.nickname }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+    </p>
+
+    <!-- Vendor -->
+
+    <p>
+
+        Vendor
+
+        <br>
+
+        <select name="vendor_id">
+
+            {% for vendor in vendors %}
+
+                <option value="{{ vendor.id }}">
+
+                    {{ vendor.name }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+    </p>
+
+    <!-- Visit Date -->
+
+    <p>
+
+        Visit Date
+
+        <br>
+
+        <input
+            type="date"
+            name="visit_date">
+
+    </p>
+
+    <!-- Mileage -->
+
+    <p>
+
+        Mileage
+
+        <br>
+
+        <input
+            type="number"
+            name="mileage">
+
+    </p>
+
+    <!-- Invoice Number -->
+
+    <p>
+
+        Invoice Number
+
+        <br>
+
+        <input
+            type="text"
+            name="invoice_number">
+
+    </p>
+
+    <!-- Total Cost -->
+
+    <p>
+
+        Total Cost
+
+        <br>
+
+        <input
+            type="number"
+            step="0.01"
+            name="total_cost">
+
+    </p>
+
+    <!-- Save Button -->
+
+    <p>
+
+        <button type="submit">
+
+            Save Maintenance Visit
+
+        </button>
+
+    </p>
+
+</form>
+
+{% endblock %}

@@ -39,42 +39,188 @@ class MileageHistory(Base):
     entry_date = Column(String)
 
 
+
+# ==================================================
+# Service Record
+#
+# Stores the work performed during a Maintenance Visit.
+#
+# Example:
+#
+# Primary Reason:
+#     Oil Change
+#
+# Parts Used:
+#     Mobil1 5W-30
+#     ACDelco PF64 Filter
+#
+# Additional Services:
+#     Tire Rotation
+#     Multi-Point Inspection
+#
+# Notes:
+#     Customer requested tire pressure check.
+# ==================================================
+
 class ServiceRecord(Base):
+
     __tablename__ = "service_records"
 
-    id = Column(Integer, primary_key=True, index=True)
+    # ----------------------------------------------
+    # Primary Key
+    # ----------------------------------------------
 
-    vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
 
+    # ----------------------------------------------
+    # Vehicle Reference
+    # ----------------------------------------------
+
+    vehicle_id = Column(
+        Integer,
+        ForeignKey("vehicles.id")
+    )
+
+    # ----------------------------------------------
+    # Maintenance Visit Reference
+    # ----------------------------------------------
 
     maintenance_visit_id = Column(
         Integer,
         nullable=True
     )
 
+    # ----------------------------------------------
+    # Primary Reason For Service
+    #
+    # Examples:
+    #   Oil Change
+    #   Brake Service
+    #   Tire Service
+    #   Transmission Service
+    #   Warranty Repair
+    # ----------------------------------------------
+
+    primary_reason = Column(
+        String
+    )
+
+    # ----------------------------------------------
+    # Parts Used
+    #
+    # Multiline field.
+    #
+    # Example:
+    #
+    # Mobil1 5W-30
+    # PF64 Oil Filter
+    # ----------------------------------------------
+
+    parts_used = Column(
+        String
+    )
+
+    # ----------------------------------------------
+    # Additional Services
+    #
+    # Stored as text for now.
+    #
+    # Example:
+    #
+    # Tire Rotation
+    # Multi-Point Inspection
+    # Cabin Air Filter
+    # ----------------------------------------------
+
+    additional_services = Column(
+        String
+    )
+
+    # ----------------------------------------------
+    # Status
+    #
+    # COMPLETED
+    # RECOMMENDED
+    # DECLINED
+    # ----------------------------------------------
+
     service_status = Column(
         String,
         default="COMPLETED"
     )
 
+    # ----------------------------------------------
+    # Original Service Type
+    #
+    # Keep temporarily for backward compatibility.
+    #
+    # Can be removed later after migration.
+    # ----------------------------------------------
 
+    service_type = Column(
+        String
+    )
 
-    service_type = Column(String)
+    # ----------------------------------------------
+    # Service Date
+    # ----------------------------------------------
 
-    service_date = Column(String)
+    service_date = Column(
+        String
+    )
 
-    mileage = Column(Integer)
+    # ----------------------------------------------
+    # Vehicle Mileage
+    # ----------------------------------------------
 
-    provider = Column(String)
+    mileage = Column(
+        Integer
+    )
 
-    cost = Column(Integer)
+    # ----------------------------------------------
+    # Service Provider
+    # ----------------------------------------------
 
-    notes = Column(String)
+    provider = Column(
+        String
+    )
 
-    next_service_mileage = Column(Integer)
+    # ----------------------------------------------
+    # Cost
+    # ----------------------------------------------
 
-    next_service_date = Column(String)
-    
+    cost = Column(
+        Integer
+    )
+
+    # ----------------------------------------------
+    # Notes
+    #
+    # Technician notes
+    # Customer notes
+    # Follow-up notes
+    # ----------------------------------------------
+
+    notes = Column(
+        String
+    )
+
+    # ----------------------------------------------
+    # Future Service Tracking
+    # ----------------------------------------------
+
+    next_service_mileage = Column(
+        Integer
+    )
+
+    next_service_date = Column(
+        String
+    )
+
 
 class Event(Base):
     __tablename__ = "events"

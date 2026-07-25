@@ -1,0 +1,53 @@
+<!-- maintenance.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Maintenance Visits</h1>
+
+<p>
+
+    <a href="/maintenance-add" class="nav-link">
+
+        + Add Maintenance Visit
+
+    </a>
+
+</p>
+
+{% for visit in visits %}
+
+<a href="/maintenance-visit/{{ visit.id }}">
+
+    <div class="card">
+
+        <h2>{{ visit.visit_date }}</h2>
+
+        <p>
+            Vehicle ID:
+            {{ visit.vehicle_id }}
+        </p>
+
+        <p>
+            Vendor:
+            {{ visit.vendor }}
+        </p>
+
+    </div>
+
+</a>
+
+{% endfor %}
+
+<style>
+
+.visit-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+</style>
+
+{% endblock %}
+

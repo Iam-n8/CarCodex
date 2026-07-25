@@ -16,7 +16,7 @@ Plain TextINFO: Uvicorn running on http://127.0.0.1:8000Show more lines
 
 Step 4: Open Browser
 Navigate to:
-Plain Texthttp://127.0.0.1:8000Show more lines
+Plain Texthttp://127.0.0.1:8000 Show more lines
 or
 Plain Text http://127.0.0.1:8000/docs
 Show more lines

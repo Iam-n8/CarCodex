@@ -1,0 +1,57 @@
+<!-- maintenance_edit.html -->
+ {% extends "base.html" %}
+
+{% block content %}
+
+<h1>Edit Maintenance Visit</h1>
+
+<p>
+
+    /maintenance-visit/{{ visit.id }}
+
+        ← Back To Visit
+
+    </a>
+
+</p>
+
+<form method="post">
+
+    <p>
+        Mileage<br>
+        <input
+            type="number"
+            name="mileage"
+            value="{{ visit.mileage }}">
+    </p>
+
+    <p>
+        Invoice Number<br>
+        <input
+            type="text"
+            name="invoice_number"
+            value="{{ visit.invoice_number }}">
+    </p>
+
+    <p>
+        Total Cost<br>
+        <input
+            type="number"
+            step="0.01"
+            name="total_cost"
+            value="{{ visit.total_cost }}">
+    </p>
+
+    <p>
+
+        <button type="submit">
+
+            Save Changes
+
+        </button>
+
+    </p>
+
+</form>
+
+{% endblock %}

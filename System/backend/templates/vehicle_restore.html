@@ -5,7 +5,12 @@
 {% block content %}
 
 <h1>Restore Vehicle</h1>
-
+    <p>
+    <a href="/vehicle/{{ vehicle.id }}" class="nav-link">
+        ← Back To Vehicle
+        </a>
+    </p>   
+    
 <div class="card">
 
     <h2>{{ vehicle.nickname }}</h2>
@@ -23,9 +28,9 @@
             ♻ Restore Vehicle
 
         </button>
-
+   
     </form>
-
+ 
 </div>
 
 {% endblock %}

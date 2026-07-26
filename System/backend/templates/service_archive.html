@@ -1,0 +1,42 @@
+<!-- Archive Service Record -->
+ 
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Archive Service Record</h1>
+
+<p>
+
+    <a href="/maintenance-visit/{{ service.maintenance_visit_id }}"
+       class="nav-link">
+
+        ← Cancel
+
+    </a>
+
+</p>
+
+<div class="card">
+
+    <h2>{{ service.primary_reason }}</h2>
+
+    <p>
+
+        Are you sure you want to archive this service record?
+
+    </p>
+
+</div>
+
+<form method="post">
+
+    <button type="submit">
+
+        📦 Archive Service Record
+
+    </button>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+<!-- service_edit.html -->
+ {% extends "base.html" %}
+
+{% block content %}
+
+<h1>Edit Service Record</h1>
+
+<p>
+
+    <a href="/maintenance-visit/{{ service.maintenance_visit_id }}"
+       class="nav-link">
+
+        ← Back To Maintenance Visit
+
+    </a>
+
+</p>
+
+<form method="post">
+
+    <p>
+
+        Primary Reason
+
+        <br>
+
+        <input
+            type="text"
+            name="primary_reason"
+            value="{{ service.primary_reason }}">
+
+    </p>
+
+    <p>
+
+        Parts Used
+
+        <br>
+
+        <textarea
+            name="parts_used"
+            rows="5"
+            cols="60">{{ service.parts_used }}</textarea>
+
+    </p>
+
+    <p>
+
+        Additional Services
+
+        <br>
+
+        <textarea
+            name="additional_services"
+            rows="5"
+            cols="60">{{ service.additional_services }}</textarea>
+
+    </p>
+
+    <p>
+
+        Notes
+
+        <br>
+
+        <textarea
+            name="notes"
+            rows="5"
+            cols="60">{{ service.notes }}</textarea>
+
+    </p>
+
+    <p>
+
+        <button type="submit">
+
+            Save Changes
+
+        </button>
+
+        <a href="/maintenance-visit/{{ service.maintenance_visit_id }}">
+
+            Cancel
+        </a>
+
+        
+
+    </p>
+
+</form>
+
+{% endblock %}
+

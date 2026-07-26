@@ -6,7 +6,8 @@
 
 <p>
 
-    <a href="/maintenance-ui" class="nav-link">
+    <a href="/maintenance-ui"
+       class="nav-link">
 
         ← Back To Maintenance
 
@@ -56,13 +57,15 @@
 
     <p>
 
-        <a href="/service-add/{{ visit.id }}" class="nav-link">
+        <a href="/service-add/{{ visit.id }}"
+           class="nav-link">
 
             ➕ Add Service Record
 
         </a>
+    </p>
+    
 
-    </p>    
 
     {% if services %}
 
@@ -72,9 +75,7 @@
 
                 <p>
 
-                    <strong>
-                        Primary Reason:
-                    </strong>
+                    <strong>Primary Reason:</strong>
 
                     {{ service.primary_reason }}
 
@@ -82,9 +83,7 @@
 
                 <p>
 
-                    <strong>
-                        Parts Used:
-                    </strong>
+                    <strong>Parts Used:</strong>
 
                     <br>
 
@@ -94,9 +93,7 @@
 
                 <p>
 
-                    <strong>
-                        Additional Services:
-                    </strong>
+                    <strong>Additional Services:</strong>
 
                     <br>
 
@@ -106,15 +103,34 @@
 
                 <p>
 
-                    <strong>
-                        Notes:
-                    </strong>
+                    <strong>Notes:</strong>
 
                     <br>
 
                     {{ service.notes }}
 
                 </p>
+
+                <p>
+
+                    <a href="/service-edit/{{ service.id }}"
+                       class="nav-link">
+
+                        ✏ Edit Service Record
+
+                    </a>
+
+                </p>
+
+                <p>
+
+                    <a href="/service-archive/{{ service.id }}"
+                    class="nav-link">
+
+                        📦 Archive Service Record
+
+                    </a> 
+            </p>
 
             </div>
 
@@ -123,7 +139,9 @@
     {% else %}
 
         <p>
+
             No services recorded.
+
         </p>
 
     {% endif %}
@@ -132,7 +150,8 @@
 
 <p>
 
-    <a href="/maintenance-edit/{{ visit.id }}" class="nav-link">
+    <a href="/maintenance-edit/{{ visit.id }}"
+       class="nav-link">
 
         ✏ Edit Maintenance Visit
 
@@ -145,6 +164,10 @@
 .nav-link {
     color: #60a5fa;
     text-decoration: none;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
 }
 
 .service-item {

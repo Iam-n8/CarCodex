@@ -152,6 +152,10 @@ class ServiceRecord(Base):
         String,
         default="COMPLETED"
     )
+    archived = Column(
+        Boolean,
+        default=False
+    )
 
     # ----------------------------------------------
     # Original Service Type

@@ -239,13 +239,13 @@ def maintenance_visit_detail(
     ).filter(
         MaintenanceVisit.id == visit_id
     ).first()
+
     services = db.query(
         ServiceRecord
     ).filter(
-        ServiceRecord.maintenance_visit_id == visit_id
+        ServiceRecord.maintenance_visit_id == visit_id,
+        ServiceRecord.archived == False
     ).all()
-
-
 
     db.close()
 
@@ -1044,3 +1044,152 @@ def service_add_submit(
         url=f"/maintenance-visit/{visit_id}",
         status_code=303
     )
+# --------------------------------------------------
+# Edit Service Record Page
+# --------------------------------------------------
+
+@app.get(
+    "/service-edit/{service_id}",
+    response_class=HTMLResponse
+)
+def service_edit_page(
+    request: Request,
+    service_id: int
+):
+
+    db = SessionLocal()
+
+    service = db.query(
+        ServiceRecord
+    ).filter(
+        ServiceRecord.id == service_id
+    ).first()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="service_edit.html",
+        context={
+            "request": request,
+            "service": service
+        }
+    )
+@app.post(
+    "/service-edit/{service_id}"
+)
+def service_edit_submit(
+
+    service_id: int,
+
+    primary_reason: str = Form(...),
+
+    parts_used: str = Form(""),
+
+    additional_services: str = Form(""),
+
+    notes: str = Form("")
+
+):
+
+    db = SessionLocal()
+
+    service = db.query(
+        ServiceRecord
+    ).filter(
+        ServiceRecord.id == service_id
+    ).first()
+
+    service.primary_reason = primary_reason
+    service.parts_used = parts_used
+    service.additional_services = additional_services
+    service.notes = notes
+
+    visit_id = service.maintenance_visit_id
+
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url=f"/maintenance-visit/{visit_id}",
+        status_code=303
+    )
+# --------------------------------------------------
+# Archive Service Record Page
+# --------------------------------------------------
+
+@app.get(
+    "/service-archive/{service_id}",
+    response_class=HTMLResponse
+)
+def service_archive_page(
+    request: Request,
+    service_id: int
+):
+
+    db = SessionLocal()
+
+    service = db.query(
+        ServiceRecord
+    ).filter(
+        ServiceRecord.id == service_id
+    ).first()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="service_archive.html",
+        context={
+            "request": request,
+            "service": service
+        }
+    )
+@app.post(
+    "/service-archive/{service_id}"
+)
+def service_archive_submit(
+    service_id: int
+):
+
+    db = SessionLocal()
+
+    service = db.query(
+        ServiceRecord
+    ).filter(
+        ServiceRecord.id == service_id
+    ).first()
+
+    visit_id = service.maintenance_visit_id
+
+    service.archived = True
+
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url=f"/maintenance-visit/{visit_id}",
+        status_code=303
+    )
+# --------------------------------------------------
+# Settings
+# --------------------------------------------------
+
+@app.get(
+    "/settings",
+    response_class=HTMLResponse
+)
+def settings_page(
+    request: Request
+):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="settings.html",
+        context={
+            "request": request
+        }
+    )
+

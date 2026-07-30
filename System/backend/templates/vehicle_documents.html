@@ -1,0 +1,144 @@
+<!-- vehicle_documents.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- =====================================
+     Vehicle Documents
+====================================== -->
+
+<h1>
+    {{ vehicle.nickname }} Documents
+</h1>
+
+<p>
+
+    <a href="/vehicle/{{ vehicle.id }}">
+
+        ← Back To Vehicle
+
+    </a>
+
+</p>
+
+<p>
+
+    <a href="/vehicle/{{ vehicle.id }}/document-add" class="nav-link">
+        📄 Add Document
+
+    </a>
+
+</p>
+
+<!-- =====================================
+     Documents
+====================================== -->
+
+<div class="card">
+
+    <h2>Documents</h2>
+
+    {% if documents %}
+
+        <div class="document-grid">
+
+            {% for document in documents %}
+
+                <div class="document-card">
+
+                    <h3>
+                        {{ document.title }}
+                    </h3>
+
+                    <p>
+
+                        <strong>Type:</strong>
+
+                        {{ document.document_type }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>File:</strong>
+
+                        {{ document.file_name }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>ID:</strong>
+
+                        {{ document.id }}
+
+                    </p>
+
+                    <p>
+
+                        <a href="/document/{{ document.id }}">
+
+                            👁 View
+
+                        </a>
+
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p>
+            No documents found.
+        </p>
+
+    {% endif %}
+
+</div>
+
+<!-- =====================================
+     Styles
+====================================== -->
+
+<style>
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+
+    .document-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .document-card {
+        background: #374151;
+        border-radius: 10px;
+        padding: 20px;
+        width: 250px;
+        transition: all 0.2s ease;
+    }
+
+    .document-card:hover {
+        background: #4b5563;
+        transform: translateY(-2px);
+    }
+
+    .document-card h3 {
+        margin-top: 0;
+    }
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+<!-- vehicle_maintenance.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>
+    {{ vehicle.nickname }}
+    Maintenance History
+</h1>
+
+<p>
+    /vehicle/{{ vehicle.id }}
+        ← Back To Vehicle
+    </a>
+</p>
+
+<p>
+    /vehicle/{{ vehicle.id }}/maintenance-add
+</p>
+
+{% for visit in visits %}
+
+<div class="card">
+
+    <p>
+        <strong>Date:</strong>
+        {{ visit.visit_date }}
+    </p>
+
+    <p>
+        <strong>Vendor:</strong>
+        {{ visit.vendor }}
+    </p>
+
+    <p>
+        <strong>Mileage:</strong>
+        {{ visit.mileage }}
+    </p>
+
+    <p>
+        /maintenance-visit/{{ visit.id }}">
+            View Visit
+        </a>
+    </p>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

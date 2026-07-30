@@ -38,6 +38,8 @@ from models import (
     ServiceType
 )
 
+from routers import vehicle_ui
+
 
 # --------------------------------------------------
 # Routers
@@ -68,7 +70,7 @@ app.include_router(
     maintenance_visit.router
 )
 app.include_router(vendor.router)
-
+app.include_router(vehicle_ui.router)
 
 
 Base.metadata.create_all(bind=engine)
@@ -134,6 +136,11 @@ def dashboard(
     visit_count = db.query(MaintenanceVisit).count()
 
     document_count = db.query(Document).count()
+    documents = db.query(
+        Document
+    ).filter(
+        Document.vehicle_id == vehicle_id
+    ).all()
 
     db.close()
 
@@ -142,87 +149,15 @@ def dashboard(
         name="dashboard.html",
         context={
             "request": request,
-            "vehicle_count": vehicle_count,
-            "vendor_count": vendor_count,
-            "visit_count": visit_count,
-            "document_count": document_count
-        }
-    )
-@app.get(
-    "/vehicles-ui",
-    response_class=HTMLResponse
-)
-def vehicles_ui(
-    request: Request
-):
-
-    db = SessionLocal()
-
-    vehicles = db.query(
-        Vehicle
-    ).filter(
-        Vehicle.archived == False
-    ).all()
-
-    db.close()
-
-    return templates.TemplateResponse(
-        request=request,
-        name="vehicles.html",
-        context={
-            "request": request,
-            "vehicles": vehicles
-        }
-    )
-@app.get(
-    "/vehicle/{vehicle_id}",
-    response_class=HTMLResponse
-)
-def vehicle_detail(
-    request: Request,
-    vehicle_id: int
-):
-
-    db = SessionLocal()
-
-    vehicle = db.query(
-        Vehicle
-    ).filter(
-        Vehicle.id == vehicle_id
-    ).first()
-
-    visits = db.query(
-        MaintenanceVisit
-    ).filter(
-        MaintenanceVisit.vehicle_id == vehicle_id
-    ).all()
-
-    schedules = db.query(
-        MaintenanceSchedule
-    ).filter(
-        MaintenanceSchedule.vehicle_id == vehicle_id
-    ).all()
-
-    db.close()
-
-    return templates.TemplateResponse(
-        request=request,
-        name="vehicle_detail.html",
-
-        context={
-            "request": request,
             "vehicle": vehicle,
             "visits": visits,
-
-            "schedules": schedules,
-
+           "schedules": schedules,
             "visit_count": len(visits),
-
-            "document_count": 0,
-
+            "document_count": len(documents),
             "vendor_count": 0
-        }       
+        }
     )
+
 @app.get(
     "/maintenance-visit/{visit_id}",
     response_class=HTMLResponse
@@ -258,82 +193,9 @@ def maintenance_visit_detail(
             "services": services
         }
     )
-# --------------------------------------------------
-# Add Vehicle Page
-# --------------------------------------------------
-
-@app.get(
-    "/vehicle-add",
-    response_class=HTMLResponse
-)
-def vehicle_add_page(
-    request: Request
-):
-
-    return templates.TemplateResponse(
-        request=request,
-        name="vehicle_add.html",
-        context={
-            "request": request
-        }
-    )
 
 
-# --------------------------------------------------
-# Add Vehicle Submit
-# --------------------------------------------------
 
-@app.post(
-    "/vehicle-add"
-)
-def vehicle_add_submit(
-
-    nickname: str = Form(...),
-
-    year: int = Form(...),
-
-    make: str = Form(...),
-
-    model: str = Form(...),
-
-    trim: str = Form(...),
-
-    vin: str = Form(...),
-
-    current_mileage: int = Form(...)
-
-):
-
-    db = SessionLocal()
-
-    vehicle = Vehicle(
-
-        nickname=nickname,
-
-        year=year,
-
-        make=make,
-
-        model=model,
-
-        trim=trim,
-
-        vin=vin,
-
-        current_mileage=current_mileage
-
-    )
-
-    db.add(vehicle)
-
-    db.commit()
-
-    db.close()
-
-    return RedirectResponse(
-        url="/vehicles-ui",
-        status_code=303
-    )
 # --------------------------------------------------
 # Edit Vehicle Page
 # --------------------------------------------------
@@ -788,6 +650,101 @@ def maintenance_ui(
     "/maintenance-add",
     response_class=HTMLResponse
 )
+
+# --------------------------------------------------
+# Vehicle Maintenance Add Page
+# --------------------------------------------------
+
+@app.get(
+    "/vehicle/{vehicle_id}/maintenance-add",
+    response_class=HTMLResponse
+)
+def vehicle_maintenance_add_page(
+    request: Request,
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    vendors = db.query(
+        Vendor
+    ).all()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="maintenance_add_vehicle.html",
+        context={
+            "request": request,
+            "vehicle": vehicle,
+            "vehicle_id": vehicle.id,
+            "vendors": vendors
+        }
+    )
+# --------------------------------------------------
+# Vehicle Maintenance Add Submit
+# --------------------------------------------------
+
+@app.post(
+    "/vehicle/{vehicle_id}/maintenance-add"
+)
+def vehicle_maintenance_add_submit(
+
+    vehicle_id: int,
+
+    vendor_id: int = Form(...),
+
+    visit_date: str = Form(...),
+
+    mileage: int = Form(...),
+
+    invoice_number: str = Form(""),
+
+    total_cost: float = Form(0)
+
+):
+
+    db = SessionLocal()
+
+    vendor = db.query(
+        Vendor
+    ).filter(
+        Vendor.id == vendor_id
+    ).first()
+
+    visit = MaintenanceVisit(
+
+        vehicle_id=vehicle_id,
+
+        vendor=vendor.name,
+
+        visit_date=visit_date,
+
+        mileage=mileage,
+
+        invoice_number=invoice_number,
+
+        total_cost=total_cost
+
+    )
+
+    db.add(visit)
+
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url=f"/vehicle/{vehicle_id}",
+        status_code=303
+    )
 def maintenance_add_page(
     request: Request
 ):
@@ -1190,6 +1147,82 @@ def settings_page(
         name="settings.html",
         context={
             "request": request
+        }
+    )
+# --------------------------------------------------
+# Vehicle Maintenance History
+# --------------------------------------------------
+
+@app.get(
+    "/vehicle/{vehicle_id}/maintenance",
+    response_class=HTMLResponse
+)
+def vehicle_maintenance_history(
+    request: Request,
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    visits = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.vehicle_id == vehicle_id
+    ).all()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicle_maintenance.html",
+        context={
+            "request": request,
+            "vehicle": vehicle,
+            "visits": visits
+        }
+    )
+# --------------------------------------------------
+# Vehicle Documents
+# --------------------------------------------------
+
+@app.get(
+    "/vehicle/{vehicle_id}/documents",
+    response_class=HTMLResponse
+)
+def vehicle_documents(
+    request: Request,
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    documents = db.query(
+        Document
+    ).filter(
+        Document.vehicle_id == vehicle_id
+    ).all()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="vehicle_documents.html",
+        context={
+            "request": request,
+            "vehicle": vehicle,
+            "documents": documents
         }
     )
 

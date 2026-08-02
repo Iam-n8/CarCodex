@@ -3,11 +3,6 @@
 import os
 import re
 
-
-
-
-
-
 # --------------------------------------------------
 # Safe File/Folder Naming
 # --------------------------------------------------
@@ -31,25 +26,22 @@ def safe_name(value: str) -> str:
         value.strip()
     )
 
-
 # --------------------------------------------------
 # Vehicle Folder
 # --------------------------------------------------
 
 def get_vehicle_folder(
     vehicle_id: int,
-    nickname: str
+    year: int,
+    make: str,
+    model: str
 ) -> str:
-    """
-    Example:
-
-    CarCodex_Data/
-        Vehicles/
-            Corvette_Blue_V17/
-    """
 
     vehicle_folder = (
-        f"{safe_name(nickname)}_V{vehicle_id}"
+        f"{year}_"
+        f"{safe_name(make)}_"
+        f"{safe_name(model)}_"
+        f"V{vehicle_id}"
     )
 
     return os.path.join(
@@ -58,19 +50,19 @@ def get_vehicle_folder(
         vehicle_folder
     )
 
-
 # --------------------------------------------------
 # Create Vehicle Structure
 # --------------------------------------------------
 
 def create_vehicle_folders(
-    vehicle_id: int,
-    nickname: str
+    vehicle
 ) -> str:
 
     base_folder = get_vehicle_folder(
-        vehicle_id,
-        nickname
+        vehicle.id,
+        vehicle.year,
+        vehicle.make,
+        vehicle.model
     )
 
     folders = [
@@ -112,9 +104,11 @@ def create_vehicle_folders(
             ),
             exist_ok=True
         )
-
+    
+    create_vehicle_info_file(
+        vehicle
+    )
     return base_folder
-
 
 # --------------------------------------------------
 # Vehicle Info File
@@ -126,7 +120,9 @@ def create_vehicle_info_file(
 
     vehicle_folder = get_vehicle_folder(
         vehicle.id,
-        vehicle.nickname
+        vehicle.year,
+        vehicle.make,
+        vehicle.model
     )
 
     info_file = os.path.join(
@@ -160,7 +156,6 @@ Current Mileage: {vehicle.current_mileage}
 
     return info_file
 
-
 # --------------------------------------------------
 # Document Filename
 # --------------------------------------------------
@@ -183,8 +178,117 @@ def build_document_filename(
         f"-D{document_id}"
         f".{extension.lower()}"
     )
+
+# --------------------------------------------------
+# Document Folder
+# --------------------------------------------------
+
 def get_document_folder(
     vehicle,
     document_type: str
+) -> str:
+    
+    ''' Returns the folder path for a specific document type within a vehicle's directory. '''
+
+    vehicle_folder = get_vehicle_folder(
+        vehicle.id,
+        vehicle.year,
+        vehicle.make,
+        vehicle.model
+    )
+
+    document_folder = os.path.join(
+        vehicle_folder,
+        "Documents",
+        safe_name(document_type)
+    )
+
+    os.makedirs(
+        document_folder,
+        exist_ok=True
+    )
+    create_vehicle_info_file(
+        vehicle
+    )
+    return document_folder
+
+# --------------------------------------------------
+# Full Document Path
+# --------------------------------------------------
+
+def build_document_path(
+    vehicle,
+    document_type: str,
+    document_date: str,
+    document_id: int,
+    extension: str
+) -> str:
+    """
+    Example:
+
+    CarCodex_Data/
+        Vehicles/
+            2008_Chevrolet_Corvette_V17/
+                Documents/
+                    Insurance/
+                        Insurance-2026-08-01-D443.pdf
+    """
+
+    folder = get_document_folder(
+        vehicle,
+        document_type
+    )
+
+    filename = build_document_filename(
+        document_type,
+        document_date,
+        document_id,
+        extension
+    )
+
+    return os.path.join(
+        folder,
+        filename
+    )
+
+# --------------------------------------------------
+# Save Document File
+# --------------------------------------------------
+
+def save_document_file(
+    vehicle,
+    document_type: str,
+    document_date: str,
+    document_id: int,
+    uploaded_file
 ):
-    pass
+    """
+    Save an uploaded file using the
+    CarCodex storage convention.
+    """
+
+    extension = uploaded_file.filename.split(
+        "."
+    )[-1]
+
+    destination = build_document_path(
+        vehicle,
+        document_type,
+        document_date,
+        document_id,
+        extension
+    )
+
+    with open(
+        destination,
+        "wb"
+    ) as buffer:
+
+        buffer.write(
+            uploaded_file.file.read()
+        )
+
+    return destination
+
+
+

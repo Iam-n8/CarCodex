@@ -5,7 +5,7 @@
 
 <head>
 
-    <title>{{ page_title }}</title>
+    <title>{{ page_title or "CarCodex" }}</title>
 
     <style>
 
@@ -32,7 +32,7 @@
         }
 
         /* =====================================
-           Main Layout
+           Layout
         ====================================== */
 
         .container {
@@ -41,7 +41,7 @@
         }
 
         /* =====================================
-           Sidebar Navigation
+           Sidebar
         ====================================== */
 
         .sidebar {
@@ -54,15 +54,27 @@
             display: block;
             color: white;
             text-decoration: none;
-            padding: 12px 0;
+            padding: 10px 0;
         }
 
         .sidebar a:hover {
             color: #60a5fa;
         }
 
+        .nav-group {
+            margin-left: 20px;
+        }
+
+        .nav-sublink {
+            color: #d1d5db !important;
+        }
+
+        .nav-sublink:hover {
+            color: #60a5fa !important;
+        }
+
         /* =====================================
-           Main Content Area
+           Content
         ====================================== */
 
         .content {
@@ -71,13 +83,14 @@
         }
 
         /* =====================================
-           Generic Card Style
+           Generic Card
         ====================================== */
 
         .card {
             background: #1f2937;
             border-radius: 10px;
             padding: 20px;
+            margin-bottom: 20px;
         }
 
     </style>
@@ -92,7 +105,7 @@
         CarCodex
     </div>
 
-    <!-- Main Layout -->
+    <!-- Layout -->
 
     <div class="container">
 
@@ -104,34 +117,25 @@
                 🏠 Dashboard
             </a>
 
+            <div class="nav-group">
+
             <a href="/vehicles-ui">
-                🚗 Vehicles
-            </a>
-
-            <a href="/maintenance-ui">
-                🔧 Maintenance
-            </a>
-            <a href="#">
-                📄 Documents
-            </a>
-<!-- 
-            <a href="/vendors-ui">
-                🏢 Vendors
-            </a>
-
-
-            <a href="/vehicles-archived">
-                📦 Archived Vehicles
-            </a>
+                    🚗 Vehicles
+                </a>
+<!--
+                <a href="/vendors-ui" class="nav-sublink">
+                    🏢 Vendors
+                </a>
 -->
+            </div>
+
             <a href="/settings">
-
-                ⚙ Settings
-
+                ⚙️ Settings
             </a>
+
         </div>
 
-        <!-- Page Specific Content -->
+        <!-- Page Content -->
 
         <div class="content">
 

@@ -27,7 +27,6 @@
 <!-- =====================================
      Vehicle Stats Dashboard
 ====================================== -->
-
 <div class="stats-grid">
 
     <div class="stat-card">
@@ -38,33 +37,27 @@
             {{ vehicle.current_mileage }}
         </div>
 
-    <a href="/vehicle/{{ vehicle.id }}/maintenance history" 
-        class="nav-link">
-
-    <div class="stat-card">
-
-        <h3>Visits</h3>
-
-        <div class="stat-value">
-            {{ visit_count }}
-        </div>
-
     </div>
 
-</a>
+     <a href="/vehicle/{{ vehicle.id }}/maintenance"
+       class="card-link">
 
-    </div>
-<!--    
-    <div class="stat-card">
+        <div class="stat-card">
 
-        <h3>Documents</h3>
+            <h3>Visits</h3>
 
-        <div class="stat-value">
-            {{ document_count }}
+            <div class="stat-value">
+                {{ visit_count }}
+            </div>
+
         </div>
--->
+
+    </a>
+
     <a href="/vehicle/{{ vehicle.id }}/documents"
-    div class="stat-card">
+       class="card-link">
+
+        <div class="stat-card">
 
             <h3>Documents</h3>
 
@@ -74,9 +67,7 @@
 
         </div>
 
-</a>
-
-    </div>
+    </a>
 
     <div class="stat-card">
 
@@ -89,6 +80,7 @@
     </div>
 
 </div>
+
 
 <!-- =====================================
      Navigation

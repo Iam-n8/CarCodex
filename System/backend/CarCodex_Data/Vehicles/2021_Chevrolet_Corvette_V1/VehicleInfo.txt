@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 1
+
+Nickname: Corvette Blue
+
+Year: 2021
+Make: Chevrolet
+Model: Corvette
+Trim: Z51
+
+VIN: 1G1YC3D45M5100699
+
+Current Mileage: 7501

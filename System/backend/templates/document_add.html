@@ -1,0 +1,127 @@
+<!-- templates/document_add.html -->
+ {% extends "base.html" %}
+
+{% block content %}
+
+<h1>
+    Add Document
+</h1>
+
+<p>
+
+    <a href="/vehicle/{{ vehicle.id }}/documents">
+
+        ← Back To Documents
+
+    </a>
+
+</p>
+
+<form action="/documents/upload" method="post" enctype="multipart/form-data">
+
+    <input
+        type="hidden"
+        name="vehicle_id"
+        value="{{ vehicle.id }}"
+    >
+
+    <p>
+
+        <label>
+            Document Type
+        </label>
+
+        <br>
+
+        <select name="category">
+
+            <option>
+                Registration
+            </option>
+
+            <option>
+                Insurance
+            </option>
+
+            <option>
+                Warranty
+            </option>
+
+            <option>
+                Purchase
+            </option>
+
+            <option>
+                Manual
+            </option>
+
+            <option>
+                Inspection
+            </option>
+
+            <option>
+                Receipts
+            </option>
+
+            <option>
+                Other
+            </option>
+
+        </select>
+
+    </p>
+
+    <p>
+
+        <label>
+            Description
+        </label>
+
+        <br>
+
+        <input
+            type="text"
+            name="description"
+        >
+
+    </p>
+
+    <p>
+
+        <label>
+            Upload Date
+        </label>
+
+        <br>
+
+        <input
+            type="date"
+            name="upload_date"
+        >
+
+    </p>
+
+    <p>
+
+        <label>
+            File
+        </label>
+
+        <br>
+
+        <input
+            type="file"
+            name="file"
+        >
+
+    </p>
+
+    <button type="submit">
+
+        Upload Document
+
+    </button>
+
+</form>
+
+{% endblock %}

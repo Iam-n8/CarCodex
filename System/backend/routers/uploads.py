@@ -1,3 +1,5 @@
+# uploads.py
+
 from fastapi import APIRouter
 from fastapi import UploadFile
 from fastapi import File
@@ -8,6 +10,11 @@ from models import Vehicle, Document
 
 import os
 import shutil
+
+from helpers.storage import (
+    save_document_file
+)
+
 
 router = APIRouter()
 
@@ -54,53 +61,9 @@ def upload(
                 "error": f"File type '{extension}' not allowed"
             }
 
-        vehicle_folder = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "..",
-                "Documents",
-                f"VEH_{vehicle_id:06d}",
-                category
-            )
-        )
-
-        os.makedirs(
-            vehicle_folder,
-            exist_ok=True
-        )
-
-        extension = "." + extension
-
-        new_filename = (
-            f"{vehicle.nickname}_"
-            f"{category}_"
-            f"{description}_"
-            f"{upload_date}"
-            f"{extension}"
-        )
-
-        new_filename = new_filename.replace(
-            " ",
-            "_"
-        )
-
-        destination = os.path.join(
-            vehicle_folder,
-            new_filename
-        )
-
-        with open(destination, "wb") as buffer:
-            shutil.copyfileobj(
-                file.file,
-                buffer
-            )
-
         new_document = Document(
             vehicle_id=vehicle_id,
             document_type=category,
-            file_name=new_filename,
-            file_path=destination,
             upload_date=upload_date,
             notes=description
         )
@@ -109,12 +72,28 @@ def upload(
         db.commit()
         db.refresh(new_document)
 
+        destination = save_document_file(
+            vehicle,
+            category,
+            upload_date,
+            new_document.id,
+            file
+        )
+
+        new_document.file_path = destination
+
+        new_document.file_name = os.path.basename(
+            destination
+        )
+
+        db.commit()
+
         return {
             "message": "Document uploaded successfully",
             "document_id": new_document.id,
             "vehicle_id": vehicle_id,
             "category": category,
-            "filename": new_filename
+            "filename": new_document.file_name
         }
 
     finally:

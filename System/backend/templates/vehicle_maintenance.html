@@ -9,13 +9,15 @@
 </h1>
 
 <p>
-    /vehicle/{{ vehicle.id }}
+    <a href="/vehicle/{{ vehicle.id }}">
         ← Back To Vehicle
     </a>
 </p>
 
 <p>
-    /vehicle/{{ vehicle.id }}/maintenance-add
+    <a href="/vehicle/{{ vehicle.id }}/maintenance-add">
+        + Add Maintenance Visit 
+    </a>
 </p>
 
 {% for visit in visits %}
@@ -38,7 +40,7 @@
     </p>
 
     <p>
-        /maintenance-visit/{{ visit.id }}">
+     <a href="/maintenance-visit/{{ visit.id }}">
             View Visit
         </a>
     </p>

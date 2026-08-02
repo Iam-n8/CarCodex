@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 6
+
+Nickname: Testing
+
+Year: 2000
+Make: test
+Model: test
+Trim: test
+
+VIN: test123
+
+Current Mileage: 200

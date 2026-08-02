@@ -1,9 +1,13 @@
 # Vehicle UI Routes
+import os
+
 
 from fastapi import (
     APIRouter,
     Request,
-    Form
+    Form,
+    UploadFile,
+    File
 )
 
 from fastapi.responses import (
@@ -22,13 +26,16 @@ from models import (
     MaintenanceVisit,
     MaintenanceSchedule,
     Document,
-    Vendor
+    Vendor,
+    ServiceType,
+    ServiceRecord   
 )
 
 from helpers.storage import (
     create_vehicle_folders,
-    create_vehicle_info_file
-)
+    create_vehicle_info_file,
+    get_maintenance_folder
+    )
 
 
 router = APIRouter()
@@ -539,6 +546,12 @@ def vehicle_maintenance_add_page(
         Vendor
     ).all()
 
+    service_types = db.query(
+        ServiceType
+    ).filter(
+        ServiceType.archived == False
+    ).all()
+
     db.close()
 
     return templates.TemplateResponse(
@@ -548,7 +561,8 @@ def vehicle_maintenance_add_page(
             "request": request,
             "vehicle": vehicle,
             "vehicle_id": vehicle.id,
-            "vendors": vendors
+            "vendors": vendors,
+            "service_types": service_types
         }
     )
 # --------------------------------------------------
@@ -570,7 +584,13 @@ def vehicle_maintenance_add_submit(
 
     invoice_number: str = Form(""),
 
-    total_cost: float = Form(0)
+    total_cost: float = Form(0),
+
+    primary_reason: str = Form(...),
+
+    other_service: str = Form(""),
+
+    document_file: UploadFile | None = File(None)
 
 ):
 
@@ -602,12 +622,74 @@ def vehicle_maintenance_add_submit(
 
     db.commit()
 
+    db.refresh(visit)
+
+    if primary_reason == "Other":
+
+        primary_reason = other_service
+    service = ServiceRecord(
+
+        vehicle_id=vehicle_id,
+
+        maintenance_visit_id=visit.id,
+
+        primary_reason=primary_reason,
+
+        service_status="COMPLETED"
+    )
+
+    db.add(service)
+
+    db.commit()
+    print("MAINTENANCE VISIT CREATED")
+    print("document_file =", document_file)
+    print("filename =", document_file.filename if document_file else None)
+
+    if document_file and document_file.filename:
+
+        print("UPLOAD BLOCK ENTERED")
+
+        vehicle = db.query(
+            Vehicle
+        ).filter(
+            Vehicle.id == vehicle_id
+        ).first()
+
+        print("VEHICLE FOUND")
+
+        maintenance_folder = get_maintenance_folder(
+            vehicle,
+            visit,
+            primary_reason
+        )
+
+        print("FOLDER =", maintenance_folder)
+
+        original_extension = (
+            document_file.filename
+            .split(".")[-1]
+        )
+
+        destination = os.path.join(
+            maintenance_folder,
+            f"Invoice.{original_extension}"
+        )
+
+        with open(
+            destination,
+            "wb"
+        ) as buffer:
+
+            buffer.write(
+                document_file.file.read()
+            )
     db.close()
 
     return RedirectResponse(
         url=f"/vehicle/{vehicle_id}",
         status_code=303
     )
+
 # --------------------------------------------------
 # Vehicle Maintenance History
 # --------------------------------------------------

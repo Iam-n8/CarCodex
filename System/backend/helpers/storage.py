@@ -137,7 +137,7 @@ def create_vehicle_info_file(
     ) as f:
 
         f.write(
-f"""CarCodex Vehicle Information
+    f"""CarCodex Vehicle Information
 
 Vehicle ID: {vehicle.id}
 
@@ -289,6 +289,42 @@ def save_document_file(
         )
 
     return destination
+
+# --------------------------------------------------
+# Maintenance Folder
+# --------------------------------------------------
+
+def get_maintenance_folder(
+    vehicle,
+    visit,
+    primary_reason: str
+) -> str:
+
+    vehicle_folder = get_vehicle_folder(
+        vehicle.id,
+        vehicle.year,
+        vehicle.make,
+        vehicle.model
+    )
+
+    folder_name = (
+        f"{visit.visit_date}-"
+        f"{safe_name(primary_reason)}-"
+        f"M{visit.id}"
+    )
+
+    maintenance_folder = os.path.join(
+        vehicle_folder,
+        "Maintenance",
+        folder_name
+    )
+
+    os.makedirs(
+        maintenance_folder,
+        exist_ok=True
+    )
+
+    return maintenance_folder
 
 
 

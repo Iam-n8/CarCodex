@@ -124,7 +124,10 @@ def create_vehicle_info_file(
         vehicle.make,
         vehicle.model
     )
-
+    os.makedirs(
+        vehicle_folder,
+        exist_ok=True
+    )
     info_file = os.path.join(
         vehicle_folder,
         "VehicleInfo.txt"

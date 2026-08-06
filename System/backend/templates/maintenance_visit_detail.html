@@ -1,3 +1,5 @@
+<!-- Maintenance Visit Detail   -->
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -54,19 +56,7 @@
 <div class="card">
 
     <h2>Services Performed</h2>
-
-    <p>
-
-        <a href="/service-add/{{ visit.id }}"
-           class="nav-link">
-
-            ➕ Add Service Record
-
-        </a>
-    </p>
-    
-
-
+ 
     {% if services %}
 
         {% for service in services %}
@@ -146,7 +136,50 @@
 
     {% endif %}
 
+<div class="card">
+
+    <h2>
+        Attached Documents
+    </h2>
+
+    {% if documents %}
+
+        {% for document in documents %}
+
+            <p>
+
+                📄
+
+                <a href="/documents/{{ document.id }}/download" class="nav-link">
+
+                    {{ document.file_name }}
+
+                </a>
+
+            </p>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            No documents attached.
+        </p>
+
+    {% endif %}
+
+    <p>
+
+        <a href="/maintenance/{{ visit.id }}/document-add" class="nav-link">
+
+            ➕ Add Document
+
+        </a>
+
+    </p>
+
 </div>
+
 
 <p>
 

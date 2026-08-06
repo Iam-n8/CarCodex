@@ -1,0 +1,129 @@
+<!-- maintenance_document_add.html -->
+
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>
+    Add Document
+</h1>
+
+<p>
+
+    Maintenance Visit:
+    <strong>
+
+        {{ visit.visit_date }}
+
+    </strong>
+
+</p>
+
+<p>
+
+    <a href="/maintenance/{{ visit.id }}"
+       class="nav-link">
+
+        ← Back To Maintenance Visit
+
+    </a>
+
+</p>
+
+<form
+    method="post"
+    action="/maintenance/{{ visit.id }}/document-add"
+    enctype="multipart/form-data"
+>
+
+    <p>
+
+         <select name="document_type">
+
+            <option value="Receipt">
+                Receipt
+            </option>
+
+            <option value="Invoice">
+                Invoice
+            </option>
+
+            <option value="Inspection">
+                Inspection
+            </option>
+
+            <option value="Warranty">
+                Warranty
+            </option>
+
+            <option value="Photo">
+                Photo
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+    </p>
+
+    <p>
+
+        <label>
+            Notes
+        </label>
+
+        <br>
+
+        <textarea
+            name="notes"
+            rows="6"
+        ></textarea>
+
+    </p>
+
+    <p>
+
+        <label>
+            File
+        </label>
+
+        <br>
+
+        <input
+            type="file"
+            name="document_file"
+            required
+        >
+
+    </p>
+
+    <button type="submit">
+
+        Upload Document
+
+    </button>
+
+</form>
+
+<style>
+
+.nav-link {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+textarea {
+    width: 100%;
+    max-width: 700px;
+}
+
+</style>
+
+{% endblock %}

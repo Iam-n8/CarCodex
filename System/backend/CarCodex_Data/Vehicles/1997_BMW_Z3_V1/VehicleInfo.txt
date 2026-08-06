@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 1
+
+Nickname: The Little Car
+
+Year: 1997
+Make: BMW
+Model: Z3
+Trim: 1.9L 
+
+VIN: 4USH7326VLE03589
+
+Current Mileage: 60000

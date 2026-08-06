@@ -29,6 +29,10 @@ from database import SessionLocal
 
 router = APIRouter()
 
+templates = Jinja2Templates(
+    directory="templates"
+)
+
 # --------------------------------------------------
 # Maintenance List
 # --------------------------------------------------

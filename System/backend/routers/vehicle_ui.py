@@ -590,7 +590,14 @@ def vehicle_maintenance_add_submit(
 
     other_service: str = Form(""),
 
+    additional_services: list[str] = Form([]),
+
+    custom_services: str = Form(""),
+
+    service_notes: str = Form(""),
+
     document_file: UploadFile | None = File(None)
+
 
 ):
 
@@ -627,6 +634,14 @@ def vehicle_maintenance_add_submit(
     if primary_reason == "Other":
 
         primary_reason = other_service
+    all_additional_services = additional_services.copy()
+
+    if custom_services.strip():
+
+        all_additional_services.append(
+            custom_services.strip()
+        )
+
     service = ServiceRecord(
 
         vehicle_id=vehicle_id,
@@ -634,6 +649,12 @@ def vehicle_maintenance_add_submit(
         maintenance_visit_id=visit.id,
 
         primary_reason=primary_reason,
+
+        additional_services="\n".join(
+            all_additional_services
+        ),
+
+        notes=service_notes,
 
         service_status="COMPLETED"
     )
@@ -683,6 +704,33 @@ def vehicle_maintenance_add_submit(
             buffer.write(
                 document_file.file.read()
             )
+
+
+        document = Document(
+
+            vehicle_id=vehicle_id,
+
+            maintenance_visit_id=visit.id,
+
+            document_type="Receipt",
+
+            file_name=os.path.basename(
+                destination
+            ),
+
+            file_path=destination,
+
+            upload_date=visit_date,
+
+            notes=primary_reason
+        )
+
+        db.add(document)
+
+        db.commit()
+
+
+            
     db.close()
 
     return RedirectResponse(
@@ -796,4 +844,183 @@ def document_add_page(
             "request": request,
             "vehicle": vehicle
         }
+    )
+# --------------------------------------------------
+# Maintenance Document Add Page
+# --------------------------------------------------
+
+@router.get(
+    "/maintenance/{visit_id}/document-add",
+    response_class=HTMLResponse
+)
+def maintenance_document_add_page(
+    request: Request,
+    visit_id: int
+):
+
+    db = SessionLocal()
+
+    visit = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.id == visit_id
+    ).first()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == visit.vehicle_id
+    ).first()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="maintenance_document_add.html",
+        context={
+            "request": request,
+            "visit": visit,
+            "vehicle": vehicle
+        }
+    )
+# --------------------------------------------------
+# Maintenance Document Add Page
+# --------------------------------------------------
+
+@router.get(
+    "/maintenance/{visit_id}/document-add",
+    response_class=HTMLResponse
+)
+def maintenance_document_add_page(
+    request: Request,
+    visit_id: int
+):
+
+    db = SessionLocal()
+
+    visit = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.id == visit_id
+    ).first()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == visit.vehicle_id
+    ).first()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="maintenance_document_add.html",
+        context={
+            "request": request,
+            "visit": visit,
+            "vehicle": vehicle
+        }
+    )
+# --------------------------------------------------
+# Maintenance Document Add Submit
+# --------------------------------------------------
+
+@router.post(
+    "/maintenance/{visit_id}/document-add"
+)
+def maintenance_document_add_submit(
+
+    visit_id: int,
+
+    document_type: str = Form(...),
+
+    notes: str = Form(""),
+
+    document_file: UploadFile = File(...)
+
+):
+
+    db = SessionLocal()
+
+    visit = db.query(
+        MaintenanceVisit
+    ).filter(
+        MaintenanceVisit.id == visit_id
+    ).first()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == visit.vehicle_id
+    ).first()
+
+    service = db.query(
+        ServiceRecord
+    ).filter(
+        ServiceRecord.maintenance_visit_id == visit_id
+    ).first()
+
+    primary_reason = "Other"
+
+    if service:
+        primary_reason = (
+            service.primary_reason
+        )
+
+    maintenance_folder = get_maintenance_folder(
+        vehicle,
+        visit,
+        primary_reason
+    )
+
+    extension = (
+        document_file.filename
+        .split(".")[-1]
+    )
+
+    filename = (
+        f"{document_type}."
+        f"{extension}"
+    )
+
+    destination = os.path.join(
+        maintenance_folder,
+        filename
+    )
+
+    with open(
+        destination,
+        "wb"
+    ) as buffer:
+
+        buffer.write(
+            document_file.file.read()
+        )
+
+    document = Document(
+
+        vehicle_id=vehicle.id,
+
+        maintenance_visit_id=visit.id,
+
+        document_type=document_type,
+
+        file_name=filename,
+
+        file_path=destination,
+
+        upload_date=visit.visit_date,
+
+        notes=notes
+    )
+
+    db.add(document)
+
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url=f"/maintenance-visit/{visit_id}",
+        status_code=303
     )

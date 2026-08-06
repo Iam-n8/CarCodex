@@ -1,17 +1,75 @@
+# --------------------------------------------------
 # service_ui.py
+#
+# Service Record User Interface Routes
+#
+# Purpose:
+#
+# - Add Service Records
+# - Edit Service Records
+# - Archive Service Records
+#
+# NOTE:
+#
+# Service Records are now automatically
+# created during Maintenance Visit creation.
+#
+# These routes are still needed for:
+#
+# - Editing Service Records
+# - Archiving Service Records
+#
+# Future consideration:
+#
+# Remove manual Service Record creation
+# if it is no longer required.
+#
+# --------------------------------------------------
 
 from fastapi import (
-    APIRouter,  
+    APIRouter,
     Request,
     Form
-)   
+)
 
+from fastapi.responses import (
+    HTMLResponse,
+    RedirectResponse
+)
+
+from fastapi.templating import (
+    Jinja2Templates
+)
+
+from database import (
+    SessionLocal
+)
+
+from models import (
+    ServiceRecord,
+    ServiceType,
+    MaintenanceVisit
+)
+
+# --------------------------------------------------
+# Router
+# --------------------------------------------------
+
+router = APIRouter()
+
+# --------------------------------------------------
+# Templates
+# --------------------------------------------------
+
+templates = Jinja2Templates(
+    directory="templates"
+)
 
 # --------------------------------------------------
 # Add Service Record Page
 # --------------------------------------------------
 
-@app.get(
+@router.get(
     "/service-add/{visit_id}",
     response_class=HTMLResponse
 )
@@ -39,7 +97,13 @@ def service_add_page(
             "service_types": service_types
         }
     )
-@app.post(
+
+
+# --------------------------------------------------
+# Add Service Record Submit
+# --------------------------------------------------
+
+@router.post(
     "/service-add/{visit_id}"
 )
 def service_add_submit(
@@ -84,7 +148,7 @@ def service_add_submit(
                 )
             )
 
-            db.commit()        
+            db.commit()
 
     service = ServiceRecord(
 
@@ -113,11 +177,13 @@ def service_add_submit(
         url=f"/maintenance-visit/{visit_id}",
         status_code=303
     )
+
+
 # --------------------------------------------------
 # Edit Service Record Page
 # --------------------------------------------------
 
-@app.get(
+@router.get(
     "/service-edit/{service_id}",
     response_class=HTMLResponse
 )
@@ -144,7 +210,13 @@ def service_edit_page(
             "service": service
         }
     )
-@app.post(
+
+
+# --------------------------------------------------
+# Edit Service Record Submit
+# --------------------------------------------------
+
+@router.post(
     "/service-edit/{service_id}"
 )
 def service_edit_submit(
@@ -184,11 +256,13 @@ def service_edit_submit(
         url=f"/maintenance-visit/{visit_id}",
         status_code=303
     )
+
+
 # --------------------------------------------------
 # Archive Service Record Page
 # --------------------------------------------------
 
-@app.get(
+@router.get(
     "/service-archive/{service_id}",
     response_class=HTMLResponse
 )
@@ -215,7 +289,13 @@ def service_archive_page(
             "service": service
         }
     )
-@app.post(
+
+
+# --------------------------------------------------
+# Archive Service Record Submit
+# --------------------------------------------------
+
+@router.post(
     "/service-archive/{service_id}"
 )
 def service_archive_submit(

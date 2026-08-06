@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 2
+
+Nickname: Testing
+
+Year: 1840
+Make: TT
+Model: Can do it
+Trim: nonw
+
+VIN: 12354
+
+Current Mileage: 12345

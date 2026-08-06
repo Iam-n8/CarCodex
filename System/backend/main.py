@@ -40,6 +40,8 @@ from models import (
 from routers import vehicle_ui
 from routers import maintenance_ui
 from routers import vendor_ui
+from routers import service_ui
+
 
 
 from helpers.storage import (
@@ -81,6 +83,10 @@ app.include_router(maintenance_ui.router)
 app.include_router(
     vendor_ui.router
 )
+app.include_router(
+    service_ui.router
+)
+
 
 
 
@@ -192,6 +198,13 @@ def maintenance_visit_detail(
         ServiceRecord.archived == False
     ).all()
 
+    documents = db.query(
+        Document
+    ).filter(
+        Document.maintenance_visit_id == visit_id,
+        Document.archived == False
+    ).all()
+
     db.close()
 
     return templates.TemplateResponse(
@@ -200,7 +213,8 @@ def maintenance_visit_detail(
         context={
             "request": request,
             "visit": visit,
-            "services": services
+            "services": services,
+            "documents": documents
         }
     )
 

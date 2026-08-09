@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 4
+
+Nickname: Testing 21 
+
+Year: 2011
+Make: TOYOTA
+Model: Tacoma
+Trim: Trim Unknown
+
+VIN: 5TFTX4GN2BX002229
+
+Current Mileage: 15467

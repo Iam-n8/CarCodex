@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 6
+
+Nickname: test456
+
+Year: 2024
+Make: MERCEDES-BENZ
+Model: CLA-Class
+Trim: AMG CLA35 4MATIC/AMG CLA35 4-M Turbo
+
+VIN: W1K5J5BB5RN454751
+
+Current Mileage: 500

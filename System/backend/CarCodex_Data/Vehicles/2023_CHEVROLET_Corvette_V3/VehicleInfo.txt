@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 3
+
+Nickname: Fake 
+
+Year: 2023
+Make: CHEVROLET
+Model: Corvette
+Trim: Preferred 2LT
+
+VIN: 1G1YB3D47P5116829
+
+Current Mileage: 30000

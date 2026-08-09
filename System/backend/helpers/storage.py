@@ -2,6 +2,9 @@
 
 import os
 import re
+import json
+import csv
+
 
 # --------------------------------------------------
 # Safe File/Folder Naming
@@ -328,6 +331,173 @@ def get_maintenance_folder(
     )
 
     return maintenance_folder
+# --------------------------------------------------
+# VIN Decode Export Files
+# --------------------------------------------------
+
+def get_vin_decode_json_path(
+    vehicle
+) -> str:
+    """
+    Return the VINDecode.json path for a vehicle.
+    """
+
+    vehicle_folder = create_vehicle_folders(
+        vehicle
+    )
+
+    return os.path.join(
+        vehicle_folder,
+        "VINDecode.json"
+    )
 
 
+def get_vin_decode_csv_path(
+    vehicle
+) -> str:
+    """
+    Return the VINDecode.csv path for a vehicle.
+    """
 
+    vehicle_folder = create_vehicle_folders(
+        vehicle
+    )
+
+    return os.path.join(
+        vehicle_folder,
+        "VINDecode.csv"
+    )
+
+
+def save_vin_decode_json(
+    vehicle,
+    decode_data
+):
+    """
+    Save the complete NHTSA VIN decode response
+    as VINDecode.json in the vehicle folder.
+    """
+
+    json_path = get_vin_decode_json_path(
+        vehicle
+    )
+
+    with open(
+        json_path,
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(
+            decode_data,
+            file,
+            indent=4
+        )
+
+    return json_path
+
+
+def save_vin_decode_csv(
+    vehicle,
+    decode_data
+):
+    """
+    Save the NHTSA VIN decode response as a
+    human-readable VINDecode.csv file.
+    """
+
+    csv_path = get_vin_decode_csv_path(
+        vehicle
+    )
+
+    result = {}
+
+    if decode_data.get("Results"):
+
+        result = decode_data["Results"][0]
+
+    with open(
+        csv_path,
+        "w",
+        newline="",
+        encoding="utf-8"
+    ) as file:
+
+        writer = csv.writer(
+            file
+        )
+
+        writer.writerow(
+            [
+                "Field",
+                "Value"
+            ]
+        )
+
+        writer.writerow(
+            [
+                "Count",
+                decode_data.get(
+                    "Count",
+                    ""
+                )
+            ]
+        )
+
+        writer.writerow(
+            [
+                "Message",
+                decode_data.get(
+                    "Message",
+                    ""
+                )
+            ]
+        )
+
+        writer.writerow(
+            [
+                "SearchCriteria",
+                decode_data.get(
+                    "SearchCriteria",
+                    ""
+                )
+            ]
+        )
+        for field_name in sorted(
+            result.keys()
+        ):
+
+            writer.writerow(
+                [
+                    field_name,
+                    result.get(
+                        field_name,
+                        ""
+                    )
+                ]
+            )
+
+    return csv_path
+def save_vin_decode_files(
+    vehicle,
+    decode_data
+):
+    """
+    Save both VINDecode.json and VINDecode.csv
+    for a vehicle.
+    """
+
+    json_path = save_vin_decode_json(
+        vehicle,
+        decode_data
+    )
+
+    csv_path = save_vin_decode_csv(
+        vehicle,
+        decode_data
+    )
+
+    return {
+        "json_path": json_path,
+        "csv_path": csv_path
+    }

@@ -1,6 +1,6 @@
 # Vehicle UI Routes
 import os
-
+import requests
 
 from fastapi import (
     APIRouter,
@@ -12,7 +12,8 @@ from fastapi import (
 
 from fastapi.responses import (
     HTMLResponse,
-    RedirectResponse
+    RedirectResponse,
+    JSONResponse
 )
 
 from fastapi.templating import (
@@ -34,7 +35,8 @@ from models import (
 from helpers.storage import (
     create_vehicle_folders,
     create_vehicle_info_file,
-    get_maintenance_folder
+    get_maintenance_folder,
+    save_vin_decode_files
     )
 
 
@@ -58,6 +60,26 @@ def vehicles_ui(
     ).filter(
         Vehicle.archived == False
     ).all()
+
+    for vehicle in vehicles:
+
+        highest_mileage = vehicle.current_mileage
+
+        visits = db.query(
+            MaintenanceVisit
+        ).filter(
+            MaintenanceVisit.vehicle_id == vehicle.id
+        ).all()
+
+        for visit in visits:
+
+            if (
+                visit.mileage is not None
+                and visit.mileage > highest_mileage
+            ):
+                highest_mileage = visit.mileage
+
+        vehicle.display_mileage = highest_mileage
 
     db.close()
 
@@ -92,6 +114,33 @@ def vehicle_detail(
         MaintenanceVisit.vehicle_id == vehicle_id
     ).all()
 
+    # Display highest mileage found
+    display_mileage = vehicle.current_mileage
+
+    visit_mileages = [
+        visit.mileage
+        for visit in visits
+        if visit.mileage is not None
+    ]
+
+    if visit_mileages:
+        display_mileage = max(
+            display_mileage,
+            max(visit_mileages)
+        )
+
+    schedules = db.query(
+        MaintenanceSchedule
+    ).filter(
+        MaintenanceSchedule.vehicle_id == vehicle_id
+    ).all()
+
+    documents = db.query(
+        Document
+    ).filter(
+        Document.vehicle_id == vehicle_id
+    ).all()
+
     schedules = db.query(
         MaintenanceSchedule
     ).filter(
@@ -120,7 +169,9 @@ def vehicle_detail(
 
             "document_count": len(documents),
 
-            "vendor_count": 0
+            "vendor_count": 0,
+
+            "display_mileage": display_mileage
         }       
     )
 # --------------------------------------------------
@@ -145,27 +196,43 @@ def vehicle_add_page(
 # --------------------------------------------------
 # Add Vehicle Submit
 # --------------------------------------------------
-
 @router.post(
     "/vehicle-add"
 )
 def vehicle_add_submit(
 
-    nickname: str = Form(...),
+    nickname: str = Form(""),
 
-    year: int = Form(...),
+    year: int = Form(0),
 
-    make: str = Form(...),
+    make: str = Form(""),
 
-    model: str = Form(...),
+    model: str = Form(""),
 
-    trim: str = Form(...),
+    trim: str = Form(""),
 
-    vin: str = Form(...),
+    vin: str = Form(""),
 
-    current_mileage: int = Form(...)
+    current_mileage: int = Form(0)
 
 ):
+
+    if not nickname.strip():
+        nickname = "Nickname Unknown"
+
+    if not make.strip():
+        make = "Make Unknown"
+
+    if not model.strip():
+        model = "Model Unknown"
+
+    if not trim.strip():
+        trim = "Trim Unknown"
+
+    if not vin.strip():
+        vin = "VIN Unknown"
+
+    print("VEHICLE ADD SUBMIT REACHED")
 
     db = SessionLocal()
 
@@ -197,12 +264,48 @@ def vehicle_add_submit(
         vehicle
     )
 
+    if (
+        vin
+        and vin != "VIN Unknown"
+    ):
+
+        try:
+
+            url = (
+                "https://vpic.nhtsa.dot.gov/api/"
+                f"vehicles/DecodeVinValues/{vin}"
+                "?format=json"
+            )
+
+            response = requests.get(
+                url,
+                timeout=10
+            )
+
+            response.raise_for_status()
+
+            decode_data = response.json()
+
+            save_vin_decode_files(
+                vehicle,
+                decode_data
+            )
+
+        except Exception as error:
+
+            print(
+                "VIN decode export failed:",
+                error
+            )
+
     db.close()
 
     return RedirectResponse(
         url="/vehicles-ui",
         status_code=303
     )
+
+
 # --------------------------------------------------
 # Edit Vehicle Page
 # --------------------------------------------------
@@ -1023,4 +1126,33 @@ def maintenance_document_add_submit(
     return RedirectResponse(
         url=f"/maintenance-visit/{visit_id}",
         status_code=303
+    )
+# --------------------------------------------------
+# VIN Decode
+# --------------------------------------------------
+
+@router.get(
+    "/vin-decode"
+)
+def vin_decode(
+    vin: str
+):
+
+    url = (
+        "https://vpic.nhtsa.dot.gov/api/"
+        f"vehicles/DecodeVinValues/{vin}"
+        "?format=json"
+    )
+
+    response = requests.get(
+        url,
+        timeout=10
+    )
+
+    data = response.json()
+
+    result = data["Results"][0]
+
+    return JSONResponse(
+        content=result
     )

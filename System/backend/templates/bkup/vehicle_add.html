@@ -6,12 +6,6 @@
 
 <h1>Add Vehicle</h1>
 
-<p>
-    <a href="/vehicles-ui">
-        ← Back to Vehicles
-    </a>
-</p>
-
 <div class="card">
 
     <h2>How would you like to add this vehicle?</h2>
@@ -90,7 +84,8 @@
                 Is this vehicle information correct?
             </p>
 
-            <form action="/vehicle-add" method="post">
+        </div>
+            <form method="POST" action="/vehicle-add">
 
                 <input
                     type="hidden"
@@ -154,6 +149,12 @@
 
 </div>
 
+<p>
+    <a href="/vehicles-ui">
+        ← Back to Vehicles
+    </a>
+</p>
+
 <div
     id="manual-form"
     style="display:none;"
@@ -161,7 +162,7 @@
 
     <h2>Manual Vehicle Entry</h2>
 
-    <form action="/vehicle-add" method="post">
+    <form method="POST" action="/vehicle-add">
 
         <p>
             Nickname<br>

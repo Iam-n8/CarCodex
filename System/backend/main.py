@@ -1,7 +1,7 @@
 # main.py
 
 # import os
-from routers import vehicles
+from routers import maintsch_ui, vehicles
 from fastapi import FastAPI
 from fastapi.responses import (
     HTMLResponse,
@@ -49,6 +49,8 @@ from helpers.storage import (
     get_document_folder,
     create_vehicle_info_file
 )
+
+from routers import maintsch_ui
 # --------------------------------------------------
 # Routers
 # --------------------------------------------------
@@ -85,6 +87,9 @@ app.include_router(
 )
 app.include_router(
     service_ui.router
+)
+app.include_router(
+    maintsch_ui.router
 )
 
 

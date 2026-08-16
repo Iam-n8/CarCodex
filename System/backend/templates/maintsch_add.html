@@ -1,0 +1,116 @@
+<!-- maintsch_add.html-->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Add Maintenance Schedule Item</h1>
+
+{% if vehicle %}
+
+<p>
+    <strong>Vehicle:</strong>
+    {{ vehicle.nickname }}
+</p>
+
+<p>
+    {{ vehicle.year }}
+    {{ vehicle.make }}
+    {{ vehicle.model }}
+</p>
+
+{% endif %}
+
+<p>
+    <a href="/maintsch-ui/{{ vehicle.id }}">
+        ← Back to Maintenance Schedule
+    </a>
+</p>
+
+<div class="card">
+
+    <h2>Schedule Item</h2>
+
+    <form method="POST" action="/maintsch-ui/{{ vehicle.id }}/add">
+
+        <p>
+            Item Name<br>
+            <input
+                type="text"
+                name="item_name"
+                required
+            >
+        </p>
+
+        <p>
+            Service Type Match<br>
+            <input
+                type="text"
+                name="service_type_match"
+            >
+        </p>
+
+        <p>
+            Miles Interval<br>
+            <input
+                type="number"
+                name="miles_interval"
+            >
+        </p>
+
+        <p>
+            Period Months<br>
+            <input
+                type="number"
+                name="period_months"
+            >
+        </p>
+
+        <p>
+            Display Order<br>
+            <input
+                type="number"
+                name="display_order"
+                value="0"
+            >
+        </p>
+
+        <p>
+            Notes<br>
+            <textarea
+                name="notes"
+                rows="5"
+                cols="60"
+            ></textarea>
+        </p>
+
+        <p>
+            <button type="submit">
+                Add Schedule Item
+            </button>
+        </p>
+
+    </form>
+
+</div>
+
+<style>
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        max-width: 500px;
+    }
+
+</style>
+
+{% endblock %}

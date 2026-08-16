@@ -1,0 +1,137 @@
+<!-- maintsch_edit.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Edit Maintenance Schedule Item</h1>
+
+{% if vehicle %}
+
+<p>
+    <strong>Vehicle:</strong>
+    {{ vehicle.nickname }}
+</p>
+
+<p>
+    {{ vehicle.year }}
+    {{ vehicle.make }}
+    {{ vehicle.model }}
+</p>
+
+{% endif %}
+
+<p>
+    <a href="/maintsch-ui/{{ vehicle.id }}" class="nav-link">
+        ← Back to Maintenance Schedule
+    </a>
+</p>
+
+<div class="card">
+
+    <h2>Schedule Item</h2>
+
+    <form method="POST" action="/maintsch-ui/item/{{ schedule.id }}/edit">
+
+        <p>
+            Item Name<br>
+            <input
+                type="text"
+                name="item_name"
+                value="{{ schedule.item_name }}"
+                required
+            >
+        </p>
+
+        <p>
+            Service Type Match<br>
+            <input
+                type="text"
+                name="service_type_match"
+                value="{{ schedule.service_type_match }}"
+            >
+        </p>
+
+        <p>
+            Miles Interval<br>
+            <input
+                type="number"
+                name="miles_interval"
+                value="{{ schedule.miles_interval if schedule.miles_interval else '' }}"
+            >
+        </p>
+
+        <p>
+            Period Months<br>
+            <input
+                type="number"
+                name="period_months"
+                value="{{ schedule.period_months if schedule.period_months else '' }}"
+            >
+        </p>
+
+        <p>
+            Display Order<br>
+            <input
+                type="number"
+                name="display_order"
+                value="{{ schedule.display_order }}"
+            >
+        </p>
+
+        <p>
+            <label>
+                <input
+                    type="checkbox"
+                    name="inactive"
+                    {% if schedule.inactive %}
+                        checked
+                    {% endif %}
+                >
+                Inactive
+            </label>
+        </p>
+
+        <p>
+            Notes<br>
+            <textarea
+                name="notes"
+                rows="5"
+                cols="60"
+            >{{ schedule.notes if schedule.notes else '' }}</textarea>
+        </p>
+
+        <p>
+            <button type="submit">
+                Save Schedule Item
+            </button>
+        </p>
+
+    </form>
+
+</div>
+
+<style>
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    input[type="checkbox"] {
+        width: auto;
+    }
+
+</style>
+
+{% endblock %}

@@ -323,26 +323,48 @@ class Document(Base):
 class MaintenanceSchedule(Base):
     __tablename__ = "maintenance_schedule"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
 
-    vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
+    vehicle_id = Column(
+        Integer,
+        ForeignKey("vehicles.id")
+    )
 
-    service_type = Column(String)
+    item_name = Column(
+        String
+    )
 
-    interval_miles = Column(Integer)
+    service_type_match = Column(
+        String
+    )
 
-    interval_months = Column(Integer)
+    miles_interval = Column(
+        Integer,
+        nullable=True
+    )
 
-    estimated_cost = Column(Float)
+    period_months = Column(
+        Integer,
+        nullable=True
+    )
 
-    uses_health_indicator = Column(String)
-
-    notes = Column(String)
-
-    archived = Column(
+    inactive = Column(
         Boolean,
         default=False
-)
+    )
+
+    notes = Column(
+        String
+    )
+
+    display_order = Column(
+        Integer,
+        default=0
+    )
 
 class MaintenanceVisit(Base):
     __tablename__ = "maintenance_visits"

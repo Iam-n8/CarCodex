@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 2
+
+Nickname: bb
+
+Year: 2025
+Make: CHEVROLET
+Model: Trax
+Trim: 1LT
+
+VIN: KL77LHEP7SC145612
+
+Current Mileage: 500

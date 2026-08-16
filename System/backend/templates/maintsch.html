@@ -1,0 +1,166 @@
+<!-- maintsch.html -->
+
+<!-- maintsch.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Maintenance Schedule</h1>
+
+{% if vehicle %}
+
+<p>
+    <strong>Vehicle:</strong>
+    {{ vehicle.nickname }}
+</p>
+
+<p>
+    {{ vehicle.year }}
+    {{ vehicle.make }}
+    {{ vehicle.model }}
+</p>
+
+{% endif %}
+
+<p>
+    <a href="/vehicle/{{ vehicle.id }}" class="nav-link">
+        ← Back to Vehicle
+    </a>
+</p>
+<p>
+    <a href="/maintsch-ui/{{ vehicle.id }}/add" class="nav-link">
+        + Add Schedule Item
+    </a>
+</p>
+
+<div class="card">
+
+    <h2>Schedule Items</h2>
+
+    {% if schedules %}
+
+        <table class="maintsch-table">
+
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Item</th>
+                    <th>Service Match</th>
+                    <th>Miles Interval</th>
+                    <th>Period Months</th>
+                    <th>Inactive</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for schedule in schedules %}
+
+                    <tr>
+                        <td>
+                            {{ schedule.display_order }}
+                        </td>
+
+                        <td>
+                            {{ schedule.item_name }}
+                        </td>
+
+                        <td>
+                            {{ schedule.service_type_match }}
+                        </td>
+
+                        <td>
+                            {% if schedule.miles_interval %}
+                                {{ schedule.miles_interval }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if schedule.period_months %}
+                                {{ schedule.period_months }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if schedule.inactive %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ schedule.notes }}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+{% else %}
+
+    <p>
+        No maintenance schedule items found for this vehicle.
+    </p>
+
+    <p>
+        Create a default maintenance schedule to get started.
+    </p>
+
+    <form action="/maintsch/{{ vehicle.id }}/seed-defaults" method="post">
+
+        <button type="submit">
+            Seed Default Schedule
+        </button>
+
+    </form>
+
+{% endif %}
+
+</div>
+
+<style>
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+
+    .maintsch-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    .maintsch-table th,
+    .maintsch-table td {
+        border: 1px solid #374151;
+        padding: 8px;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .maintsch-table th {
+        background: #1f2937;
+    }
+
+    .maintsch-table tr:nth-child(even) {
+        background: #111827;
+    }
+
+</style>
+
+{% endblock %}

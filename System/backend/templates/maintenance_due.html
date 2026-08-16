@@ -1,0 +1,208 @@
+<!-- maintenance_due.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Maintenance Due</h1>
+
+{% if vehicle %}
+
+<p>
+    <strong>Vehicle:</strong>
+    {{ vehicle.nickname }}
+</p>
+
+<p>
+    {{ vehicle.year }}
+    {{ vehicle.make }}
+    {{ vehicle.model }}
+</p>
+
+{% endif %}
+
+<p>
+    <a href="/vehicle/{{ vehicle.id }}">
+        ← Back to Vehicle
+    </a>
+</p>
+
+<p>
+    <a href="/maintsch-ui/{{ vehicle.id }}">
+        📋 Maintenance Schedule
+    </a>
+</p>
+
+<div class="card">
+
+    <h2>Due Status</h2>
+
+    {% if due_items %}
+
+        <table class="maintenance-due-table">
+
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Item</th>
+                    <th>Last Date</th>
+                    <th>Last Mileage</th>
+                    <th>Miles Due</th>
+                    <th>Miles To Go</th>
+                    <th>Date Due</th>
+                    <th>Months To Go</th>
+                    <th>Current Mileage</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in due_items %}
+
+                    <tr class="status-{{ item.status | lower | replace(' ', '-') }}">
+
+                        <td>
+                            <strong>
+                                {{ item.status }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item.item_name }}
+                            <br>
+                            <small>
+                                Match:
+                                {{ item.service_type_match }}
+                            </small>
+                        </td>
+
+                        <td>
+                            {% if item.last_date %}
+                                {{ item.last_date }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.last_mileage %}
+                                {{ item.last_mileage }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.miles_due %}
+                                {{ item.miles_due }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.miles_to_go is not none %}
+                                {{ item.miles_to_go }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.date_due %}
+                                {{ item.date_due }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.months_to_go is not none %}
+                                {{ item.months_to_go }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ item.current_mileage }}
+                        </td>
+
+                        <td>
+                            {% if item.notes %}
+                                {{ item.notes }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <p>
+            No maintenance due items found.
+        </p>
+
+        <p>
+            Open the Maintenance Schedule page and seed or add schedule items first.
+        </p>
+
+    {% endif %}
+
+</div>
+
+<style>
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+
+    .maintenance-due-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    .maintenance-due-table th {
+        background: #1f2937;
+    }
+
+    .maintenance-due-table tr:nth-child(even) {
+        background: #111827;
+    }
+
+    .status-overdue {
+        background: #7f1d1d;
+    }
+
+    .status-due-soon {
+        background: #78350f;
+    }
+
+    .status-good {
+        background: #064e3b;
+    }
+
+    .status-no-history {
+        background: #374151;
+    }
+
+    small {
+        color: #cbd5e1;
+    }
+
+</style>
+
+{% endblock %}

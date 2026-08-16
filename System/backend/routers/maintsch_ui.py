@@ -33,6 +33,9 @@ from models import (
     MaintenanceSchedule,
     Vehicle
 )
+from helpers.maintenance_due import (
+    calculate_vehicle_maintenance_due
+)
 
 
 router = APIRouter()
@@ -40,6 +43,8 @@ router = APIRouter()
 templates = Jinja2Templates(
     directory="templates"
 )
+
+
 
 # --------------------------------------------------
 # Vehicle Maintenance Schedule Items
@@ -486,3 +491,40 @@ def maintsch_edit_item_submit(
         status_code=303
     )
 
+# --------------------------------------------------
+# Maintenance Due UI Page
+# --------------------------------------------------
+
+@router.get(
+    "/maintenance-due-ui/{vehicle_id}",
+    response_class=HTMLResponse
+)
+def maintenance_due_vehicle_page(
+    request: Request,
+    vehicle_id: int
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    due_items = calculate_vehicle_maintenance_due(
+        db,
+        vehicle_id
+    )
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="maintenance_due.html",
+        context={
+            "request": request,
+            "vehicle": vehicle,
+            "due_items": due_items
+        }
+    )

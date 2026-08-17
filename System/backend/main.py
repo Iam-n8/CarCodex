@@ -57,6 +57,9 @@ from routers import maintsch_ui
 from routers import services
 app = FastAPI()
 
+from routers import service_catalog_ui
+
+
 templates = Jinja2Templates(
     directory="templates"
 )
@@ -92,7 +95,9 @@ app.include_router(
     maintsch_ui.router
 )
 
-
+app.include_router(
+    service_catalog_ui.router
+)
 
 
 Base.metadata.create_all(bind=engine)

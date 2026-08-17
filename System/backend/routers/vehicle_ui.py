@@ -29,7 +29,9 @@ from models import (
     Document,
     Vendor,
     ServiceType,
-    ServiceRecord   
+    ServiceRecord,
+    ServiceGroup,
+    ServiceItem
 )
 
 from helpers.storage import (
@@ -655,17 +657,47 @@ def vehicle_maintenance_add_page(
         ServiceType.archived == False
     ).all()
 
+    service_groups = db.query(
+        ServiceGroup
+    ).filter(
+        ServiceGroup.inactive == False
+    ).order_by(
+        ServiceGroup.display_order
+    ).all()
+
+    service_catalog = []
+
+    for group in service_groups:
+
+        items = db.query(
+            ServiceItem
+        ).filter(
+            ServiceItem.group_id == group.id,
+            ServiceItem.inactive == False
+        ).order_by(
+            ServiceItem.display_order
+        ).all()
+
+        service_catalog.append(
+            {
+                "group": group,
+                "items": items
+            }
+        )
+
     db.close()
 
     return templates.TemplateResponse(
         request=request,
         name="maintenance_add_vehicle.html",
+
         context={
             "request": request,
             "vehicle": vehicle,
             "vehicle_id": vehicle.id,
             "vendors": vendors,
-            "service_types": service_types
+            "service_types": service_types,
+            "service_catalog": service_catalog
         }
     )
 # --------------------------------------------------

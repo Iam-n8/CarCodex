@@ -108,18 +108,24 @@
     </a>
 
     <p>
+        <a href="/maintenance-due-ui/{{ vehicle.id }}"
+            class="nav-link">
+            🧭 Maintenance Due
+        </a>    
+        
+        <a href="/maintsch-ui/{{ vehicle.id }}"
+            class="nav-link">
+
+            📋 Maintenance Schedule
+        </a>
+
+
 
         <a href="/vehicle-archive/{{ vehicle.id }}" 
             class="nav-link">
 
             🗑 Archive Vehicle
 
-        </a>
-        
-        <a href="/maintsch-ui/{{ vehicle.id }}"
-            class="nav-link">
-
-            📋 Maintenance Schedule
         </a>
     </p>
     {% if vehicle.archived %}

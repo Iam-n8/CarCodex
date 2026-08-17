@@ -51,6 +51,7 @@
                     <th>Period Months</th>
                     <th>Inactive</th>
                     <th>Notes</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
 
@@ -98,6 +99,12 @@
                         <td>
                             {{ schedule.notes }}
                         </td>
+                        <td>
+                            <a href="/maintsch-ui/item/{{ schedule.id }}/edit" class="nav-link">
+                                Edit
+                            </a>
+                        </td>
+
                     </tr>
 
                 {% endfor %}

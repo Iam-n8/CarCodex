@@ -240,6 +240,94 @@ class ServiceType(Base):
         Boolean,
         default=False
     )
+# ==================================================
+# Service Group
+#
+# Organizes service items into logical groups.
+#
+# Examples:
+# Engine
+# Tires
+# Transmission
+# Brakes
+# ==================================================
+
+class ServiceGroup(Base):
+
+    __tablename__ = "service_groups"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    name = Column(
+        String
+    )
+
+    display_order = Column(
+        Integer,
+        default=0
+    )
+
+    inactive = Column(
+        Boolean,
+        default=False
+    )
+
+
+# ==================================================
+# Service Item
+#
+# Specific maintenance action inside a group.
+#
+# Examples:
+# Engine -> Oil Change
+# Transmission -> DCT Transmission Canister Filter
+# Brakes -> Brake Fluid
+#
+# Important:
+# Maintenance Due should match the specific item,
+# not only the group.
+# ==================================================
+
+class ServiceItem(Base):
+
+    __tablename__ = "service_items"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    group_id = Column(
+        Integer,
+        ForeignKey("service_groups.id")
+    )
+
+    item_name = Column(
+        String
+    )
+
+    service_type_match = Column(
+        String
+    )
+
+    display_order = Column(
+        Integer,
+        default=0
+    )
+
+    inactive = Column(
+        Boolean,
+        default=False
+    )
+
+    notes = Column(
+        String
+    )    
 
 
 class Event(Base):

@@ -1,0 +1,38 @@
+domain,group_code,group_name,service_code,service_item,service_type_match,service_category,track_for_maintenance_due,default_miles_interval,default_period_months,notes
+Vehicle,100,Engine,110,Oil Change,Oil Change,Maintenance,yes,5000,6,Default oil change interval. Owner may adjust.
+Vehicle,100,Engine,120,Engine Air Filter,Engine Air Filter,Maintenance,yes,30000,24,Replace more often in dusty conditions.
+Vehicle,100,Engine,130,Spark Plugs,Spark Plugs,Maintenance,yes,100000,,Mileage-based default. Confirm manufacturer interval.
+Vehicle,100,Engine,140,Coolant Flush,Coolant Flush,Maintenance,yes,60000,60,Inspect coolant condition and service as needed.
+Vehicle,100,Engine,150,Fuel Filter,Fuel Filter,Maintenance,yes,30000,36,May not apply to all vehicles.
+Vehicle,100,Engine,160,Inspect Evaporative Control System,Inspect Evaporative Control System,Inspection,yes,30000,36,General emissions-related inspection item.
+Vehicle,100,Engine,170,Drain and Refill Engine Coolant,Drain and Refill Engine Coolant,Maintenance,yes,60000,60,Coolant interval varies by vehicle and coolant type.
+Vehicle,100,Engine,180,Replace Drive Belt,Replace Drive Belt,Maintenance,yes,60000,48,Inspect serpentine belt accessory belts and related components.
+Vehicle,100,Engine,190,Other Engine Service,Other Engine Service,Other,no,,,Catch-all engine service item. Usually not used for Maintenance Due unless customized.
+Vehicle,200,Tires,210,Tread Depth Inspection,Tread Depth Inspection,Inspection,yes,5000,6,Inspect tread depth and tire condition.
+Vehicle,200,Tires,220,Tire Rotation,Tire Rotation,Maintenance,yes,5000,6,Rotate tires to support even tread wear.
+Vehicle,200,Tires,230,Tire Balance,Tire Balance,Maintenance,yes,15000,12,Balance tires when needed or during tire service.
+Vehicle,200,Tires,240,Alignment,Alignment,Maintenance,yes,15000,12,Check alignment if tire wear or steering pull is noticed.
+Vehicle,200,Tires,250,TPMS Sensor Replacement,TPMS Sensor Replacement,Repair,no,,,Repair or replacement item. Usually not interval-based.
+Vehicle,200,Tires,260,New Tires,New Tires,Replacement,no,,,Replacement item based on wear and age.
+Vehicle,200,Tires,290,Other Tire Service,Other Tire Service,Other,no,,,Catch-all tire service item.
+Vehicle,300,Transmission,310,Transmission Fluid Inspection,Transmission Fluid Inspection,Inspection,yes,30000,24,Inspect transmission fluid condition where applicable.
+Vehicle,300,Transmission,320,Transmission Fluid Flush,Transmission Fluid Flush,Maintenance,yes,60000,60,Interval varies by manufacturer and usage.
+Vehicle,300,Transmission,330,Transmission Filter,Transmission Filter,Maintenance,yes,60000,60,Only applies to vehicles with serviceable transmission filters.
+Vehicle,300,Transmission,340,DCT Transmission Canister Filter,DCT Transmission Canister Filter,Maintenance,yes,36000,36,Only applies to vehicles with this service requirement.
+Vehicle,300,Transmission,390,Transmission Other,Transmission Other,Other,no,,,Catch-all transmission service item.
+Vehicle,400,Brakes,410,Brake Inspection,Brake Inspection,Inspection,yes,10000,12,Inspect pads rotors calipers and brake lines.
+Vehicle,400,Brakes,420,Brake Fluid,Brake Fluid,Maintenance,yes,,60,Time-based default. Manufacturer intervals may vary.
+Vehicle,400,Brakes,430,Brake Pads,Brake Pads,Maintenance,yes,30000,,Wear-based item. Mileage interval is only a planning estimate.
+Vehicle,400,Brakes,440,Brake Rotors,Brake Rotors,Maintenance,yes,60000,,Wear-based item. Replace only when needed.
+Vehicle,400,Brakes,490,Other Brake Service,Other Brake Service,Other,no,,,Catch-all brake service item.
+Vehicle,500,Suspension,510,Suspension Inspection,Suspension Inspection,Inspection,yes,15000,12,Inspect suspension components for wear or damage.
+Vehicle,500,Suspension,520,Shocks,Shocks,Replacement,no,,,Replace based on wear ride quality or leakage.
+Vehicle,500,Suspension,530,Struts,Struts,Replacement,no,,,Replace based on wear ride quality or leakage.
+Vehicle,500,Suspension,540,Control Arms,Control Arms,Repair,no,,,Repair or replacement item.
+Vehicle,500,Suspension,550,Ball Joints,Ball Joints,Repair,no,,,Repair or replacement item.
+Vehicle,500,Suspension,560,Tie Rods,Tie Rods,Repair,no,,,Repair or replacement item.
+Vehicle,500,Suspension,570,Sway Bar Links,Sway Bar Links,Repair,no,,,Repair or replacement item.
+Vehicle,500,Suspension,580,Bushings,Bushings,Repair,no,,,Repair or replacement item.
+Vehicle,500,Suspension,590,Other Suspension Service,Other Suspension Service,Other,no,,,Catch-all suspension service item.
+Vehicle,600,Exhaust,610,Exhaust Inspection,Exhaust Inspection,Inspection,yes,30000,24,Inspect exhaust system for leaks corrosion or damage.
+Vehicle,600,Exhaust,620,Muffler,Muffler,Repair,no,,,Repair

@@ -10,9 +10,6 @@
 #   MaintSch, and Maintenance Due matching
 # --------------------------------------------------
 
-import os
-import csv
-
 
 from fastapi import (
     APIRouter,
@@ -37,6 +34,8 @@ from fastapi.templating import (
 )
 from helpers.service_catalog_loader import (
     load_vehicle_service_catalog_rows,
+    load_service_catalog_rows_for_domain,
+    load_available_domains,
     clean_csv_value,
     csv_int
 )
@@ -53,10 +52,6 @@ templates = Jinja2Templates(
 # Service Catalog CSV
 # --------------------------------------------------
 
-
-# --------------------------------------------------
-# Seed Default Service Catalog
-# --------------------------------------------------
 # --------------------------------------------------
 # Seed Default Service Catalog
 # --------------------------------------------------
@@ -197,59 +192,6 @@ def seed_default_service_catalog():
         "groups_created": groups_created,
         "items_created": items_created
     }
-
-# --------------------------------------------------
-# List Service Catalog JSON
-# --------------------------------------------------
-
-@router.get(
-    "/service-catalog"
-)
-def get_service_catalog():
-
-    db = SessionLocal()
-
-    groups = db.query(
-        ServiceGroup
-    ).filter(
-        ServiceGroup.inactive == False
-    ).order_by(
-        ServiceGroup.display_order
-    ).all()
-
-    results = []
-
-    for group in groups:
-
-        items = db.query(
-            ServiceItem
-        ).filter(
-            ServiceItem.group_id == group.id,
-            ServiceItem.inactive == False
-        ).order_by(
-            ServiceItem.display_order
-        ).all()
-
-        results.append(
-            {
-                "id": group.id,
-                "name": group.name,
-                "display_order": group.display_order,
-                "items": [
-                    {
-                        "id": item.id,
-                        "item_name": item.item_name,
-                        "service_type_match": item.service_type_match,
-                        "display_order": item.display_order
-                    }
-                    for item in items
-                ]
-            }
-        )
-
-    db.close()
-
-    return results
 # --------------------------------------------------
 # Service Catalog UI Page
 # --------------------------------------------------
@@ -259,47 +201,125 @@ def get_service_catalog():
     response_class=HTMLResponse
 )
 def service_catalog_ui(
-    request: Request
+    request: Request,
+    domain: str = "Vehicle"
 ):
 
-    db = SessionLocal()
+    selected_domain = clean_csv_value(
+        domain
+    )
 
-    groups = db.query(
-        ServiceGroup
-    ).filter(
-        ServiceGroup.inactive == False
-    ).order_by(
-        ServiceGroup.display_order
-    ).all()
+    if not selected_domain:
 
-    catalog = []
+        selected_domain = "Vehicle"
 
-    for group in groups:
+    available_domains = load_available_domains()
 
-        items = db.query(
-            ServiceItem
-        ).filter(
-            ServiceItem.group_id == group.id,
-            ServiceItem.inactive == False
-        ).order_by(
-            ServiceItem.display_order
-        ).all()
+    if not available_domains:
 
-        catalog.append(
+        available_domains = [
+            "Vehicle"
+        ]
+
+    catalog_rows = load_service_catalog_rows_for_domain(
+        selected_domain
+    )
+
+    groups_by_code = {}
+
+    for row in catalog_rows:
+
+        group_code = csv_int(
+            row.get(
+                "group_code"
+            )
+        )
+
+        group_name = clean_csv_value(
+            row.get(
+                "group_name"
+            )
+        )
+
+        service_code = csv_int(
+            row.get(
+                "service_code"
+            )
+        )
+
+        service_item = clean_csv_value(
+            row.get(
+                "service_item"
+            )
+        )
+
+        service_type_match = clean_csv_value(
+            row.get(
+                "service_type_match"
+            )
+        )
+
+        service_category = clean_csv_value(
+            row.get(
+                "service_category"
+            )
+        )
+
+        track_for_maintenance_due = clean_csv_value(
+            row.get(
+                "track_for_maintenance_due"
+            )
+        )
+
+        if not group_name or not service_item:
+
+            continue
+
+        if group_code not in groups_by_code:
+
+            groups_by_code[group_code] = {
+                "group": {
+                    "display_order": group_code,
+                    "name": group_name
+                },
+                "items": []
+            }
+
+        groups_by_code[group_code]["items"].append(
             {
-                "group": group,
-                "items": items
+                "display_order": service_code,
+                "item_name": service_item,
+                "service_type_match": service_type_match,
+                "service_category": service_category,
+                "track_for_maintenance_due": track_for_maintenance_due
             }
         )
 
-    db.close()
+    catalog = []
+
+    for group_code in sorted(
+        groups_by_code.keys()
+    ):
+
+        group_entry = groups_by_code[
+            group_code
+        ]
+
+        group_entry["items"].sort(
+            key=lambda item: item["display_order"]
+        )
+
+        catalog.append(
+            group_entry
+        )
 
     return templates.TemplateResponse(
         request=request,
         name="service_catalog.html",
         context={
             "request": request,
-            "catalog": catalog
+            "catalog": catalog,
+            "domain": selected_domain,
+            "available_domains": available_domains
         }
     )
-

@@ -230,3 +230,36 @@ def load_maintenance_trackable_rows(
             )
 
     return trackable_rows
+# --------------------------------------------------
+# Load Available Domains
+# --------------------------------------------------
+
+def load_available_domains():
+    """
+    Return a sorted list of domains found in ServiceCatalog.csv.
+    """
+
+    rows = load_service_catalog_csv()
+
+    domains = []
+
+    for row in rows:
+
+        domain = clean_csv_value(
+            row.get(
+                "domain"
+            )
+        )
+
+        if (
+            domain
+            and domain not in domains
+        ):
+
+            domains.append(
+                domain
+            )
+
+    domains.sort()
+
+    return domains

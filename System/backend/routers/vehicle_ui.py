@@ -28,7 +28,6 @@ from models import (
     MaintenanceSchedule,
     Document,
     Vendor,
-    ServiceType,
     ServiceRecord,
     ServiceGroup,
     ServiceItem
@@ -651,11 +650,7 @@ def vehicle_maintenance_add_page(
         Vendor
     ).all()
 
-    service_types = db.query(
-        ServiceType
-    ).filter(
-        ServiceType.archived == False
-    ).all()
+
 
     service_groups = db.query(
         ServiceGroup
@@ -696,7 +691,6 @@ def vehicle_maintenance_add_page(
             "vehicle": vehicle,
             "vehicle_id": vehicle.id,
             "vendors": vendors,
-            "service_types": service_types,
             "service_catalog": service_catalog
         }
     )

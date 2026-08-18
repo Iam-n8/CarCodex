@@ -33,16 +33,12 @@ from models import (
     Vendor,
     MaintenanceVisit,
     Document,
-    MaintenanceSchedule,
-    ServiceType
+    MaintenanceSchedule
 )
 
 from routers import vehicle_ui
 from routers import maintenance_ui
 from routers import vendor_ui
-from routers import service_ui
-
-
 
 from helpers.storage import (
     create_vehicle_folders,
@@ -66,7 +62,6 @@ templates = Jinja2Templates(
 
 # templates = Jinja2Templates(directory=r"C:\CarCodex\System\backend\templates")
 
-
 app.include_router(vehicles.router)
 app.include_router(services.router) 
 app.include_router(mileage.router)
@@ -88,9 +83,7 @@ app.include_router(maintenance_ui.router)
 app.include_router(
     vendor_ui.router
 )
-app.include_router(
-    service_ui.router
-)
+
 app.include_router(
     maintsch_ui.router
 )
@@ -101,52 +94,6 @@ app.include_router(
 
 
 Base.metadata.create_all(bind=engine)
-
-# --------------------------------------------------
-# Test 
-# --------------------------------------------------
-
-
-
-
-
-# --------------------------------------------------
-# Default Service Types
-# --------------------------------------------------
-
-db = SessionLocal()
-
-default_service_types = [
-
-    "Oil Change",
-    "Brake Service",
-    "Tire Service",
-    "Transmission Service",
-    "Cooling System Service",
-    "Inspection",
-    "Warranty Repair"
-
-]
-
-for service_name in default_service_types:
-
-    existing = db.query(
-        ServiceType
-    ).filter(
-        ServiceType.name == service_name
-    ).first()
-
-    if not existing:
-
-        db.add(
-            ServiceType(
-                name=service_name
-            )
-        )
-
-db.commit()
-db.close()
-
 
 # --------------------------------------------------
 # dashboard
@@ -247,6 +194,3 @@ def settings_page(
             "request": request
         }
     )
-
-
-

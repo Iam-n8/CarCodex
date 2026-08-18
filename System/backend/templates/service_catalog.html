@@ -6,11 +6,48 @@
 
 <h1>Service Catalog</h1>
 
-<p>
-    <a href="/dashboard" class="nav-link">
-        ← Back to Dashboard
+<p> 
+    <a href="/settings"
+       class="nav-link">
+        ← Back to Settings
     </a>
 </p>
+
+<div class="card">
+
+    <h2>Catalog Filter</h2>
+
+    <form method="GET" action="/service-catalog-ui">
+        <p>
+            Domain<br>
+
+            <select name="domain">
+
+                {% for domain_name in available_domains %}
+
+                    <option
+                        value="{{ domain_name }}"
+                        {% if domain_name == domain %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ domain_name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </p>
+
+        <p>
+            <button type="submit">
+                Apply Filter
+            </button>
+        </p>
+
+    </form>
+
+</div>
 
 <div class="card">
 
@@ -23,7 +60,7 @@
             <div class="service-group">
 
                 <h3>
-                    {{ entry.group.name }}
+                    {{ entry["group"]["name"] }}
                 </h3>
 
                 {% if entry["items"] %}
@@ -32,9 +69,11 @@
 
                         <thead>
                             <tr>
-                                <th>Order</th>
+                                <th>Service Code</th>
                                 <th>Service Item</th>
                                 <th>Service Type Match</th>
+                                <th>Category</th>
+                                <th>Track Due</th>
                             </tr>
                         </thead>
 
@@ -44,15 +83,23 @@
 
                                 <tr>
                                     <td>
-                                        {{ item.display_order }}
+                                        {{ item["display_order"] }}
                                     </td>
 
                                     <td>
-                                        {{ item.item_name }}
+                                        {{ item["item_name"] }}
                                     </td>
 
                                     <td>
-                                        {{ item.service_type_match }}
+                                        {{ item["service_type_match"] }}
+                                    </td>
+
+                                    <td>
+                                        {{ item["service_category"] }}
+                                    </td>
+
+                                    <td>
+                                        {{ item["track_for_maintenance_due"] }}
                                     </td>
                                 </tr>
 
@@ -77,31 +124,14 @@
     {% else %}
 
         <p>
-            No service catalog items found.
+            No service catalog items found for this domain.
         </p>
-
-        <p>
-            Seed the default service catalog using:
-        </p>
-
-        <pre>
-POST /service-catalog/seed-defaults
-        </pre>
 
     {% endif %}
 
 </div>
 
 <style>
-
-    .nav-link {
-        color: #60a5fa;
-        text-decoration: none;
-    }
-
-    .nav-link:hover {
-        text-decoration: underline;
-    }
 
     .service-group {
         margin-bottom: 30px;
@@ -120,8 +150,21 @@ POST /service-catalog/seed-defaults
 
     .service-catalog-table th,
     .service-catalog-table td {
-        border: 1px solid #ccc;
+        border: 1px solid #4b5563;
         padding: 8px;
         text-align: left;
+        vertical-align: top;
     }
+
+    .service-catalog-table th {
+        background-color: #414deb;
+        color: white;
+    }
+
+    .service-catalog-table tr:nth-child(even) {
+        background: #111827;
+    }
+
+</style>
+
 {% endblock %}

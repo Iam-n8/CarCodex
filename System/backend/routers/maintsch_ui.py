@@ -126,31 +126,90 @@ def seed_default_maintenance_schedule(
 
     catalog_rows = load_maintenance_trackable_rows()
 
-    for item in default_items:
+    items_created = 0
+
+    for row in catalog_rows:
+
+        item_name = clean_csv_value(
+            row.get(
+                "service_item"
+            )
+        )
+
+        service_type_match = clean_csv_value(
+            row.get(
+                "service_type_match"
+            )
+        )
+
+        miles_interval = csv_int(
+            row.get(
+                "default_miles_interval"
+            ),
+            default=0
+        )
+
+        period_months = csv_int(
+            row.get(
+                "default_period_months"
+            ),
+            default=0
+        )
+
+        display_order = csv_int(
+            row.get(
+                "service_code"
+            ),
+            default=0
+        )
+
+        notes = clean_csv_value(
+            row.get(
+                "notes"
+            )
+        )
+
+        if not item_name:
+
+            continue
+
+        if not service_type_match:
+
+            service_type_match = item_name
+
+        if miles_interval == 0:
+
+            miles_interval = None
+
+        if period_months == 0:
+
+            period_months = None
 
         schedule = MaintenanceSchedule(
 
             vehicle_id=vehicle_id,
 
-            item_name=item["item_name"],
+            item_name=item_name,
 
-            service_type_match=item["service_type_match"],
+            service_type_match=service_type_match,
 
-            miles_interval=item["miles_interval"],
+            miles_interval=miles_interval,
 
-            period_months=item["period_months"],
+            period_months=period_months,
 
             inactive=False,
 
-            notes=item["notes"],
+            notes=notes,
 
-            display_order=item["display_order"]
+            display_order=display_order
 
         )
 
         db.add(
             schedule
         )
+
+        items_created += 1
 
     db.commit()
 
@@ -160,6 +219,7 @@ def seed_default_maintenance_schedule(
         url=f"/maintsch-ui/{vehicle_id}",
         status_code=303
     )
+
 # --------------------------------------------------
 # Vehicle Maintenance Schedule UI Page
 # --------------------------------------------------
@@ -231,6 +291,7 @@ def maintsch_add_item_page(
             "vehicle": vehicle
         }
     )
+
 # --------------------------------------------------
 # Seed Default Maintenance Schedule
 # --------------------------------------------------
@@ -354,6 +415,8 @@ def seed_default_maintenance_schedule(
         url=f"/maintsch-ui/{vehicle_id}",
         status_code=303
     )
+
+
 # --------------------------------------------------
 # Edit Maintenance Schedule Item Page
 # --------------------------------------------------

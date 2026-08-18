@@ -36,3 +36,8 @@ Vehicle,500,Suspension,580,Bushings,Bushings,Repair,no,,,Repair or replacement i
 Vehicle,500,Suspension,590,Other Suspension Service,Other Suspension Service,Other,no,,,Catch-all suspension service item.
 Vehicle,600,Exhaust,610,Exhaust Inspection,Exhaust Inspection,Inspection,yes,30000,24,Inspect exhaust system for leaks corrosion or damage.
 Vehicle,600,Exhaust,620,Muffler,Muffler,Repair,no,,,Repair
+House,100,HVAC,110,HVAC Filter Replacement,HVAC Filter Replacement,Maintenance,yes,0,3,Replace HVAC air filter.
+House,100,HVAC,120,HVAC System Inspection,HVAC System Inspection,Inspection,yes,0,12,Inspect HVAC system operation.
+House,200,Plumbing,210,Water Heater Flush,Water Heater Flush,Maintenance,yes,0,12,Flush water heater tank if applicable.
+House,300,Exterior,310,Gutter Cleaning,Gutter Cleaning,Maintenance,yes,0,6,Clean gutters and downspouts.
+House,400,Appliances,410,Dryer Vent Cleaning,Dryer Vent Cleaning,Maintenance,yes,0,12,Clean dryer vent ductwork.

@@ -5,6 +5,9 @@ import re
 import json
 import csv
 
+from helpers.app_paths import (
+    get_vehicle_data_folder
+)
 
 # --------------------------------------------------
 # Safe File/Folder Naming
@@ -48,8 +51,9 @@ def get_vehicle_folder(
     )
 
     return os.path.join(
-        "CarCodex_Data",
-        "Vehicles",
+        str(
+            get_vehicle_data_folder()
+        ),
         vehicle_folder
     )
 

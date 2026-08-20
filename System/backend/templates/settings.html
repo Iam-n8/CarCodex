@@ -45,29 +45,66 @@
             Archived Vehicles
 
         </a>
+    </p>
 
-<!--   </p>
+<div class="card danger-zone">
+
+    <h2>Danger Zone</h2>
 
     <p>
-
-        <a href="/service-records-archived"
-           class="nav-link">
-
-            Archived Service Records
-
-        </a>
-
+        Factory Reset clears all CarCodex data, generated vehicle folders,
+        and recreates the default development seed data.
     </p>
 
     <p>
-
-        <a href="/maintenance-visits-archived"
+        <a href="/factory-reset"
            class="nav-link">
 
-            Archived Maintenance Visits
-
+            <span class="factory-reset-icon">⚙↻</span>
+            <span>Factory Reset</span>
         </a>
-    </p>    
---> 
+    </p>
 
+</div>
+<style>
+
+    .danger-zone {
+        margin-top: 60px;
+        border: 1px solid #7c2d12;
+        background: #1f2937;
+    }
+
+    .danger-zone h2 {
+        color: #fb923c;
+    }
+
+    .factory-reset-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        border: 1px solid #f97316;
+        border-radius: 10px;
+        color: #f97316;
+        text-decoration: none;
+        font-weight: bold;
+        background: #111827;
+    }
+
+    .factory-reset-button:visited {
+        color: #f97316;
+    }
+
+    .factory-reset-button:hover {
+        background: #7c2d12;
+        color: white;
+        text-decoration: none;
+    }
+
+    .factory-reset-icon {
+        font-size: 28px;
+        line-height: 1;
+    }
+
+</style>
 {% endblock %}

@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 1
+
+Nickname: Test Ferrari
+
+Year: 1982
+Make: FERRARI
+Model: 308GTSi
+Trim: Trim Unknown
+
+VIN: ZFFAA02A1C0039757
+
+Current Mileage: 0

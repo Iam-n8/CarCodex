@@ -1,0 +1,88 @@
+<!-- factory_reset.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Factory Reset</h1>
+
+<p>
+    <a href="/settings">
+        ← Back to Settings
+    </a>
+</p>
+
+<div class="card">
+
+    <h2>Warning</h2>
+
+    <p>
+        This will permanently delete all CarCodex data, including database records
+        and generated data folders.
+    </p>
+
+    <p>
+        This reset will clear:
+    </p>
+
+    <ul>
+        <li>Vehicles</li>
+        <li>Vendors</li>
+        <li>Maintenance visits</li>
+        <li>Service records</li>
+        <li>Documents</li>
+        <li>Maintenance schedules</li>
+        <li>Service catalog database rows</li>
+        <li>Generated vehicle folders</li>
+    </ul>
+
+    <p>
+        This reset will preserve:
+    </p>
+
+    <ul>
+        <li>ServiceCatalog.csv</li>
+        <li>Application code</li>
+        <li>Templates</li>
+        <li>Reference files</li>
+    </ul>
+
+</div>
+
+<div class="card">
+
+    <h2>Seed Data After Reset</h2>
+
+    <p>
+        After reset, CarCodex will recreate:
+    </p>
+
+    <ul>
+        <li>Service Catalog from ServiceCatalog.csv</li>
+        <li>Vendor: My Garage</li>
+        <li>Vehicle: 1982 FERRARI 308GTSi</li>
+        <li>VIN: ZFFAA02A1C0039757</li>
+        <li>Maintenance Schedule for the test vehicle</li>
+    </ul>
+
+</div>
+
+<div class="card">
+
+    <h2>Confirm Factory Reset</h2>
+
+    <p>
+        This action cannot be undone.
+    </p>
+
+    <form action="/factory-reset" method="post">
+
+        <button type="submit">
+            Confirm Factory Reset
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

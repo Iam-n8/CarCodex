@@ -262,6 +262,14 @@ class ServiceGroup(Base):
         index=True
     )
 
+    domain = Column(
+        String
+    )
+
+    group_code = Column(
+        Integer
+    )
+
     name = Column(
         String
     )
@@ -276,19 +284,23 @@ class ServiceGroup(Base):
         default=False
     )
 
+    notes = Column(
+        String
+    )
 
 # ==================================================
 # Service Item
 #
-# Specific maintenance action inside a group.
+# Specific maintenance, repair, inspection,
+# replacement, or modification inside a group.
 #
 # Examples:
 # Engine -> Oil Change
 # Transmission -> DCT Transmission Canister Filter
-# Brakes -> Brake Fluid
+# Body -> Windshield Replacement
 #
 # Important:
-# Maintenance Due should match the specific item,
+# Maintenance Due matches the specific service item,
 # not only the group.
 # ==================================================
 
@@ -307,12 +319,39 @@ class ServiceItem(Base):
         ForeignKey("service_groups.id")
     )
 
+    domain = Column(
+        String
+    )
+
+    service_code = Column(
+        Integer
+    )
+
     item_name = Column(
         String
     )
 
     service_type_match = Column(
         String
+    )
+
+    service_category = Column(
+        String
+    )
+
+    track_for_maintenance_due = Column(
+        Boolean,
+        default=False
+    )
+
+    default_miles_interval = Column(
+        Integer,
+        nullable=True
+    )
+
+    default_period_months = Column(
+        Integer,
+        nullable=True
     )
 
     display_order = Column(
@@ -327,7 +366,7 @@ class ServiceItem(Base):
 
     notes = Column(
         String
-    )    
+    )  
 
 
 class Event(Base):

@@ -11,31 +11,13 @@
 #   and MaintSch seed defaults
 # --------------------------------------------------
 
-import os
+
 import csv
 
 
-# --------------------------------------------------
-# CSV Path
-# --------------------------------------------------
-
-def get_service_catalog_csv_path():
-    """
-    Return the ServiceCatalog.csv path.
-
-    Expected location:
-    C:\\CarCodex\\System\\Data\\ServiceCatalog.csv
-    """
-
-    return os.path.abspath(
-        os.path.join(
-            os.path.dirname(__file__),
-            "..",
-            "..",
-            "Data",
-            "ServiceCatalog.csv"
-        )
-    )
+from helpers.app_paths import (
+    get_service_catalog_csv_path
+)
 
 
 # --------------------------------------------------

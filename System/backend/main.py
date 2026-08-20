@@ -47,6 +47,13 @@ from helpers.storage import (
 )
 
 from routers import maintsch_ui
+from routers import factory_reset_ui
+
+from helpers.db_migrations import (
+    run_database_migrations
+)
+
+
 # --------------------------------------------------
 # Routers
 # --------------------------------------------------
@@ -54,6 +61,7 @@ from routers import services
 app = FastAPI()
 
 from routers import service_catalog_ui
+
 
 
 templates = Jinja2Templates(
@@ -91,9 +99,21 @@ app.include_router(
 app.include_router(
     service_catalog_ui.router
 )
+app.include_router(
+    vehicle_ui.router
+)
+app.include_router(
+    factory_reset_ui.router
+)
 
 
-Base.metadata.create_all(bind=engine)
+
+
+Base.metadata.create_all(
+    bind=engine
+)
+
+run_database_migrations()
 
 # --------------------------------------------------
 # dashboard

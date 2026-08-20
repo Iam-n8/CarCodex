@@ -37,7 +37,8 @@ from helpers.service_catalog_loader import (
     load_service_catalog_rows_for_domain,
     load_available_domains,
     clean_csv_value,
-    csv_int
+    csv_int,
+    csv_bool
 )
 
 
@@ -87,10 +88,17 @@ def seed_default_service_catalog():
 
     for row in catalog_rows:
 
+        domain = clean_csv_value(
+            row.get(
+                "domain"
+            )
+        )
+
         group_code = csv_int(
             row.get(
                 "group_code"
-            )
+            ),
+            default=0
         )
 
         group_name = clean_csv_value(
@@ -102,7 +110,8 @@ def seed_default_service_catalog():
         service_code = csv_int(
             row.get(
                 "service_code"
-            )
+            ),
+            default=0
         )
 
         service_item = clean_csv_value(
@@ -117,29 +126,68 @@ def seed_default_service_catalog():
             )
         )
 
+        service_category = clean_csv_value(
+            row.get(
+                "service_category"
+            )
+        )
+
+        track_for_maintenance_due = csv_bool(
+            row.get(
+                "track_for_maintenance_due"
+            )
+        )
+
+        default_miles_interval = csv_int(
+            row.get(
+                "default_miles_interval"
+            ),
+            default=0
+        )
+
+        default_period_months = csv_int(
+            row.get(
+                "default_period_months"
+            ),
+            default=0
+        )
+
         notes = clean_csv_value(
             row.get(
                 "notes"
             )
         )
 
-        if not group_name or not service_item:
+        if (
+            not domain
+            or not group_name
+            or not service_item
+            or group_code == 0
+            or service_code == 0
+        ):
 
             continue
 
-        if not service_type_match:
+        group_key = (
+            domain.lower(),
+            group_code
+        )
 
-            service_type_match = service_item
-
-        if group_code not in groups_by_code:
+        if group_key not in groups_by_code:
 
             group = ServiceGroup(
+
+                domain=domain,
+
+                group_code=group_code,
 
                 name=group_name,
 
                 display_order=group_code,
 
-                inactive=False
+                inactive=False,
+
+                notes=""
 
             )
 
@@ -147,27 +195,49 @@ def seed_default_service_catalog():
                 group
             )
 
-            db.commit()
+            db.flush()
 
-            db.refresh(
-                group
-            )
-
-            groups_by_code[group_code] = group
+            groups_by_code[group_key] = group
 
             groups_created += 1
 
         group = groups_by_code[
-            group_code
+            group_key
         ]
+
+        if not service_type_match:
+
+            service_type_match = service_item
 
         item = ServiceItem(
 
             group_id=group.id,
 
+            domain=domain,
+
+            service_code=service_code,
+
             item_name=service_item,
 
             service_type_match=service_type_match,
+
+            service_category=service_category,
+
+            track_for_maintenance_due=(
+                track_for_maintenance_due
+            ),
+
+            default_miles_interval=(
+                default_miles_interval
+                if default_miles_interval > 0
+                else None
+            ),
+
+            default_period_months=(
+                default_period_months
+                if default_period_months > 0
+                else None
+            ),
 
             display_order=service_code,
 
@@ -192,6 +262,7 @@ def seed_default_service_catalog():
         "groups_created": groups_created,
         "items_created": items_created
     }
+
 # --------------------------------------------------
 # Service Catalog UI Page
 # --------------------------------------------------

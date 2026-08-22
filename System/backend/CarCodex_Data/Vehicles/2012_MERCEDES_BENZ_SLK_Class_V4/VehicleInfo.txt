@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 4
+
+Nickname: Testing 2
+
+Year: 2012
+Make: MERCEDES-BENZ
+Model: SLK-Class
+Trim: SLK350
+
+VIN: WDDPK5HA4CF011271
+
+Current Mileage: 21001

@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 2
+
+Nickname: Honda 2026
+
+Year: 2026
+Make: HONDA
+Model: CR-V
+Trim: Sport-L
+
+VIN: 7FARS5H8XTE022672
+
+Current Mileage: 30

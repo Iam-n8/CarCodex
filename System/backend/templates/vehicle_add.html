@@ -140,6 +140,97 @@
                     >
                 </p>
 
+                <h3>
+                    Acquisition / In-Service Information
+                </h3>
+
+                <p>
+                    <label for="vin_date_acquired">
+                        Date of Sale / In-Service
+                    </label>
+                    <br>
+
+                    <input
+                        type="date"
+                        id="vin_date_acquired"
+                        name="date_acquired"
+                    >
+                </p>
+
+                <p>
+                    <label for="vin_mileage_at_acquisition">
+                        Mileage at Sale / Acquisition
+                    </label>
+                    <br>
+
+                    <input
+                        type="number"
+                        id="vin_mileage_at_acquisition"
+                        name="mileage_at_acquisition"
+                        min="0"
+                    >
+                </p>
+
+                <p>
+                    <label for="vin_vehicle_condition">
+                        Vehicle Condition
+                    </label>
+                    <br>
+
+                    <select
+                        id="vin_vehicle_condition"
+                        name="vehicle_condition"
+                    >
+                        <option value="">
+                            Select Condition
+                        </option>
+
+                        <option value="New">
+                            New
+                        </option>
+
+                        <option value="Used">
+                            Used
+                        </option>
+                    </select>
+                </p>
+
+                <h3>
+                    Financial Information
+                </h3>
+
+                <p>
+                    <label for="purchase_price">
+                        Purchase Price
+                    </label>
+                    <br>
+
+                    <input
+                        type="number"
+                        id="purchase_price"
+                        name="purchase_price"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                    >
+                </p>
+
+                <p>
+                    <label for="sold_price">
+                        Sold For Price
+                    </label>
+                    <br>
+
+                    <input
+                        type="number"
+                        id="sold_price"
+                        name="sold_price"
+                        min="0"
+                        step="0.01"
+                        placeholder="Leave blank if still owned"
+                    >
+                </p>
+
                 <p>
                     <button type="submit">
                         Yes, Create Vehicle
@@ -225,6 +316,94 @@
             >
         </p>
 
+
+                <h3>Acquisition / In-Service Information</h3>
+ 
+                
+        <p>
+            <label for="date_acquired">
+                Date of Sale / In-Service
+            </label>
+        </p>
+
+        <input
+            type="date"
+            id="date_acquired"
+            name="date_acquired"
+        >
+
+        <p>
+            <label for="mileage_at_acquisition">
+                Mileage at Sale / Acquisition
+            </label>
+        </p>
+
+        <input
+            type="number"
+            id="mileage_at_acquisition"
+            name="mileage_at_acquisition"
+            min="0"
+        >
+
+        <p>
+            <label for="vehicle_condition">
+                Vehicle Condition
+            </label>
+        </p>
+
+        <select
+            id="vehicle_condition"
+            name="vehicle_condition"
+        >
+            <option value="">
+                Select Condition
+            </option>
+
+            <option value="New">
+                New
+            </option>
+
+            <option value="Used">
+                Used
+            </option>
+        </select>
+
+        <h3>
+            Financial Information
+        </h3>
+
+        <p>
+            <label for="vin_purchase_price">
+                Purchase Price
+            </label>
+            <br>
+
+            <input
+                type="number"
+                id="vin_purchase_price"
+                name="purchase_price"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+            >
+        </p>
+
+        <p>
+            <label for="vin_sold_price">
+                Sold For Price
+            </label>
+            <br>
+
+            <input
+                type="number"
+                id="vin_sold_price"
+                name="sold_price"
+                min="0"
+                step="0.01"
+                placeholder="Leave blank if still owned"
+            >
+        </p>        
+        
         <p>
             <button type="submit">
                 Save Vehicle

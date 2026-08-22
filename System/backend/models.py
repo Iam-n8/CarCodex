@@ -6,26 +6,71 @@ from database import Base
 
 
 class Vehicle(Base):
+
     __tablename__ = "vehicles"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
 
-    nickname = Column(String)
-    vin = Column(String)
+    nickname = Column(
+        String
+    )
 
-    year = Column(Integer)
+    vin = Column(
+        String
+    )
 
-    make = Column(String)
-    model = Column(String)
-    trim = Column(String)
+    year = Column(
+        Integer
+    )
 
-    current_mileage = Column(Integer)
+    make = Column(
+        String
+    )
+
+    model = Column(
+        String
+    )
+
+    trim = Column(
+        String
+    )
+
+    current_mileage = Column(
+        Integer
+    )
+
+    date_acquired = Column(
+        String,
+        nullable=True
+    )
+
+    mileage_at_acquisition = Column(
+        Integer,
+        nullable=True
+    )
+
+    vehicle_condition = Column(
+        String,
+        nullable=True
+    )
+    purchase_price_cents = Column(
+        Integer,
+        nullable=True
+    )
+
+    sold_price_cents = Column(
+        Integer,
+        nullable=True
+    )    
 
     archived = Column(
         Boolean,
         default=False
-    
-)
+    )
 
 class MileageHistory(Base):
     __tablename__ = "mileage_history"

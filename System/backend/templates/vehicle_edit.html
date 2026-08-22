@@ -76,6 +76,116 @@
             value="{{ vehicle.current_mileage }}">
     </p>
 
+    <h3>
+        Acquisition / In-Service Information
+    </h3>
+
+    <p>
+        <label for="date_acquired">
+            Date of Sale / In-Service
+        </label>
+        <br>
+
+        <input
+            type="date"
+            id="date_acquired"
+            name="date_acquired"
+            value="{{ vehicle.date_acquired or '' }}"
+        >
+    </p>
+
+    <p>
+        <label for="mileage_at_acquisition">
+            Mileage at Sale / Acquisition
+        </label>
+        <br>
+
+        <input
+            type="number"
+            id="mileage_at_acquisition"
+            name="mileage_at_acquisition"
+            min="0"
+            value="{{ vehicle.mileage_at_acquisition if vehicle.mileage_at_acquisition is not none else '' }}"
+        >
+    </p>
+
+    <p>
+        <label for="vehicle_condition">
+            Vehicle Condition
+        </label>
+        <br>
+
+        <select
+            id="vehicle_condition"
+            name="vehicle_condition"
+        >
+            <option
+                value=""
+                {% if not vehicle.vehicle_condition %}
+                    selected
+                {% endif %}
+            >
+                Select Condition
+            </option>
+
+            <option
+                value="New"
+                {% if vehicle.vehicle_condition == "New" %}
+                    selected
+                {% endif %}
+            >
+                New
+            </option>
+
+            <option
+                value="Used"
+                {% if vehicle.vehicle_condition == "Used" %}
+                    selected
+                {% endif %}
+            >
+                Used
+            </option>
+        </select>
+    </p>
+
+<h3>
+    Financial Information
+</h3>
+
+<p>
+    <label for="purchase_price">
+        Purchase Price
+    </label>
+    <br>
+
+    <input
+        type="number"
+        id="purchase_price"
+        name="purchase_price"
+        min="0"
+        step="0.01"
+        value="{% if vehicle.purchase_price_cents is not none %}{{ '%.2f' | format(vehicle.purchase_price_cents / 100) }}{% endif %}"
+        placeholder="0.00"
+    >
+</p>
+
+    <p>
+        <label for="sold_price">
+            Sold For Price
+        </label>
+        <br>
+
+        <input
+            type="number"
+            id="sold_price"
+            name="sold_price"
+            min="0"
+            step="0.01"
+            value="{% if vehicle.sold_price_cents is not none %}{{ '%.2f' | format(vehicle.sold_price_cents / 100) }}{% endif %}"
+            placeholder="Leave blank if still owned"
+        >
+    </p>
+
     <p>
         <button type="submit">
 

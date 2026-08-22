@@ -1,0 +1,22 @@
+AI Overview                 
+A boat Hull Identification Number (HIN) lookup API decodes or retrieves vessel data—such as manufacturer, 
+build year, model, and serial number—using a boat's unique 12-character HIN. Developers typically access 
+these decoding and verification tools via marketplace platforms or specialized marine data providers.
+Available HIN Lookup & Decoder APIs
+
+Hull ID Boat HIN Decoder: 
+  Available on RapidAPI, this tool parses HIN formats to 
+  return the make, model, year, serial number, and Manufacturer Identification Code (MIC) details.
+ 
+ HIN OCR APIs:
+  Specialized tools like StructOCR HIN OCR API offer automated visual extraction of ISO 10087 compliant hull numbers 
+  directly from transom photos or metal plates.
+  
+  Comprehensive Marine History APIs: Services like Boat History Report 
+  provide extensive background checks, damage history, and theft records, though programmatic integration typically 
+  requires contacting their developer support directly.
+  
+  USCG MIC & Documentation Checks: You can cross-reference 
+  manufacturer codes using official databases like the USCG PSIX System to verify builder legitimacy.If you can 
+  share what specific data you need from the HIN (basic decoding, insurance history, or OCR scanning) and your 
+  expected monthly request volume, I can help you pick the best API option.

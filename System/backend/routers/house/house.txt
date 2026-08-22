@@ -1,0 +1,11 @@
+🏡 Home Equipment, HVAC & Maintenance Items
+
+TrustedParts.com Inventory API: Sponsored by the Electronic Components Industry Association (ECIA) 
+to promote authorized component tracking. Access is completely free for commercial apps and provides 
+generous request limits to cross-reference component models, electronic parts, and internal 
+maintenance materials.
+
+Open-Meteo API: While not a hardware database, this is an essential free 
+maintenance tool used in predictive commercial property apps. It requires no authentication and 
+provides historical and live localized weather data, allowing your software to mathematically 
+predict residential HVAC runtime strain, filter replacement intervals, and seasonal equipment degradation.

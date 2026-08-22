@@ -513,6 +513,104 @@ def migration_004_unique_service_catalog_codes(
             "service_items table."
         )
 
+# --------------------------------------------------
+# Migration 005: Vehicle Acquisition Baseline
+# --------------------------------------------------
+
+def migration_005_vehicle_acquisition_baseline(
+    connection
+):
+    """
+    Add the vehicle acquisition baseline fields used
+    by Maintenance Due when no matching completed
+    service history exists.
+
+    UI meaning:
+
+    date_acquired:
+        Date of Sale / In-Service
+
+    mileage_at_acquisition:
+        Mileage at Sale / Acquisition
+
+    vehicle_condition:
+        New or Used
+    """
+
+    if not table_exists(
+        "vehicles"
+    ):
+
+        raise RuntimeError(
+            "Migration 005 requires the "
+            "vehicles table."
+        )
+
+    add_column_if_missing(
+        connection,
+        "vehicles",
+        "date_acquired",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        connection,
+        "vehicles",
+        "mileage_at_acquisition",
+        "INTEGER"
+    )
+
+    add_column_if_missing(
+        connection,
+        "vehicles",
+        "vehicle_condition",
+        "TEXT"
+    )
+# --------------------------------------------------
+# Migration 006: Vehicle Purchase and Sale Prices
+# --------------------------------------------------
+
+def migration_006_vehicle_purchase_and_sale_prices(
+    connection
+):
+    """
+    Add optional vehicle purchase and sale prices.
+
+    Values are stored as integer cents to avoid
+    floating-point currency errors.
+
+    Examples:
+
+    Purchase price:
+    $38,500.00 becomes 3850000 cents
+
+    Sold price:
+    $42,000.00 becomes 4200000 cents
+    """
+
+    if not table_exists(
+        "vehicles"
+    ):
+
+        raise RuntimeError(
+            "Migration 006 requires the "
+            "vehicles table."
+        )
+
+    add_column_if_missing(
+        connection,
+        "vehicles",
+        "purchase_price_cents",
+        "INTEGER"
+    )
+
+    add_column_if_missing(
+        connection,
+        "vehicles",
+        "sold_price_cents",
+        "INTEGER"
+    )
+
     # ----------------------------------------------
     # Validate Service Group Codes
     # ----------------------------------------------
@@ -682,7 +780,18 @@ MIGRATIONS = [
         "id": "004",
         "name": "unique_service_catalog_codes",
         "function": migration_004_unique_service_catalog_codes
+    },
+    {
+        "id": "005",
+        "name": "vehicle_acquisition_baseline",
+        "function": migration_005_vehicle_acquisition_baseline
+    },
+    {
+        "id": "006",
+        "name": "vehicle_purchase_and_sale_prices",
+        "function": migration_006_vehicle_purchase_and_sale_prices
     }
+    
 ]
 
 

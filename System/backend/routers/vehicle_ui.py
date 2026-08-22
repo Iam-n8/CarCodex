@@ -39,6 +39,12 @@ from helpers.storage import (
     get_maintenance_folder,
     save_vin_decode_files
     )
+from decimal import (
+    Decimal,
+    InvalidOperation,
+    ROUND_HALF_UP
+)
+
 
 
 router = APIRouter()
@@ -46,6 +52,59 @@ router = APIRouter()
 templates = Jinja2Templates(
     directory="templates"
 )
+
+# --------------------------------------------------
+# Currency Conversion
+# --------------------------------------------------
+
+def dollars_to_cents(
+    value: str
+):
+    """
+    Convert a dollar amount submitted by a form
+    into integer cents.
+
+    Examples:
+
+    "38500.00" -> 3850000
+    "" -> None
+    """
+
+    if value is None:
+
+        return None
+
+    cleaned_value = value.strip()
+
+    if not cleaned_value:
+
+        return None
+
+    try:
+
+        dollar_amount = Decimal(
+            cleaned_value
+        )
+
+    except InvalidOperation:
+
+        return None
+
+    if dollar_amount < 0:
+
+        return None
+
+    cent_amount = (
+        dollar_amount * 100
+    ).quantize(
+        Decimal("1"),
+        rounding=ROUND_HALF_UP
+    )
+
+    return int(
+        cent_amount
+    )
+
 @router.get(
     "/vehicles-ui",
     response_class=HTMLResponse
@@ -204,7 +263,9 @@ def vehicle_add_submit(
 
     nickname: str = Form(""),
 
-    year: int = Form(0),
+    vin: str = Form(""),
+
+    year: int = Form(...),
 
     make: str = Form(""),
 
@@ -212,11 +273,21 @@ def vehicle_add_submit(
 
     trim: str = Form(""),
 
-    vin: str = Form(""),
+    current_mileage: int = Form(...),
 
-    current_mileage: int = Form(0)
+    date_acquired: str = Form(""),
+
+    mileage_at_acquisition: int | None = Form(None),
+
+    vehicle_condition: str = Form(""),
+
+    purchase_price: str = Form(""),
+
+    sold_price: str = Form("")
 
 ):
+
+
 
     if not nickname.strip():
         nickname = "Nickname Unknown"
@@ -237,9 +308,19 @@ def vehicle_add_submit(
 
     db = SessionLocal()
 
+    purchase_price_cents = dollars_to_cents(
+        purchase_price
+    )
+
+    sold_price_cents = dollars_to_cents(
+        sold_price
+    )
+
     vehicle = Vehicle(
 
         nickname=nickname,
+
+        vin=vin,
 
         year=year,
 
@@ -249,9 +330,27 @@ def vehicle_add_submit(
 
         trim=trim,
 
-        vin=vin,
+        current_mileage=current_mileage,
 
-        current_mileage=current_mileage
+        date_acquired=(
+            date_acquired.strip()
+            if date_acquired.strip()
+            else None
+        ),
+
+        mileage_at_acquisition=mileage_at_acquisition,
+
+        vehicle_condition=(
+            vehicle_condition.strip()
+            if vehicle_condition.strip()
+            else None
+        ),
+
+        purchase_price_cents=purchase_price_cents,
+
+        sold_price_cents=sold_price_cents,
+
+        archived=False
 
     )
 
@@ -349,19 +448,29 @@ def vehicle_edit_submit(
 
     vehicle_id: int,
 
-    nickname: str = Form(...),
+    nickname: str = Form(""),
+
+    vin: str = Form(""),
 
     year: int = Form(...),
 
-    make: str = Form(...),
+    make: str = Form(""),
 
-    model: str = Form(...),
+    model: str = Form(""),
 
-    trim: str = Form(...),
+    trim: str = Form(""),
 
-    vin: str = Form(...),
+    current_mileage: int = Form(...),
 
-    current_mileage: int = Form(...)
+    date_acquired: str = Form(""),
+
+    mileage_at_acquisition: int | None = Form(None),
+
+    vehicle_condition: str = Form(""),
+
+    purchase_price: str = Form(""),
+
+    sold_price: str = Form("")
 
 ):
 
@@ -380,6 +489,31 @@ def vehicle_edit_submit(
     vehicle.trim = trim
     vehicle.vin = vin
     vehicle.current_mileage = current_mileage
+    vehicle.date_acquired = (
+        date_acquired.strip()
+        if date_acquired.strip()
+        else None
+    )
+
+    vehicle.mileage_at_acquisition = (
+        mileage_at_acquisition
+    )
+
+    vehicle.vehicle_condition = (
+        vehicle_condition.strip()
+        if vehicle_condition.strip()
+        else None
+    )
+
+    vehicle.purchase_price_cents = dollars_to_cents(
+        purchase_price
+  
+    )
+
+    vehicle.sold_price_cents = dollars_to_cents(
+        sold_price
+
+    )
 
     db.commit()
 

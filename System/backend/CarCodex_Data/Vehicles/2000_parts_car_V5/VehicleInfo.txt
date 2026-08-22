@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 5
+
+Nickname: noen
+
+Year: 2000
+Make: parts
+Model: car
+Trim: none
+
+VIN: 007
+
+Current Mileage: 15000

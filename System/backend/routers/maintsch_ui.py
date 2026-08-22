@@ -555,10 +555,33 @@ def maintenance_due_vehicle_page(
         Vehicle.id == vehicle_id
     ).first()
 
-    due_items = calculate_vehicle_maintenance_due(
-        db,
-        vehicle_id
+    if not vehicle:
+
+        db.close()
+
+        return RedirectResponse(
+            url="/vehicles-ui",
+            status_code=303
+        )
+
+    maintenance_due_summary = (
+        calculate_vehicle_maintenance_due(
+            db,
+            vehicle_id
+        )
     )
+
+    due_items = maintenance_due_summary[
+        "due_items"
+    ]
+
+    next_due_item = maintenance_due_summary[
+        "next_due_item"
+    ]
+
+    history_needed_items = maintenance_due_summary[
+        "history_needed_items"
+    ]
 
     db.close()
 
@@ -568,6 +591,8 @@ def maintenance_due_vehicle_page(
         context={
             "request": request,
             "vehicle": vehicle,
-            "due_items": due_items
+            "due_items": due_items,
+            "next_due_item": next_due_item,
+            "history_needed_items": history_needed_items
         }
     )

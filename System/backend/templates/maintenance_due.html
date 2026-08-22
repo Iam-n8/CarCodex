@@ -47,6 +47,7 @@
                     <th>Item</th>
                     <th>Last Date</th>
                     <th>Last Mileage</th>
+                    <th>Calculation Source</th>
                     <th>Miles Due</th>
                     <th>Miles To Go</th>
                     <th>Date Due</th>
@@ -80,6 +81,27 @@
                                 Match:
                                 {{ item.service_type_match }}
                             </small>
+                        </td>
+                        <td>
+                            {{ item.baseline_source }}
+
+                            {% if item.is_estimated %}
+
+                                <br>
+
+                                <span class="estimated-badge">
+                                    Estimated
+                                </span>
+
+                            {% else %}
+
+                                <br>
+
+                                <span class="completed-badge">
+                                    Recorded Service
+                                </span>
+
+                            {% endif %}
                         </td>
 
                         <td>
@@ -189,18 +211,147 @@
 
         </table>
 
+{% else %}
+
+    <div class="nothing-due-message">
+
+        <h3>
+            Nothing Is Currently Due
+        </h3>
+
+        <p>
+            No maintenance items are overdue or approaching their service interval.
+        </p>
+
+    </div>
+
+    {% if next_due_item %}
+
+        <div class="next-service-card">
+
+            <h3>
+                Next Scheduled Service
+            </h3>
+
+            <h4>
+                {{ next_due_item.item_name }}
+            </h4>
+
+            <p>
+                <strong>Status:</strong>
+                {{ next_due_item.status }}
+            </p>
+
+            {% if next_due_item.miles_due is not none %}
+
+                <p>
+                    <strong>Due Mileage:</strong>
+                    {{ "{:,}".format(next_due_item.miles_due) }}
+                </p>
+
+            {% endif %}
+
+            {% if next_due_item.miles_to_go is not none %}
+
+                <p>
+                    <strong>Miles Remaining:</strong>
+                    {{ "{:,}".format(next_due_item.miles_to_go) }}
+                </p>
+
+            {% endif %}
+
+            {% if next_due_item.date_due %}
+
+                <p>
+                    <strong>Due Date:</strong>
+                    {{ next_due_item.date_due }}
+                </p>
+
+            {% endif %}
+
+            {% if next_due_item.months_to_go is not none %}
+
+                <p>
+                    <strong>Approximate Months Remaining:</strong>
+                    {{ next_due_item.months_to_go }}
+                </p>
+
+            {% endif %}
+
+            {% if next_due_item.percent_used is not none %}
+
+                <p>
+                    <strong>Interval Used:</strong>
+                    {{ next_due_item.percent_used }}%
+                </p>
+
+            {% endif %}
+
+            {% if next_due_item.percent_remaining is not none %}
+
+                <p>
+                    <strong>Interval Remaining:</strong>
+                    {{ next_due_item.percent_remaining }}%
+                </p>
+
+            {% endif %}
+
+            <p>
+                <strong>Controlling Basis:</strong>
+                {{ next_due_item.due_basis }}
+            </p>
+
+            <p>
+                <strong>Calculation Source:</strong>
+                {{ next_due_item.baseline_source }}
+            </p>
+
+            {% if next_due_item.is_estimated %}
+
+                <p class="estimated-notice">
+                    This is an estimate based on the vehicle acquisition or
+                    in-service baseline. A matching completed service record
+                    will replace this estimate.
+                </p>
+
+            {% endif %}
+
+        </div>
+
     {% else %}
 
-        <p>
-            No maintenance due items found.
-        </p>
+        <div class="no-next-service">
 
-        <p>
-            Open the Maintenance Schedule page and seed or add schedule items first.
-        </p>
+            <p>
+                Maintain Hub could not determine the next scheduled service.
+            </p>
+
+            {% if history_needed_items %}
+
+                <p>
+                    Maintenance history or vehicle acquisition information is
+                    needed for {{ history_needed_items | length }} schedule
+                    item(s).
+                </p>
+
+            {% else %}
+
+                <p>
+                    Review the vehicle’s Maintenance Schedule and acquisition
+                    information.
+                </p>
+
+            {% endif %}
+
+        </div>
 
     {% endif %}
 
+{% endif %}
+
+
+
+    
 </div>
 
 <style>
@@ -246,6 +397,28 @@
     small {
         color: #cbd5e1;
     }
+    .estimated-badge {
+        display: inline-block;
+        margin-top: 6px;
+        padding: 3px 7px;
+        border-radius: 6px;
+        background: #78350f;
+        color: #fef3c7;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .completed-badge {
+        display: inline-block;
+        margin-top: 6px;
+        padding: 3px 7px;
+        border-radius: 6px;
+        background: #064e3b;
+        color: #a7f3d0;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
 
 </style>
 

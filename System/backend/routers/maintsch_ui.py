@@ -582,6 +582,30 @@ def maintenance_due_vehicle_page(
     history_needed_items = maintenance_due_summary[
         "history_needed_items"
     ]
+    overdue_count = sum(
+        1
+        for item in due_items
+        if item["status"] == "OVERDUE"
+    )
+
+    due_soon_count = sum(
+        1
+        for item in due_items
+        if item["status"] == "DUE SOON"
+    )
+
+    estimated_count = sum(
+        1
+        for item in due_items
+        if item.get(
+            "is_estimated",
+            False
+        )
+    )
+
+    history_needed_count = len(
+        history_needed_items
+    )
 
     db.close()
 
@@ -593,6 +617,10 @@ def maintenance_due_vehicle_page(
             "vehicle": vehicle,
             "due_items": due_items,
             "next_due_item": next_due_item,
-            "history_needed_items": history_needed_items
+            "history_needed_items": history_needed_items,
+            "overdue_count": overdue_count,
+            "due_soon_count": due_soon_count,
+            "estimated_count": estimated_count,
+            "history_needed_count": history_needed_count
         }
     )

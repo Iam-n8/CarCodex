@@ -30,6 +30,15 @@
         <option value="{{ vendor.id }}">
             {{ vendor.name }}
         </option>
+        {% if selected_schedule %}
+
+        <input
+            type="hidden"
+            name="schedule_id"
+            value="{{ selected_schedule.id }}"
+        >
+
+{% endif %}
 
         {% endfor %}
 
@@ -76,7 +85,24 @@
 
 <h3>Primary Service</h3>
 
-<select name="primary_reason" required>
+{% if selected_schedule %}
+
+    <div class="preselected-service-notice">
+
+        Adding service history for:
+
+        <strong>
+            {{ selected_schedule.item_name }}
+        </strong>
+
+    </div>
+
+{% endif %}
+
+<select
+    name="primary_reason"
+    required
+>
 
     {% for entry in service_catalog %}
 
@@ -84,7 +110,12 @@
 
             {% for item in entry["items"] %}
 
-                <option value="{{ item.item_name }}">
+                <option
+                    value="{{ item.item_name }}"
+                    {% if item.item_name == preselected_service %}
+                        selected
+                    {% endif %}
+                >
                     {{ item.display_order }} - {{ item.item_name }}
                 </option>
 
@@ -93,6 +124,17 @@
         </optgroup>
 
     {% endfor %}
+
+    <option
+        value="Other"
+        {% if preselected_service == "Other" %}
+            selected
+        {% endif %}
+    >
+        Other
+    </option>
+
+</select>
 
     <option value="Other">
         Other
@@ -176,4 +218,18 @@
 
 </form>
 
+<style>
+.preselected-service-notice {
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid #2563eb;
+    border-radius: 8px;
+    background: #172554;
+    color: #dbeafe;
+}
+
+.preselected-service-notice strong {
+    color: #93c5fd;
+}
+</style>
 {% endblock %}

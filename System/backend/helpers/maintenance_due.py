@@ -566,8 +566,10 @@ def calculate_schedule_item_due(
 
     is_estimated = False
 
+    history_unknown = False
+
     # ----------------------------------------------
-    # Vehicle Baseline Fallback
+    # Baseline Fallback
     # ----------------------------------------------
 
     if not last_service:
@@ -577,6 +579,10 @@ def calculate_schedule_item_due(
         ).filter(
             Vehicle.id == vehicle_id
         ).first()
+
+        # ------------------------------------------
+        # Vehicle Acquisition Baseline
+        # ------------------------------------------
 
         if (
             vehicle
@@ -592,6 +598,30 @@ def calculate_schedule_item_due(
             baseline_source = "Vehicle Baseline"
 
             is_estimated = True
+
+        # ------------------------------------------
+        # Odometer Baseline
+        # ------------------------------------------
+
+        elif (
+            schedule.miles_interval
+            and current_mileage is not None
+        ):
+
+            last_service = {
+                "service_date": None,
+                "mileage": 0
+            }
+
+            baseline_source = "Odometer Baseline"
+
+            is_estimated = True
+
+            history_unknown = True
+
+        # ------------------------------------------
+        # No Usable History or Baseline
+        # ------------------------------------------
 
         else:
 
@@ -614,6 +644,7 @@ def calculate_schedule_item_due(
                 "due_basis": "No History",
                 "baseline_source": "No History",
                 "is_estimated": False,
+                "history_unknown": True,
                 "show_on_due_page": False,
                 "notes": schedule.notes
             }
@@ -804,6 +835,7 @@ def calculate_schedule_item_due(
         "due_basis": progress["due_basis"],
         "baseline_source": baseline_source,
         "is_estimated": is_estimated,
+        "history_unknown": history_unknown,
         "show_on_due_page": show_on_due_page,
         "notes": schedule.notes
     }

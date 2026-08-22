@@ -1,0 +1,619 @@
+<!-- vehicle/vehicle_advanced.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>
+    Advanced Vehicle Information
+</h1>
+
+<p>
+    <a href="/vehicle/{{ vehicle.id }}">
+        ← Back to Vehicle
+    </a>
+</p>
+
+<!-- ============================================
+     Ownership and Acquisition
+============================================= -->
+
+<div class="card">
+
+    <h2>
+        Ownership and Acquisition
+    </h2>
+
+    <div class="info-grid">
+
+        <div class="info-item">
+
+            <strong>
+                Date of Sale / In-Service
+            </strong>
+
+            <span>
+                {% if vehicle.date_acquired %}
+
+                    {{ vehicle.date_acquired }}
+
+                {% else %}
+
+                    Not entered
+
+                {% endif %}
+            </span>
+
+        </div>
+
+        <div class="info-item">
+
+            <strong>
+                Mileage at Sale / Acquisition
+            </strong>
+
+            <span>
+                {% if vehicle.mileage_at_acquisition is not none %}
+
+                    {{ "{:,}".format(
+                        vehicle.mileage_at_acquisition
+                    ) }}
+
+                {% else %}
+
+                    Not entered
+
+                {% endif %}
+            </span>
+
+        </div>
+
+        <div class="info-item">
+
+            <strong>
+                Vehicle Condition
+            </strong>
+
+            <span>
+                {% if vehicle.vehicle_condition %}
+
+                    {{ vehicle.vehicle_condition }}
+
+                {% else %}
+
+                    Not entered
+
+                {% endif %}
+            </span>
+
+        </div>
+
+        <div class="info-item">
+
+            <strong>
+                Current Mileage
+            </strong>
+
+            <span>
+                {% if vehicle.current_mileage is not none %}
+
+                    {{ "{:,}".format(
+                        vehicle.current_mileage
+                    ) }}
+
+                {% else %}
+
+                    Not entered
+
+                {% endif %}
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ============================================
+     Financial Information
+============================================= -->
+
+<div class="card">
+
+    <h2>
+        Financial Information
+    </h2>
+
+    <p class="privacy-notice">
+        Financial information is displayed only on this
+        advanced vehicle page.
+    </p>
+
+    <div class="info-grid">
+
+        <div class="info-item">
+
+            <strong>
+                Purchase Price
+            </strong>
+
+            <span class="currency-value">
+
+                {% if vehicle.purchase_price_cents is not none %}
+
+                    ${{ "{:,.2f}".format(
+                        vehicle.purchase_price_cents / 100
+                    ) }}
+
+                {% else %}
+
+                    Not entered
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+        <div class="info-item">
+
+            <strong>
+                Sold For Price
+            </strong>
+
+            <span class="currency-value">
+
+                {% if vehicle.sold_price_cents is not none %}
+
+                    ${{ "{:,.2f}".format(
+                        vehicle.sold_price_cents / 100
+                    ) }}
+
+                {% else %}
+
+                    Not entered
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ============================================
+     Vehicle Identity
+============================================= -->
+
+<div class="card">
+
+    <h2>
+        Vehicle Identity
+    </h2>
+
+    <div class="info-grid">
+
+        <div class="info-item">
+
+            <strong>
+                Nickname
+            </strong>
+
+            <span>
+                {{ vehicle.nickname or "Not entered" }}
+            </span>
+
+        </div>
+
+        <div class="info-item">
+
+            <strong>
+                VIN
+            </strong>
+
+            <span>
+                {{ vehicle.vin or "Not entered" }}
+            </span>
+
+        </div>
+
+        <div class="info-item">
+
+            <strong>
+                Year
+            </strong>
+
+            <span>
+                {% if vehicle.year is not none %}
+                    {{ vehicle.year }}
+                {% else %}
+                    Not entered
+                {% endif %}
+            </span>
+
+        </div>
+
+        <div class="info-item">
+
+            <strong>
+                Make
+            </strong>
+
+            <span>
+                {{ vehicle.make or "Not entered" }}
+            </span>
+
+        </div>
+
+        <div class="info-item">
+
+            <strong>
+                Model
+            </strong>
+
+            <span>
+                {{ vehicle.model or "Not entered" }}
+            </span>
+
+        </div>
+
+        <div class="info-item">
+
+            <strong>
+                Trim
+            </strong>
+
+            <span>
+                {{ vehicle.trim or "Not entered" }}
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================
+     VIN Decode File Status
+============================================= -->
+
+<div class="card">
+
+    <h2>
+        VIN Decode Files
+    </h2>
+
+    <div class="file-status-row">
+
+        <span>
+            VINDecode.json
+        </span>
+
+        {% if vin_json_exists %}
+
+            <span class="available-badge">
+                Available
+            </span>
+
+        {% else %}
+
+            <span class="missing-badge">
+                Not Available
+            </span>
+
+        {% endif %}
+
+    </div>
+
+    <div class="file-status-row">
+
+        <span>
+            VINDecode.csv
+        </span>
+
+        {% if vin_csv_exists %}
+
+            <span class="available-badge">
+                Available
+            </span>
+
+        {% else %}
+
+            <span class="missing-badge">
+                Not Available
+            </span>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- ============================================
+     Decoded Vehicle Identity
+============================================= -->
+
+{% if vehicle_identity_fields %}
+
+    <div class="card">
+
+        <h2>
+            Decoded Vehicle Information
+        </h2>
+
+        <div class="info-grid">
+
+            {% for field in vehicle_identity_fields %}
+
+                <div class="info-item">
+
+                    <strong>
+                        {{ field["label"] }}
+                    </strong>
+
+                    <span>
+                        {{ field["value"] }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+{% endif %}
+
+<!-- ============================================
+     Manufacturing Information
+============================================= -->
+
+{% if manufacturing_fields %}
+
+    <div class="card">
+
+        <h2>
+            Manufacturing Information
+        </h2>
+
+        <div class="info-grid">
+
+            {% for field in manufacturing_fields %}
+
+                <div class="info-item">
+
+                    <strong>
+                        {{ field["label"] }}
+                    </strong>
+
+                    <span>
+                        {{ field["value"] }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endif %}
+
+<!-- ============================================
+     Engine Information
+============================================= -->
+
+{% if engine_fields %}
+
+    <div class="card">
+
+        <h2>
+            Engine Information
+        </h2>
+
+        <div class="info-grid">
+
+            {% for field in engine_fields %}
+
+                <div class="info-item">
+
+                    <strong>
+                        {{ field["label"] }}
+                    </strong>
+
+                    <span>
+                        {{ field["value"] }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endif %}
+
+<!-- ============================================
+     Transmission and Drivetrain
+============================================= -->
+
+{% if transmission_fields %}
+
+    <div class="card">
+
+        <h2>
+            Transmission and Drivetrain
+        </h2>
+
+        <div class="info-grid">
+
+            {% for field in transmission_fields %}
+
+                <div class="info-item">
+
+                    <strong>
+                        {{ field["label"] }}
+                    </strong>
+
+                    <span>
+                        {{ field["value"] }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endif %}
+
+<!-- ============================================
+     Safety and Equipment
+============================================= -->
+
+{% if safety_fields %}
+
+    <div class="card">
+
+        <h2>
+            Safety and Equipment
+        </h2>
+
+        <div class="info-grid">
+
+            {% for field in safety_fields %}
+
+                <div class="info-item">
+
+                    <strong>
+                        {{ field["label"] }}
+                    </strong>
+
+                    <span>
+                        {{ field["value"] }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endif %}
+
+<!-- ============================================
+     No VIN Decode Information
+============================================= -->
+
+{% if not vin_decode %}
+
+    <div class="card">
+
+        <h2>
+            Technical VIN Information
+        </h2>
+
+        <p>
+            No VIN decode information is available for this vehicle.
+        </p>
+
+        <p>
+            Maintain Hub will still display the ownership,
+            acquisition, financial, and manually entered vehicle
+            information above.
+        </p>
+
+    </div>
+
+{% endif %}
+<!-- ============================================
+     Advanced Vehicle Information Styles
+============================================= -->
+
+<style>
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(240px, 1fr)
+        );
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 12px;
+        border: 1px solid #374151;
+        border-radius: 8px;
+        background: #111827;
+    }
+
+    .info-item strong {
+        color: #93c5fd;
+    }
+
+    .info-item span {
+        overflow-wrap: anywhere;
+    }
+
+    .currency-value {
+        color: #a7f3d0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .privacy-notice {
+        color: #d1d5db;
+        font-size: 14px;
+    }
+
+    .file-status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        max-width: 500px;
+        padding: 10px 0;
+        border-bottom: 1px solid #374151;
+    }
+
+    .file-status-row:last-child {
+        border-bottom: none;
+    }
+
+    .available-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: #064e3b;
+        color: #a7f3d0;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .missing-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: #7f1d1d;
+        color: #fecaca;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+</style>
+
+{% endblock %}

@@ -52,6 +52,9 @@ from routers import factory_reset_ui
 from helpers.db_migrations import (
     run_database_migrations
 )
+from routers.vehicle import (
+    vehicle_adv
+)
 
 
 # --------------------------------------------------
@@ -104,6 +107,9 @@ app.include_router(
 )
 app.include_router(
     factory_reset_ui.router
+)
+app.include_router(
+    vehicle_adv.router
 )
 
 

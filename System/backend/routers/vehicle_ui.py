@@ -39,6 +39,7 @@ from helpers.storage import (
     get_maintenance_folder,
     save_vin_decode_files
     )
+
 from decimal import (
     Decimal,
     InvalidOperation,
@@ -769,7 +770,8 @@ def archived_vehicles(
 )
 def vehicle_maintenance_add_page(
     request: Request,
-    vehicle_id: int
+    vehicle_id: int,
+    schedule_id: int | None = None
 ):
 
     db = SessionLocal()
@@ -780,11 +782,72 @@ def vehicle_maintenance_add_page(
         Vehicle.id == vehicle_id
     ).first()
 
+    if not vehicle:
+
+        db.close()
+
+        return RedirectResponse(
+            url="/vehicles-ui",
+            status_code=303
+        )
+
+    selected_schedule = None
+
+    preselected_service = ""
+
+    if schedule_id is not None:
+
+        selected_schedule = db.query(
+            MaintenanceSchedule
+        ).filter(
+            MaintenanceSchedule.id == schedule_id,
+            MaintenanceSchedule.vehicle_id == vehicle_id
+        ).first()
+
+        if selected_schedule:
+
+            preselected_service = (
+                selected_schedule.service_type_match
+                or selected_schedule.item_name
+                or ""
+            )
+
+    # ----------------------------------------------
+    # Optional MaintSch Preselection
+    # ----------------------------------------------
+
+    selected_schedule = None
+
+    preselected_service = ""
+
+    if schedule_id is not None:
+
+        selected_schedule = db.query(
+            MaintenanceSchedule
+        ).filter(
+            MaintenanceSchedule.id == schedule_id,
+            MaintenanceSchedule.vehicle_id == vehicle_id
+        ).first()
+
+        if selected_schedule:
+
+            preselected_service = (
+                selected_schedule.service_type_match
+                or selected_schedule.item_name
+                or ""
+            )
+
+    # ----------------------------------------------
+    # Vendors
+    # ----------------------------------------------
+
     vendors = db.query(
         Vendor
     ).all()
 
-
+    # ----------------------------------------------
+    # Service Catalog
+    # ----------------------------------------------
 
     service_groups = db.query(
         ServiceGroup
@@ -819,13 +882,14 @@ def vehicle_maintenance_add_page(
     return templates.TemplateResponse(
         request=request,
         name="maintenance_add_vehicle.html",
-
         context={
             "request": request,
             "vehicle": vehicle,
             "vehicle_id": vehicle.id,
             "vendors": vendors,
-            "service_catalog": service_catalog
+            "service_catalog": service_catalog,
+            "selected_schedule": selected_schedule,
+            "preselected_service": preselected_service
         }
     )
 # --------------------------------------------------
@@ -859,12 +923,13 @@ def vehicle_maintenance_add_submit(
 
     service_notes: str = Form(""),
 
+    schedule_id: int | None = Form(None),
+
     document_file: UploadFile | None = File(None)
 
 
 ):
 
-    db = SessionLocal()
 
     vendor = db.query(
         Vendor
@@ -995,6 +1060,13 @@ def vehicle_maintenance_add_submit(
 
             
     db.close()
+
+    if schedule_id is not None:
+
+        return RedirectResponse(
+            url=f"/maintenance-due-ui/{vehicle_id}",
+            status_code=303
+        )
 
     return RedirectResponse(
         url=f"/vehicle/{vehicle_id}",

@@ -20,6 +20,126 @@
 </p>
 
 {% endif %}
+<!-- ============================================
+     Maintenance Due Summary
+============================================= -->
+
+<div class="maintenance-summary">
+
+    <div class="summary-box summary-overdue">
+
+        <span class="summary-number">
+            {{ overdue_count }}
+        </span>
+
+        <span class="summary-label">
+            Overdue
+        </span>
+
+    </div>
+
+    <div class="summary-box summary-due-soon">
+
+        <span class="summary-number">
+            {{ due_soon_count }}
+        </span>
+
+        <span class="summary-label">
+            Due Soon
+        </span>
+
+    </div>
+
+    <div class="summary-box summary-estimated">
+
+        <span class="summary-number">
+            {{ estimated_count }}
+        </span>
+
+        <span class="summary-label">
+            Estimated
+        </span>
+
+    </div>
+
+    <div class="summary-box summary-history">
+
+        <span class="summary-number">
+            {{ history_needed_count }}
+        </span>
+
+        <span class="summary-label">
+            History Needed
+        </span>
+
+    </div>
+
+</div>
+
+<!-- ============================================
+     Maintenance History Needed
+============================================= -->
+
+{% if history_needed_items %}
+
+    <div class="card history-needed-card">
+
+        <details>
+
+            <summary>
+                Maintenance History Needed
+                ({{ history_needed_count }})
+            </summary>
+
+            <p class="history-needed-explanation">
+                Maintain Hub cannot calculate these schedule items
+                because no matching completed service or usable
+                vehicle acquisition baseline was found.
+            </p>
+
+            <div class="history-needed-list">
+
+                {% for item in history_needed_items %}
+
+                    <div class="history-needed-item">
+
+                        <strong>
+                            {{ item.item_name }}
+                        </strong>
+
+                        <span>
+                            Service Match:
+                            {{ item.service_type_match }}
+                        </span>
+
+                        {% if item.notes %}
+
+                            <span>
+                                {{ item.notes }}
+                            </span>
+
+                        {% endif %}
+
+                        <a href="/vehicle/{{ vehicle.id }}/maintenance-add?schedule_id={{ item.schedule_id }}" class="btn btn-primary">
+                            Add Service History
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </details>
+
+    </div>
+
+{% endif %}
+
+<!-- ============================================
+     
+============================================= -->
+
 
 <p>
     <a href="/vehicle/{{ vehicle.id }}">
@@ -45,9 +165,9 @@
                 <tr>
                     <th>Status</th>
                     <th>Item</th>
+                    <th>Calculation Source</th>
                     <th>Last Date</th>
                     <th>Last Mileage</th>
-                    <th>Calculation Source</th>
                     <th>Miles Due</th>
                     <th>Miles To Go</th>
                     <th>Date Due</th>
@@ -85,17 +205,21 @@
                         <td>
                             {{ item.baseline_source }}
 
-                            {% if item.is_estimated %}
+                            <br>
 
-                                <br>
+                            {% if item.history_unknown %}
+
+                                <span class="history-unknown-badge">
+                                    History Unknown
+                                </span>
+
+                            {% elif item.is_estimated %}
 
                                 <span class="estimated-badge">
                                     Estimated
                                 </span>
 
                             {% else %}
-
-                                <br>
 
                                 <span class="completed-badge">
                                     Recorded Service
@@ -199,9 +323,14 @@
                                 -
                             {% endif %}
                         </td>
-
-
-
+                        <td>
+                            <a
+                                href="{{ url_for('maintenance_add', vehicle_id=vehicle.id, schedule_id=item.schedule_id) }}"
+                                class="btn btn-primary"
+                            >
+                                Record Service
+                            </a>
+                        </td>
 
                     </tr>
 
@@ -417,6 +546,127 @@
         color: #a7f3d0;
         font-size: 12px;
         font-weight: bold;
+    }
+    .maintenance-summary {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(150px, 1fr)
+        );
+        gap: 15px;
+        margin: 20px 0;
+    }
+
+    .summary-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 95px;
+        padding: 15px;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        background: #1f2937;
+    }
+
+    .summary-number {
+        font-size: 30px;
+        font-weight: bold;
+        line-height: 1;
+    }
+
+    .summary-label {
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .summary-overdue {
+        border-color: #dc2626;
+    }
+
+    .summary-overdue .summary-number {
+        color: #fca5a5;
+    }
+
+    .summary-due-soon {
+        border-color: #f59e0b;
+    }
+
+    .summary-due-soon .summary-number {
+        color: #fde68a;
+    }
+
+    .summary-estimated {
+        border-color: #2563eb;
+    }
+
+    .summary-estimated .summary-number {
+        color: #93c5fd;
+    }
+
+    .summary-history {
+        border-color: #6b7280;
+    }
+
+    .summary-history .summary-number {
+        color: #d1d5db;
+    }
+    .add-history-link {
+        display: inline-block;
+        align-self: flex-start;
+        margin-top: 8px;
+        padding: 7px 10px;
+        border: 1px solid #2563eb;
+        border-radius: 6px;
+        color: #93c5fd;
+        background: #172554;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .add-history-link:visited {
+        color: #f97316;
+    }
+
+    .add-history-link:hover {
+        color: white;
+        background: #1d4ed8;
+        text-decoration: none;
+    }
+    .history-unknown-badge {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: #7c2d12;
+    color: #fed7aa;
+    font-size: 12px;
+    font-weight: bold;
+    }
+    .record-service-link {
+        display: inline-block;
+        padding: 7px 10px;
+        border: 1px solid #2563eb;
+        border-radius: 6px;
+        background: #172554;
+        color: #93c5fd;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .record-service-link:visited {
+        color: #f97316;
+    }
+
+    .record-service-link:hover {
+        background: #1d4ed8;
+        color: white;
+        text-decoration: none;
     }
 
 

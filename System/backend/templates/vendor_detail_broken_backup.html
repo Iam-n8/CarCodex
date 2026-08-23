@@ -1,0 +1,77 @@
+<!-- vendor_detail.html -->
+ 
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ vendor.name }}</h1>
+
+<p>
+
+    <a href="/vendors-ui"
+       class="nav-link">
+
+        ← Back To Vendors
+
+    </a>
+
+</p>
+
+<div class="card">
+
+    <h2>Vendor Information</h2>
+
+    <p>
+
+        <strong>Name:</strong>
+
+        {{ vendor.name }}
+
+    </p>
+
+    <p>
+
+        <strong>Address:</strong>
+
+        {{ vendor.address }}
+
+    </p>
+
+    <p>
+
+        <strong>Phone:</strong>
+
+        {{ vendor.phone }}
+
+    </p>
+
+    <p>
+
+        <strong>Website:</strong>
+
+        {{ vendor.website }}
+
+    </p>
+
+    <p>
+
+        <strong>Notes:</strong>
+
+        {{ vendor.notes }}
+
+    </p>
+
+</div>
+
+<p>
+
+    <a href="/vendor-edit/{{ vendor.id }}"
+       class="nav-link">
+
+        ✏ Edit Vendor
+
+    </a>
+
+</p>
+
+{% endblock %}

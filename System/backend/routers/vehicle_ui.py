@@ -39,6 +39,9 @@ from helpers.storage import (
     get_maintenance_folder,
     save_vin_decode_files
     )
+from helpers.service_catalog_loader import (
+    load_available_domains
+)
 
 from decimal import (
     Decimal,
@@ -678,13 +681,21 @@ def vendor_add_page(
     request: Request
 ):
 
+    available_domains = load_available_domains()
+
     return templates.TemplateResponse(
         request=request,
         name="vendor_add.html",
         context={
-            "request": request
+            "request": request,
+            "available_domains": available_domains
         }
     )
+
+# --------------------------------------------------
+# Add Vendor Submit
+# --------------------------------------------------
+
 @router.post(
     "/vendor-add"
 )
@@ -692,15 +703,90 @@ def vendor_add_submit(
 
     name: str = Form(...),
 
+    vendor_type: str = Form(""),
+
+    domain: str = Form(""),
+
+    rating: int | None = Form(None),
+
     address_1: str = Form(""),
+
+    address_2: str = Form(""),
+
+    city: str = Form(""),
+
+    state: str = Form(""),
+
+    zip_code: str = Form(""),
+
+    primary_contact: str = Form(""),
 
     phone: str = Form(""),
 
+    email: str = Form(""),
+
     website: str = Form(""),
+
+    is_preferred: str = Form(""),
 
     notes: str = Form("")
 
 ):
+
+    # ----------------------------------------------
+    # Clean and Validate Values
+    # ----------------------------------------------
+
+    name = name.strip()
+
+    if not name:
+
+        name = "Vendor Name Unknown"
+
+    vendor_type = vendor_type.strip()
+
+    domain = domain.strip()
+
+    address_1 = address_1.strip()
+
+    address_2 = address_2.strip()
+
+    city = city.strip()
+
+    state = state.strip().upper()
+
+    zip_code = zip_code.strip()
+
+    primary_contact = primary_contact.strip()
+
+    phone = phone.strip()
+
+    email = email.strip()
+
+    website = website.strip()
+
+    notes = notes.strip()
+
+    if (
+        rating is not None
+        and rating not in [
+            1,
+            2,
+            3,
+            4,
+            5
+        ]
+    ):
+
+        rating = None
+
+    preferred_value = (
+        is_preferred == "on"
+    )
+
+    # ----------------------------------------------
+    # Create Vendor
+    # ----------------------------------------------
 
     db = SessionLocal()
 
@@ -708,18 +794,89 @@ def vendor_add_submit(
 
         name=name,
 
-        address_1=address_1,
+        vendor_type=(
+            vendor_type
+            if vendor_type
+            else None
+        ),
 
-        phone=phone,
+        domain=(
+            domain
+            if domain
+            else None
+        ),
 
-        website=website,
+        rating=rating,
 
-        notes=notes
+        address_1=(
+            address_1
+            if address_1
+            else None
+        ),
+
+        address_2=(
+            address_2
+            if address_2
+            else None
+        ),
+
+        city=(
+            city
+            if city
+            else None
+        ),
+
+        state=(
+            state
+            if state
+            else None
+        ),
+
+        zip_code=(
+            zip_code
+            if zip_code
+            else None
+        ),
+
+        primary_contact=(
+            primary_contact
+            if primary_contact
+            else None
+        ),
+
+        phone=(
+            phone
+            if phone
+            else None
+        ),
+
+        email=(
+            email
+            if email
+            else None
+        ),
+
+        website=(
+            website
+            if website
+            else None
+        ),
+
+        is_preferred=preferred_value,
+
+        notes=(
+            notes
+            if notes
+            else None
+        ),
+
+        archived=False
 
     )
 
-
-    db.add(vendor)
+    db.add(
+        vendor
+    )
 
     db.commit()
 
@@ -930,28 +1087,39 @@ def vehicle_maintenance_add_submit(
 
 ):
 
-
     vendor = db.query(
         Vendor
     ).filter(
         Vendor.id == vendor_id
     ).first()
 
+    if not vendor:
+
+        db.close()
+
+        return RedirectResponse(
+            url=f"/vehicle/{vehicle_id}/maintenance-add",
+            status_code=303
+        )
+
+
     visit = MaintenanceVisit(
 
-        vehicle_id=vehicle_id,
+    vehicle_id=vehicle_id,
 
-        vendor=vendor.name,
+    vendor_id=vendor.id,
 
-        visit_date=visit_date,
+    vendor=vendor.name,
 
-        mileage=mileage,
+    visit_date=visit_date,
 
-        invoice_number=invoice_number,
+    mileage=mileage,
 
-        total_cost=total_cost
+    invoice_number=invoice_number,
 
-    )
+    total_cost=total_cost
+
+    )   
 
     db.add(visit)
 

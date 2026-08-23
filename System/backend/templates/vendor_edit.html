@@ -1,76 +1,412 @@
 <!-- vendor_edit.html -->
- 
+
 {% extends "base.html" %}
 
 {% block content %}
 
-<h1>Edit Vendor</h1>
+<h1>
+    Edit Vendor
+</h1>
 
 <p>
-
-    <a href="/vendor/{{ vendor.id }}"
-       class="nav-link">
-
+    <a href="/vendor/{{ vendor.id }}">
         ← Back To Vendor
-
     </a>
-
 </p>
 
-<form method="post" action="/vendor-edit/{{ vendor.id }}">
+<form 
+    method="post"
+    action="/vendor-edit/{{ vendor.id }}"
+>
+    <!-- ============================================
+         Vendor Information
+    ============================================= -->
 
-    <p>
-        Vendor Name<br>
-        <input
-            type="text"
-            name="name"
-            value="{{ vendor.name }}">
-    </p>
+    <div class="card">
 
-    <p>
-        Address<br>
-        <input
-            type="text"
-            name="address_1"
-            value="{{ vendor.address_1 }}">
-    </p>
+        <h2>
+            Vendor Information
+        </h2>
 
-    <p>
-        Phone<br>
-        <input
-            type="text"
-            name="phone"
-            value="{{ vendor.phone }}">
-    </p>
+        <p>
+            <label for="name">
+                Vendor Name
+            </label>
+            <br>
 
-    <p>
-        Website<br>
-        <input
-            type="text"
-            name="website"
-            value="{{ vendor.website }}">
-    </p>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                value="{{ vendor.name or '' }}"
+                required
+            >
+        </p>
 
-    <p>
-        Notes<br>
+        <p>
+            <label for="vendor_type">
+                Vendor Type
+            </label>
+            <br>
+
+            <input
+                type="text"
+                id="vendor_type"
+                name="vendor_type"
+                value="{{ vendor.vendor_type or '' }}"
+                placeholder="Repair Shop, Dealership, Parts Supplier, HVAC Contractor"
+            >
+        </p>
+
+        <p>
+            <label for="domain">
+                Domain
+            </label>
+            <br>
+
+            <select
+                id="domain"
+                name="domain"
+            >
+
+                <option value="">
+                    Select Domain
+                </option>
+
+                {% for domain_name in available_domains %}
+
+                    <option
+                        value="{{ domain_name }}"
+                        {% if vendor.domain == domain_name %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ domain_name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </p>
+
+        <p>
+            <label for="rating">
+                Vendor Rating
+            </label>
+            <br>
+
+            <select
+                id="rating"
+                name="rating"
+            >
+
+                <option
+                    value=""
+                    {% if vendor.rating is none %}
+                        selected
+                    {% endif %}
+                >
+                    Not Rated
+                </option>
+
+                <option
+                    value="1"
+                    {% if vendor.rating == 1 %}
+                        selected
+                    {% endif %}
+                >
+                    ★☆☆☆☆ 1 Star
+                </option>
+
+                <option
+                    value="2"
+                    {% if vendor.rating == 2 %}
+                        selected
+                    {% endif %}
+                >
+                    ★★☆☆☆ 2 Stars
+                </option>
+
+                <option
+                    value="3"
+                    {% if vendor.rating == 3 %}
+                        selected
+                    {% endif %}
+                >
+                    ★★★☆☆ 3 Stars
+                </option>
+
+                <option
+                    value="4"
+                    {% if vendor.rating == 4 %}
+                        selected
+                    {% endif %}
+                >
+                    ★★★★☆ 4 Stars
+                </option>
+
+                <option
+                    value="5"
+                    {% if vendor.rating == 5 %}
+                        selected
+                    {% endif %}
+                >
+                    ★★★★★ 5 Stars
+                </option>
+
+            </select>
+        </p>
+
+        <p>
+            <label>
+                <input
+                    type="checkbox"
+                    name="is_preferred"
+                    {% if vendor.is_preferred %}
+                        checked
+                    {% endif %}
+                >
+
+                Preferred Vendor
+            </label>
+        </p>
+
+    </div>
+
+    <!-- ============================================
+         Address
+    ============================================= -->
+
+    <div class="card">
+
+        <h2>
+            Address
+        </h2>
+
+        <p>
+            <label for="address_1">
+                Address
+            </label>
+            <br>
+
+            <input
+                type="text"
+                id="address_1"
+                name="address_1"
+                value="{{ vendor.address_1 or '' }}"
+            >
+        </p>
+
+        <p>
+            <label for="address_2">
+                Address Line 2
+            </label>
+            <br>
+
+            <input
+                type="text"
+                id="address_2"
+                name="address_2"
+                value="{{ vendor.address_2 or '' }}"
+                placeholder="Suite, unit, building, etc."
+            >
+        </p>
+
+        <div class="address-grid">
+
+            <p>
+                <label for="city">
+                    City
+                </label>
+                <br>
+
+                <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    value="{{ vendor.city or '' }}"
+                >
+            </p>
+
+            <p>
+                <label for="state">
+                    State
+                </label>
+                <br>
+
+                <input
+                    type="text"
+                    id="state"
+                    name="state"
+                    value="{{ vendor.state or '' }}"
+                    maxlength="2"
+                    placeholder="FL"
+                >
+            </p>
+
+            <p>
+                <label for="zip_code">
+                    ZIP
+                </label>
+                <br>
+
+                <input
+                    type="text"
+                    id="zip_code"
+                    name="zip_code"
+                    value="{{ vendor.zip_code or '' }}"
+                    maxlength="10"
+                    placeholder="34286"
+                >
+            </p>
+
+        </div>
+
+    </div>
+    <!-- ============================================
+         Contact Information
+    ============================================= -->
+
+    <div class="card">
+
+        <h2>
+            Contact Information
+        </h2>
+
+        <p>
+            <label for="primary_contact">
+                Primary Contact
+            </label>
+            <br>
+
+            <input
+                type="text"
+                id="primary_contact"
+                name="primary_contact"
+                value="{{ vendor.primary_contact or '' }}"
+            >
+        </p>
+
+        <p>
+            <label for="phone">
+                Phone
+            </label>
+            <br>
+
+            <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value="{{ vendor.phone or '' }}"
+            >
+        </p>
+
+        <p>
+            <label for="email">
+                Email
+            </label>
+            <br>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value="{{ vendor.email or '' }}"
+            >
+        </p>
+
+        <p>
+            <label for="website">
+                Website
+            </label>
+            <br>
+
+            <input
+                type="url"
+                id="website"
+                name="website"
+                value="{{ vendor.website or '' }}"
+                placeholder="https://"
+            >
+        </p>
+
+    </div>
+
+    <!-- ============================================
+         Notes
+    ============================================= -->
+
+    <div class="card">
+
+        <h2>
+            Notes
+        </h2>
 
         <textarea
+            id="notes"
             name="notes"
-            rows="5"
-            cols="50">{{ vendor.notes }}</textarea>
+            rows="8"
+            placeholder="Services offered, experience, warranty information, business hours, or other notes."
+        >{{ vendor.notes or '' }}</textarea>
 
-    </p>
+    </div>
+
+    <!-- ============================================
+         Save Vendor
+    ============================================= -->
 
     <p>
-
         <button type="submit">
-
             Save Changes
-
         </button>
-
     </p>
 
 </form>
 
-{% endblock %}
+<!-- ============================================
+     Edit Vendor Styles
+============================================= -->
+
+<style>
+
+    input,
+    select,
+    textarea {
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="url"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 8px;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    .address-grid {
+        display: grid;
+        grid-template-columns:
+            minmax(200px, 2fr)
+            minmax(90px, 1fr)
+            minmax(130px, 1fr);
+        gap: 15px;
+    }
+
+    @media (max-width: 700px) {
+
+        .address-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+{% endblock %}   

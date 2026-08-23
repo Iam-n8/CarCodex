@@ -611,6 +611,210 @@ def migration_006_vehicle_purchase_and_sale_prices(
         "INTEGER"
     )
 
+# --------------------------------------------------
+# Migration 007: Vendor Details
+# --------------------------------------------------
+
+def migration_007_vendor_details(
+    connection
+):
+    """
+    Add structured location, domain, and rating fields
+    to the Vendor table.
+
+    Existing address_1 remains the street Address
+    field for backward compatibility.
+
+    New fields:
+
+    city:
+        Vendor city.
+
+    state:
+        Vendor state or region.
+
+    zip_code:
+        Vendor ZIP or postal code.
+
+    domain:
+        Primary Maintain Hub domain served by the
+        vendor, such as Vehicle or House.
+
+    rating:
+        Optional numeric rating from 1 through 5.
+    """
+
+    if not table_exists(
+        "vendors"
+    ):
+
+        raise RuntimeError(
+            "Migration 007 requires the "
+            "vendors table."
+        )
+
+    add_column_if_missing(
+        connection,
+        "vendors",
+        "city",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        connection,
+        "vendors",
+        "state",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        connection,
+        "vendors",
+        "zip_code",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        connection,
+        "vendors",
+        "domain",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        connection,
+        "vendors",
+        "rating",
+        "INTEGER"
+    )
+# --------------------------------------------------
+# Migration 008: Maintenance Visit Vendor ID
+# --------------------------------------------------
+
+def migration_008_maintenance_visit_vendor_id(
+    connection
+):
+    """
+    Add a durable Vendor relationship to maintenance
+    visits.
+
+    The existing vendor text field remains as a
+    historical vendor-name snapshot.
+
+    vendor_id:
+        References the Vendor record used for the
+        maintenance visit.
+
+    Existing rows remain valid because vendor_id
+    is optional until the backfill migration runs.
+    """
+
+    if not table_exists(
+        "maintenance_visits"
+    ):
+
+        raise RuntimeError(
+            "Migration 008 requires the "
+            "maintenance_visits table."
+        )
+
+    add_column_if_missing(
+        connection,
+        "maintenance_visits",
+        "vendor_id",
+        "INTEGER"
+    )
+# --------------------------------------------------
+# Migration 009: Backfill Maintenance Visit Vendor IDs
+# --------------------------------------------------
+
+def migration_009_backfill_maintenance_visit_vendor_ids(
+    connection
+):
+    """
+    Populate maintenance_visits.vendor_id for older
+    visits by matching the saved vendor-name snapshot
+    to an existing Vendor record.
+
+    Matching is:
+    - Case-insensitive
+    - Whitespace-trimmed
+    - Exact after normalization
+
+    Visits without a unique matching Vendor remain
+    unchanged with vendor_id set to NULL.
+    """
+
+    if not table_exists(
+        "maintenance_visits"
+    ):
+
+        raise RuntimeError(
+            "Migration 009 requires the "
+            "maintenance_visits table."
+        )
+
+    if not table_exists(
+        "vendors"
+    ):
+
+        raise RuntimeError(
+            "Migration 009 requires the "
+            "vendors table."
+        )
+
+    updated_result = connection.execute(
+        text(
+            """
+            UPDATE maintenance_visits
+            SET vendor_id = (
+                SELECT vendors.id
+                FROM vendors
+                WHERE
+                    LOWER(TRIM(vendors.name)) =
+                    LOWER(TRIM(maintenance_visits.vendor))
+                LIMIT 1
+            )
+            WHERE
+                vendor_id IS NULL
+                AND vendor IS NOT NULL
+                AND TRIM(vendor) != ''
+                AND (
+                    SELECT COUNT(*)
+                    FROM vendors
+                    WHERE
+                        LOWER(TRIM(vendors.name)) =
+                        LOWER(TRIM(maintenance_visits.vendor))
+                ) = 1
+            """
+        )
+    )
+
+    updated_count = updated_result.rowcount
+
+    unmatched_count = connection.execute(
+        text(
+            """
+            SELECT COUNT(*)
+            FROM maintenance_visits
+            WHERE
+                vendor_id IS NULL
+                AND vendor IS NOT NULL
+                AND TRIM(vendor) != ''
+            """
+        )
+    ).scalar_one()
+
+    print(
+        "Migration 009 Vendor IDs updated:",
+        updated_count
+    )
+
+    print(
+        "Migration 009 Visits still unmatched:",
+        unmatched_count
+    )
+    
     # ----------------------------------------------
     # Validate Service Group Codes
     # ----------------------------------------------
@@ -790,8 +994,25 @@ MIGRATIONS = [
         "id": "006",
         "name": "vehicle_purchase_and_sale_prices",
         "function": migration_006_vehicle_purchase_and_sale_prices
+    },
+    {
+        "id": "007",
+        "name": "vendor_details",
+        "function": migration_007_vendor_details
+    },
+    {
+        "id": "008",
+        "name": "maintenance_visit_vendor_id",
+        "function": migration_008_maintenance_visit_vendor_id
+    },
+        {
+        "id": "009",
+        "name": "backfill_maintenance_visit_vendor_ids",
+        "function": migration_009_backfill_maintenance_visit_vendor_ids
     }
     
+
+
 ]
 
 

@@ -4,36 +4,485 @@
 
 {% block content %}
 
-<h1>Vendors</h1>
+<h1>
+    Vendors
+</h1>
 
 <p>
-
-    <a href="/vendor-add"
-       class="nav-link">
-
+    <a href="/vendor-add" class="btn btn-primary">
         + Add Vendor
-
     </a>
-
 </p>
 
-{% for vendor in vendors %}
+{% if vendors %}
 
-<div class="card">
+    <div class="vendor-grid">
 
-    <a href="/vendor/{{ vendor.id }}"
-       class="vendor-link">
+        {% for vendor in vendors %}
 
-        <div class="card">
+            {% if not vendor.archived %}
 
-            <h2>{{ vendor.name }}</h2>
+                <div class="card vendor-card">
 
-        </div>
+                    <!-- =====================================
+                         Vendor Header
+                    ====================================== -->
 
-    </a>
+                    <div class="vendor-header">
 
-</div>
+                        <div>
 
-{% endfor %}
+                            <h2>
+                                <a href="/vendor/{{ vendor.id }}">
+                                    {{ vendor.name }}
+                                </a>
+                            </h2>
 
-{% endblock %}
+                            <div class="vendor-badges">
+
+                                {% if vendor.domain %}
+
+                                    <span class="domain-badge">
+                                        {{ vendor.domain }}
+                                    </span>
+
+                                {% endif %}
+
+                                {% if vendor.is_preferred %}
+
+                                    <span class="preferred-badge">
+                                        Preferred Vendor
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                        <!-- =================================
+                             Vendor Rating
+                        ================================== -->
+
+                        <div class="vendor-rating">
+
+                            {% if vendor.rating %}
+
+                                <span
+                                    class="star-rating"
+                                    aria-label="{{ vendor.rating }} out of 5 stars"
+                                >
+
+                                    {% for star_number in range(1, 6) %}
+
+                                        {% if star_number <= vendor.rating %}
+                                            ★
+                                        {% else %}
+                                            ☆
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                </span>
+
+                                <span class="rating-number">
+                                    {{ vendor.rating }}/5
+                                </span>
+
+                            {% else %}
+
+                                <span class="not-rated">
+                                    Not rated
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <!-- =====================================
+                         Vendor Type
+                    ====================================== -->
+
+                    {% if vendor.vendor_type %}
+
+                        <p>
+                            <strong>
+                                Vendor Type:
+                            </strong>
+
+                            {{ vendor.vendor_type }}
+                        </p>
+
+                    {% endif %}
+
+                    <!-- =====================================
+                         Address
+                    ====================================== -->
+
+                    {% if
+                        vendor.address_1
+                        or vendor.address_2
+                        or vendor.city
+                        or vendor.state
+                        or vendor.zip_code
+                    %}
+
+                        <div class="vendor-section">
+
+                            <h3>
+                                Address
+                            </h3>
+
+                            {% if vendor.address_1 %}
+
+                                <div>
+                                    {{ vendor.address_1 }}
+                                </div>
+
+                            {% endif %}
+
+                            {% if vendor.address_2 %}
+
+                                <div>
+                                    {{ vendor.address_2 }}
+                                </div>
+
+                            {% endif %}
+
+                            {% if
+                                vendor.city
+                                or vendor.state
+                                or vendor.zip_code
+                            %}
+
+                                <div class="vendor-city-state-zip">
+
+                                    {% if vendor.city %}
+
+                                        {{ vendor.city }}
+
+                                        {% if vendor.state %}
+                                            ,
+                                        {% endif %}
+
+                                    {% endif %}
+
+                                    {% if vendor.state %}
+
+                                        {{ vendor.state }}
+
+                                    {% endif %}
+
+                                    {% if vendor.zip_code %}
+
+                                        {{ vendor.zip_code }}
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
+
+                    <!-- =====================================
+                         Contact Information
+                    ====================================== -->
+
+                    {% if
+                        vendor.primary_contact
+                        or vendor.phone
+                        or vendor.email
+                        or vendor.website
+                    %}
+
+                        <div class="vendor-section">
+
+                            <h3>
+                                Contact
+                            </h3>
+
+                            {% if vendor.primary_contact %}
+
+                                <p>
+                                    <strong>
+                                        Primary Contact:
+                                    </strong>
+
+                                    {{ vendor.primary_contact }}
+                                </p>
+
+                            {% endif %}
+
+                            {% if vendor.phone %}
+
+                                <p>
+                                    <strong>
+                                        Phone:
+                                    </strong>
+
+                                    tel:{{ vendor.phone }}
+                                        {{ vendor.phone }}
+                                    </a>
+                                </p>
+
+                            {% endif %}
+
+                            {% if vendor.email %}
+
+                                <p>
+                                    <strong>
+                                        Email:
+                                    </strong>
+
+                                    {{ vendor.email }}
+                                        {{ vendor.email }}
+                                    </a>
+                                </p>
+
+                            {% endif %}
+
+                            {% if vendor.website %}
+
+                                <p>
+                                    <strong>
+                                        Website:
+                                    </strong>
+
+                                    {{ vendor.website }}
+                                        {{ vendor.website }}
+                                    </a>
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
+
+                     <!-- =====================================
+                         Notes
+                    ====================================== -->
+
+                    {% if vendor.notes %}
+
+                        <div class="vendor-section">
+
+                            <h3>
+                                Notes
+                            </h3>
+
+                            <p class="vendor-notes">
+                                {{ vendor.notes }}
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                    <!-- =====================================
+                         Vendor Actions
+                    ====================================== -->
+
+                    <p class="vendor-actions">
+
+                        <a href="/vendor/{{ vendor.id }}" class="btn btn-secondary">
+                            View Vendor
+                        </a>
+
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        {% endfor %}
+
+    </div>
+
+{% else %}
+
+    <!-- ============================================
+         Empty Vendor List
+    ============================================= -->
+
+    <div class="card">
+
+        <h2>
+            No Vendors Found
+        </h2>
+
+        <p>
+            Add a vendor to use in maintenance visits.
+        </p>
+
+        <p>
+            <a href="/vendor-add" class="btn btn-primary">
+                + Add Vendor
+            </a>
+        </p>
+
+    </div>
+
+{% endif %}
+
+<!-- ============================================
+     Vendor Page Styles
+============================================= -->
+
+<style>
+
+    .vendor-grid {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(320px, 1fr)
+        );
+        gap: 20px;
+    }
+
+    .vendor-card {
+        margin-bottom: 0;
+    }
+
+    .vendor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+
+    .vendor-header h2 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .vendor-header h2 a {
+        color: #93c5fd;
+        text-decoration: none;
+    }
+
+    .vendor-header h2 a:visited {
+        color: #f97316;
+    }
+
+    .vendor-header h2 a:hover {
+        color: #fb923c;
+        text-decoration: underline;
+    }
+
+    .vendor-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .domain-badge,
+    .preferred-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .domain-badge {
+        background: #1e3a8a;
+        color: #bfdbfe;
+    }
+
+    .preferred-badge {
+        background: #064e3b;
+        color: #a7f3d0;
+    }
+
+    .vendor-rating {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        min-width: 105px;
+    }
+
+    .star-rating {
+        color: #fbbf24;
+        font-size: 20px;
+        white-space: nowrap;
+    }
+
+    .rating-number,
+    .not-rated {
+        margin-top: 4px;
+        color: #d1d5db;
+        font-size: 12px;
+    }
+
+    .vendor-section {
+        margin-top: 18px;
+        padding-top: 12px;
+        border-top: 1px solid #374151;
+    }
+
+    .vendor-section h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #93c5fd;
+        font-size: 16px;
+    }
+
+    .vendor-section p {
+        margin: 7px 0;
+    }
+
+    .vendor-city-state-zip {
+        margin-top: 3px;
+    }
+
+    .vendor-notes {
+        white-space: pre-wrap;
+    }
+
+    .vendor-actions {
+        margin-top: 20px;
+    }
+
+    .vendor-detail-link {
+        display: inline-block;
+        padding: 7px 10px;
+        border: 1px solid #2563eb;
+        border-radius: 6px;
+        background: #172554;
+        color: #93c5fd;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .vendor-detail-link:visited {
+        color: #f97316;
+    }
+
+    .vendor-detail-link:hover {
+        color: white;
+        background: #1d4ed8;
+        text-decoration: none;
+    }
+
+    @media (max-width: 650px) {
+
+        .vendor-header {
+            flex-direction: column;
+        }
+
+        .vendor-rating {
+            align-items: flex-start;
+        }
+
+    }
+
+</style>
+
+{% endblock %}                   

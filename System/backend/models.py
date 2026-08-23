@@ -547,6 +547,7 @@ class MaintenanceVisit(Base):
 
     vendor_id = Column(
         Integer,
+        ForeignKey("vendors.id"),
         nullable=True
     )
 
@@ -568,30 +569,79 @@ class MaintenanceVisit(Base):
 )
 
 class Vendor(Base):
+
     __tablename__ = "vendors"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
 
-    name = Column(String)
+    name = Column(
+        String
+    )
 
-    vendor_type = Column(String)
+    vendor_type = Column(
+        String
+    )
 
-    address_1 = Column(String)
-    address_2 = Column(String)
+    domain = Column(
+        String,
+        nullable=True
+    )
 
-    city = Column(String)
-    state = Column(String)
-    zip_code = Column(String)
+    rating = Column(
+        Integer,
+        nullable=True
+    )
 
-    phone = Column(String)
-    email = Column(String)
+    address_1 = Column(
+        String
+    )
 
-    website = Column(String)
+    address_2 = Column(
+        String
+    )
 
-    primary_contact = Column(String)
+    city = Column(
+        String
+    )
 
-    notes = Column(String)
+    state = Column(
+        String
+    )
 
-    is_preferred = Column(Boolean, default=False)
+    zip_code = Column(
+        String
+    )
 
-    archived = Column(Boolean, default=False)
+    phone = Column(
+        String
+    )
+
+    email = Column(
+        String
+    )
+
+    website = Column(
+        String
+    )
+
+    primary_contact = Column(
+        String
+    )
+
+    notes = Column(
+        String
+    )
+
+    is_preferred = Column(
+        Boolean,
+        default=False
+    )
+
+    archived = Column(
+        Boolean,
+        default=False
+    )

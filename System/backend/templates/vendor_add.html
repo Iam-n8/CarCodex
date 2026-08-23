@@ -1,5 +1,5 @@
 <!-- vendor_add.html -->
- 
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -7,55 +7,335 @@
 <h1>Add Vendor</h1>
 
 <p>
-
-    <a href="/vendors-ui"
-       class="nav-link">
-
-        ← Back To Vendors
-
+    <a href="/vendors-ui">
+        ← Back to Vendors
     </a>
-
 </p>
 
-<form action="/vendor-add" method="post">
+<form method="post" action="/vendor-add">
 
-    <p>
-        Vendor Name<br>
-        <input type="text"
-        name="name">
-    </p>
+    <!-- ============================================
+         Vendor Information
+    ============================================= -->
 
-    <p>
-        Address<br>
-        <input type="text"
-        name="address">
-    </p>
+    <div class="card">
 
-    <p>
-        Phone<br>
-        <input type="text"
-        name="phone">
-    </p>
+        <h2>Vendor Information</h2>
 
-    <p>
-        Website<br>
-        <input type="text"
-        name="website">
-    </p>
+        <p>
+            <label for="name">
+                Vendor Name
+            </label>
+            <br>
 
-    <p>
-        Notes<br>
-        <textarea name="notes"></textarea>
-    </p>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                required
+            >
+        </p>
+
+        <p>
+            <label for="vendor_type">
+                Vendor Type
+            </label>
+            <br>
+
+            <input
+                type="text"
+                id="vendor_type"
+                name="vendor_type"
+                placeholder="Repair Shop, Dealership, Parts Supplier, HVAC Contractor"
+            >
+        </p>
+
+        <p>
+            <label for="domain">
+                Domain
+            </label>
+            <br>
+
+            <select
+                id="domain"
+                name="domain"
+            >
+
+                <option value="">
+                    Select Domain
+                </option>
+
+                {% for domain_name in available_domains %}
+
+                    <option value="{{ domain_name }}">
+                        {{ domain_name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </p>
+
+        <p>
+            <label for="rating">
+                Vendor Rating
+            </label>
+            <br>
+
+            <select
+                id="rating"
+                name="rating"
+            >
+
+                <option value="">
+                    Not Rated
+                </option>
+
+                <option value="1">
+                    ★☆☆☆☆ 1 Star
+                </option>
+
+                <option value="2">
+                    ★★☆☆☆ 2 Stars
+                </option>
+
+                <option value="3">
+                    ★★★☆☆ 3 Stars
+                </option>
+
+                <option value="4">
+                    ★★★★☆ 4 Stars
+                </option>
+
+                <option value="5">
+                    ★★★★★ 5 Stars
+                </option>
+
+            </select>
+        </p>
+
+        <p>
+            <label>
+                <input
+                    type="checkbox"
+                    name="is_preferred"
+                >
+                Preferred Vendor
+            </label>
+        </p>
+
+    </div>
+
+    <!-- ============================================
+         Address
+    ============================================= -->
+
+    <div class="card">
+
+        <h2>Address</h2>
+
+        <p>
+            <label for="address_1">
+                Address
+            </label>
+            <br>
+
+            <input
+                type="text"
+                id="address_1"
+                name="address_1"
+            >
+        </p>
+
+        <p>
+            <label for="address_2">
+                Address Line 2
+            </label>
+            <br>
+
+            <input
+                type="text"
+                id="address_2"
+                name="address_2"
+                placeholder="Suite, unit, building, etc."
+            >
+        </p>
+
+        <div class="address-grid">
+
+            <p>
+                <label for="city">
+                    City
+                </label>
+                <br>
+
+                <input
+                    type="text"
+                    id="city"
+                    name="city"
+                >
+            </p>
+
+            <p>
+                <label for="state">
+                    State
+                </label>
+                <br>
+
+                <input
+                    type="text"
+                    id="state"
+                    name="state"
+                    maxlength="2"
+                    placeholder="FL"
+                >
+            </p>
+
+            <p>
+                <label for="zip_code">
+                    ZIP
+                </label>
+                <br>
+
+                <input
+                    type="text"
+                    id="zip_code"
+                    name="zip_code"
+                    maxlength="10"
+                    placeholder="34286"
+                >
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- ============================================
+         Contact Information
+    ============================================= -->
+
+    <div class="card">
+
+        <h2>Contact Information</h2>
+
+        <p>
+            <label for="primary_contact">
+                Primary Contact
+            </label>
+            <br>
+
+            <input
+                type="text"
+                id="primary_contact"
+                name="primary_contact"
+            >
+        </p>
+
+        <p>
+            <label for="phone">
+                Phone
+            </label>
+            <br>
+
+            <input
+                type="tel"
+                id="phone"
+                name="phone"
+            >
+        </p>
+
+        <p>
+            <label for="email">
+                Email
+            </label>
+            <br>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+            >
+        </p>
+
+        <p>
+            <label for="website">
+                Website
+            </label>
+            <br>
+
+            <input
+                type="url"
+                id="website"
+                name="website"
+                placeholder="https://"
+            >
+        </p>
+
+    </div>
+
+    <!-- ============================================
+         Notes
+    ============================================= -->
+
+    <div class="card">
+
+        <h2>Notes</h2>
+
+        <textarea
+            id="notes"
+            name="notes"
+            rows="8"
+            placeholder="Services offered, experience, warranty information, business hours, or other notes."
+        ></textarea>
+
+    </div>
 
     <p>
         <button type="submit">
-
             Save Vendor
-
         </button>
     </p>
 
 </form>
+
+<style>
+
+    input,
+    select,
+    textarea {
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="url"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 8px;
+    }
+
+    .address-grid {
+        display: grid;
+        grid-template-columns:
+            minmax(200px, 2fr)
+            minmax(90px, 1fr)
+            minmax(130px, 1fr);
+        gap: 15px;
+    }
+
+    @media (
+        max-width: 700px
+    ) {
+
+        .address-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
 
 {% endblock %}

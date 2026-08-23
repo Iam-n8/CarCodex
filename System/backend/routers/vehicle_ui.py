@@ -661,6 +661,15 @@ def vendors_ui(
 
     vendors = db.query(
         Vendor
+    ).filter(
+        Vendor.archived == False,
+        (
+            (Vendor.domain == "Vehicle")
+            | (Vendor.domain == None)
+        )
+    ).order_by(
+        Vendor.is_preferred.desc(),
+        Vendor.name
     ).all()
 
     db.close()
@@ -678,8 +687,10 @@ def vendors_ui(
     response_class=HTMLResponse
 )
 def vendor_add_page(
-    request: Request
+    request: Request,
+    domain: str = ""
 ):
+
 
     available_domains = load_available_domains()
 
@@ -688,7 +699,8 @@ def vendor_add_page(
         name="vendor_add.html",
         context={
             "request": request,
-            "available_domains": available_domains
+            "available_domains": available_domains,
+            "domain": domain
         }
     )
 
@@ -1000,6 +1012,15 @@ def vehicle_maintenance_add_page(
 
     vendors = db.query(
         Vendor
+    ).filter(
+        Vendor.archived == False,
+        (
+            (Vendor.domain == "Vehicle")
+            | (Vendor.domain == None)
+        )
+    ).order_by(
+        Vendor.is_preferred.desc(),
+        Vendor.name
     ).all()
 
     # ----------------------------------------------

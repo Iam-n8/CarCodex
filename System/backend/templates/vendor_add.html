@@ -67,7 +67,12 @@
 
                 {% for domain_name in available_domains %}
 
-                    <option value="{{ domain_name }}">
+                    <option
+                        value="{{ domain_name }}"
+                        {% if domain_name == selected_domain %}
+                            selected
+                        {% endif %}
+                    >
                         {{ domain_name }}
                     </option>
 

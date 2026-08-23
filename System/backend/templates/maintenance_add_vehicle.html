@@ -21,28 +21,71 @@
     action="/vehicle/{{ vehicle.id }}/maintenance-add"
     enctype="multipart/form-data">
 
-    <label>Vendor</label>
+<div class="vendor-field">
 
-    <select name="vendor_id">
+    <label for="vendor_id">
+        Vendor
+    </label>
 
-        {% for vendor in vendors %}
+    <div class="vendor-control-row">
 
-        <option value="{{ vendor.id }}">
-            {{ vendor.name }}
-        </option>
-        {% if selected_schedule %}
-
-        <input
-            type="hidden"
-            name="schedule_id"
-            value="{{ selected_schedule.id }}"
+        <select
+            id="vendor_id"
+            name="vendor_id"
+            required
         >
 
+            {% if not vendors %}
+
+                <option value="">
+                    No Vehicle vendors available
+                </option>
+
+            {% endif %}
+
+            {% for vendor in vendors %}
+
+                <option value="{{ vendor.id }}">
+
+                    {% if vendor.is_preferred %}
+                        ★
+                    {% endif %}
+
+                    {{ vendor.name }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <a
+            href="/vendor-add?domain=Vehicle"
+            class="add-vendor-link"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            + Add Vendor
+        </a>
+
+    </div>
+
+    <small class="vendor-help">
+        Add Vendor opens in a new tab. After saving the vendor,
+        return here and refresh this page.
+    </small>
+
+</div>
+
+{% if selected_schedule %}
+
+    <input
+        type="hidden"
+        name="schedule_id"
+        value="{{ selected_schedule.id }}"
+    >
+
 {% endif %}
-
-        {% endfor %}
-
-    </select>
 
     <br><br>
 
@@ -83,7 +126,13 @@
         name="total_cost"
     >
 
-<h3>Primary Service</h3>
+<!-- ============================================
+     Primary Service
+============================================= -->
+
+<h3>
+    Primary Service
+</h3>
 
 {% if selected_schedule %}
 
@@ -100,6 +149,7 @@
 {% endif %}
 
 <select
+    id="primary_reason"
     name="primary_reason"
     required
 >
@@ -136,11 +186,6 @@
 
 </select>
 
-    <option value="Other">
-        Other
-    </option>
-
-</select>  
     <!--  --------------------------------------------------------- -->
 <h3>
     Additional Services
@@ -231,5 +276,73 @@
 .preselected-service-notice strong {
     color: #93c5fd;
 }
+.vendor-field {
+    margin-bottom: 20px;
+}
+
+.vendor-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.vendor-control-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vendor-control-row select {
+    flex: 1;
+    min-width: 220px;
+    padding: 8px;
+}
+
+.add-vendor-link {
+    display: inline-block;
+    padding: 7px 10px;
+    border: 1px solid #2563eb;
+    border-radius: 6px;
+    background: #172554;
+    color: #93c5fd;
+    text-decoration: none;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.add-vendor-link:visited {
+    color: #f97316;
+}
+
+.add-vendor-link:hover {
+    background: #1d4ed8;
+    color: white;
+    text-decoration: none;
+}
+
+.vendor-help {
+    display: block;
+    margin-top: 7px;
+    color: #9ca3af;
+}
+
+@media (max-width: 650px) {
+
+    .vendor-control-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .vendor-control-row select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .add-vendor-link {
+        text-align: center;
+    }
+
+}
+
 </style>
 {% endblock %}

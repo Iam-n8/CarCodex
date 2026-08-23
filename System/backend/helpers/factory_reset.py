@@ -341,13 +341,35 @@ def seed_default_vendor():
 
         name="My Garage",
 
-        address_1="",
+        vendor_type="Personal Garage",
 
-        phone="",
+        domain="Vehicle",
 
-        website="",
+        rating=None,
 
-        notes="Default seeded vendor."
+        address_1=None,
+
+        address_2=None,
+
+        city=None,
+
+        state=None,
+
+        zip_code=None,
+
+        primary_contact=None,
+
+        phone=None,
+
+        email=None,
+
+        website=None,
+
+        is_preferred=True,
+
+        notes="Default seeded Vehicle vendor.",
+
+        archived=False
 
     )
 

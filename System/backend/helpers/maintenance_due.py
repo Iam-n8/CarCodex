@@ -580,55 +580,124 @@ def calculate_schedule_item_due(
             Vehicle.id == vehicle_id
         ).first()
 
-        # ------------------------------------------
-        # Vehicle Acquisition Baseline
-        # ------------------------------------------
+        setup_mode = None
 
-        if (
-            vehicle
-            and vehicle.date_acquired
-            and vehicle.mileage_at_acquisition is not None
-        ):
+        if vehicle:
 
-            last_service = {
-                "service_date": vehicle.date_acquired,
-                "mileage": vehicle.mileage_at_acquisition
-            }
-
-            baseline_source = "Vehicle Baseline"
-
-            is_estimated = True
+            setup_mode = (
+                vehicle.maintenance_baseline_mode
+            )
 
         # ------------------------------------------
-        # Odometer Baseline
+        # New Vehicle Baseline
         # ------------------------------------------
 
-        elif (
-            schedule.miles_interval
-            and current_mileage is not None
-        ):
+        if setup_mode == "new_vehicle":
 
-            last_service = {
-                "service_date": None,
-                "mileage": 0
-            }
+            if (
+                vehicle.date_acquired
+                and vehicle.mileage_at_acquisition
+                is not None
+            ):
 
-            baseline_source = "Odometer Baseline"
+                last_service = {
+                    "service_date": (
+                        vehicle.date_acquired
+                    ),
+                    "mileage": (
+                        vehicle.mileage_at_acquisition
+                    )
+                }
 
-            is_estimated = True
+                baseline_source = (
+                    "New Vehicle Baseline"
+                )
 
-            history_unknown = True
+                is_estimated = True
+
+        # ------------------------------------------
+        # Purchase Reset Baseline
+        # ------------------------------------------
+
+        elif setup_mode == "purchase_reset":
+
+            if (
+                vehicle.date_acquired
+                and vehicle.mileage_at_acquisition
+                is not None
+            ):
+
+                last_service = {
+                    "service_date": (
+                        vehicle.date_acquired
+                    ),
+                    "mileage": (
+                        vehicle.mileage_at_acquisition
+                    )
+                }
+
+                baseline_source = (
+                    "Purchase Reset Baseline"
+                )
+
+                is_estimated = True
+
+        # ------------------------------------------
+        # Used Vehicle As-Is
+        # ------------------------------------------
+
+        elif setup_mode == "as_is":
+
+            fallback_date = None
+
+            fallback_mileage = None
+
+            if (
+                schedule.period_months
+                and vehicle.date_acquired
+            ):
+
+                fallback_date = (
+                    vehicle.date_acquired
+                )
+
+            if (
+                schedule.miles_interval
+                and current_mileage is not None
+            ):
+
+                fallback_mileage = 0
+
+            if (
+                fallback_date is not None
+                or fallback_mileage is not None
+            ):
+
+                last_service = {
+                    "service_date": fallback_date,
+                    "mileage": fallback_mileage
+                }
+
+                baseline_source = (
+                    "As-Is Baseline"
+                )
+
+                is_estimated = True
+
+                history_unknown = True
 
         # ------------------------------------------
         # No Usable History or Baseline
         # ------------------------------------------
 
-        else:
+        if not last_service:
 
             return {
                 "schedule_id": schedule.id,
                 "item_name": schedule.item_name,
-                "service_type_match": schedule.service_type_match,
+                "service_type_match": (
+                    schedule.service_type_match
+                ),
                 "status": "NO HISTORY",
                 "last_date": None,
                 "last_mileage": None,
@@ -840,135 +909,6 @@ def calculate_schedule_item_due(
         "notes": schedule.notes
     }
 
-    # ----------------------------------------------
-    # Mileage-based calculation
-    # ----------------------------------------------
-
-    if (
-        schedule.miles_interval
-        and last_mileage is not None
-    ):
-
-        miles_due = (
-            last_mileage
-            + schedule.miles_interval
-        )
-
-        miles_to_go = (
-            miles_due
-            - current_mileage
-        )
-
-        mileage_percent_used = calculate_mileage_percent_used(
-            last_mileage,
-            current_mileage,
-            schedule.miles_interval
-        )
-
-        if miles_to_go < 0:
-
-            mileage_overdue = True
-
-        elif miles_to_go <= due_soon_miles:
-
-            mileage_due_soon = True
-
-    # ----------------------------------------------
-    # Time-based calculation
-    # ----------------------------------------------
-
-    if (
-        schedule.period_months
-        and last_date
-    ):
-
-        date_due_obj = add_months(
-            last_date,
-            schedule.period_months
-        )
-
-        if date_due_obj:
-
-            date_due = date_due_obj.isoformat()
-
-            today = date.today()
-
-            days_to_go = (
-                date_due_obj
-                - today
-            ).days
-
-            months_to_go = int(
-                days_to_go / 30
-            )
-
-            time_percent_used = calculate_time_percent_used(
-                last_date,
-                schedule.period_months
-            )
-
-            if days_to_go < 0:
-
-                date_overdue = True
-
-            elif days_to_go <= (
-                due_soon_months * 30
-            ):
-
-                date_due_soon = True
-
-    # ----------------------------------------------
-    # Overall percent progress
-    # ----------------------------------------------
-
-    progress = calculate_overall_service_progress(
-        mileage_percent_used,
-        time_percent_used
-    )
-
-    # ----------------------------------------------
-    # Status
-    # ----------------------------------------------
-
-    if (
-        mileage_overdue
-        or date_overdue
-    ):
-
-        status = "OVERDUE"
-
-    elif (
-        mileage_due_soon
-        or date_due_soon
-    ):
-
-        status = "DUE SOON"
-
-    else:
-
-        status = "GOOD"
-
-    return {
-        "schedule_id": schedule.id,
-        "item_name": schedule.item_name,
-        "service_type_match": schedule.service_type_match,
-        "status": status,
-        "last_date": last_date_text,
-        "last_mileage": last_mileage,
-        "miles_due": miles_due,
-        "miles_to_go": miles_to_go,
-        "date_due": date_due,
-        "months_to_go": months_to_go,
-        "current_mileage": current_mileage,
-        "mileage_percent_used": mileage_percent_used,
-        "time_percent_used": time_percent_used,
-        "percent_used": progress["percent_used"],
-        "percent_remaining": progress["percent_remaining"],
-        "due_basis": progress["due_basis"],
-        "notes": schedule.notes
-    }
-
-
 # --------------------------------------------------
 # Calculate Vehicle Maintenance Due
 # --------------------------------------------------
@@ -1005,6 +945,8 @@ def calculate_vehicle_maintenance_due(
         MaintenanceSchedule.display_order
     ).all()
 
+    all_items = []
+
     due_items = []
 
     good_items = []
@@ -1019,6 +961,10 @@ def calculate_vehicle_maintenance_due(
             schedule,
             due_soon_miles,
             due_soon_months
+        )
+
+        all_items.append(
+            result
         )
 
         if result["status"] in [
@@ -1085,9 +1031,8 @@ def calculate_vehicle_maintenance_due(
         )
 
     return {
+        "all_items": all_items,
         "due_items": due_items,
         "next_due_item": next_due_item,
         "history_needed_items": history_needed_items
     }
-
-    return results

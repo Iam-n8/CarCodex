@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 7
+
+Nickname: jlk
+
+Year: 2019
+Make: LAND ROVER
+Model: Discovery Sport
+Trim: SE
+
+VIN: SALCP2FX0KH829060
+
+Current Mileage: 500

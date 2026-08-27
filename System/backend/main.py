@@ -174,6 +174,31 @@ def maintenance_visit_detail(
         MaintenanceVisit.id == visit_id
     ).first()
 
+    if not visit:
+
+        db.close()
+
+        return RedirectResponse(
+            url="/vehicles-ui",
+            status_code=303
+        )
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == visit.vehicle_id
+    ).first()
+
+    vendor = None
+
+    if visit.vendor_id is not None:
+
+        vendor = db.query(
+            Vendor
+        ).filter(
+            Vendor.id == visit.vendor_id
+        ).first()
+
     services = db.query(
         ServiceRecord
     ).filter(
@@ -196,6 +221,8 @@ def maintenance_visit_detail(
         context={
             "request": request,
             "visit": visit,
+            "vehicle": vehicle,
+            "vendor": vendor,
             "services": services,
             "documents": documents
         }

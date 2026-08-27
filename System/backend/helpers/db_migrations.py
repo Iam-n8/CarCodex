@@ -814,7 +814,86 @@ def migration_009_backfill_maintenance_visit_vendor_ids(
         "Migration 009 Visits still unmatched:",
         unmatched_count
     )
-    
+# --------------------------------------------------
+# Migration 010: Vehicle Baseline Preference
+# --------------------------------------------------
+
+def migration_010_vehicle_baseline_preference(
+    connection
+):
+    """
+    Add a vehicle-level preference controlling whether
+    Maintenance Due may use estimated baselines when
+    no exact completed service record is available.
+
+    True:
+        Use Vehicle Baseline or Odometer Baseline.
+
+    False:
+        Use completed service records only.
+        Missing service history becomes History Needed.
+    """
+
+    if not table_exists(
+        "vehicles"
+    ):
+
+        raise RuntimeError(
+            "Migration 010 requires the "
+            "vehicles table."
+        )
+
+    add_column_if_missing(
+        connection,
+        "vehicles",
+        "use_maintenance_baseline",
+        "BOOLEAN NOT NULL DEFAULT 1"
+    )
+# --------------------------------------------------
+# Migration 011: Maintenance Setup Mode
+# --------------------------------------------------
+
+def migration_011_maintenance_setup_mode(
+    connection
+):
+    """
+    Add the Maintenance Schedule setup mode selected
+    for each vehicle.
+
+    Supported values:
+
+    new_vehicle:
+        Use the vehicle's in-service date and starting
+        mileage as the initial maintenance baseline.
+
+    purchase_reset:
+        Treat the acquisition date and mileage as a
+        maintenance reset point.
+
+    as_is:
+        Use exact completed service history first.
+        Use odometer fallback for mileage-based items
+        when exact history is unavailable.
+
+    A NULL value means the vehicle's Maintenance
+    Schedule setup has not yet been selected.
+    """
+
+    if not table_exists(
+        "vehicles"
+    ):
+
+        raise RuntimeError(
+            "Migration 011 requires the "
+            "vehicles table."
+        )
+
+    add_column_if_missing(
+        connection,
+        "vehicles",
+        "maintenance_baseline_mode",
+        "TEXT"
+    )
     # ----------------------------------------------
     # Validate Service Group Codes
     # ----------------------------------------------
@@ -1009,7 +1088,18 @@ MIGRATIONS = [
         "id": "009",
         "name": "backfill_maintenance_visit_vendor_ids",
         "function": migration_009_backfill_maintenance_visit_vendor_ids
+    },
+        {
+        "id": "010",
+        "name": "vehicle_baseline_preference",
+        "function": migration_010_vehicle_baseline_preference
+    },
+        {
+        "id": "011",
+        "name": "maintenance_setup_mode",
+        "function": migration_011_maintenance_setup_mode
     }
+
     
 
 

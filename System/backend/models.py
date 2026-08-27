@@ -57,6 +57,11 @@ class Vehicle(Base):
         String,
         nullable=True
     )
+    maintenance_baseline_mode = Column(
+        String,
+        nullable=True
+    )
+
     purchase_price_cents = Column(
         Integer,
         nullable=True

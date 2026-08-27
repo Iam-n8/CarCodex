@@ -1,6 +1,8 @@
 # uploads.py
 
 from fastapi import APIRouter
+from fastapi.responses import RedirectResponse
+
 from fastapi import UploadFile
 from fastapi import File
 from fastapi import Form
@@ -88,13 +90,10 @@ def upload(
 
         db.commit()
 
-        return {
-            "message": "Document uploaded successfully",
-            "document_id": new_document.id,
-            "vehicle_id": vehicle_id,
-            "category": category,
-            "filename": new_document.file_name
-        }
+        return RedirectResponse(
+            url=f"/vehicle/{vehicle_id}/documents",
+            status_code=303
+        )
 
     finally:
         db.close()

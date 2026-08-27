@@ -104,11 +104,42 @@ def maintsch_vehicle_schedule(
     "/maintsch/{vehicle_id}/seed-defaults"
 )
 def seed_default_maintenance_schedule(
-    vehicle_id: int
+    vehicle_id: int,
+    setup_mode: str = Form(...)
 ):
 
     db = SessionLocal()
 
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    if not vehicle:
+
+        db.close()
+
+        return RedirectResponse(
+            url="/vehicles-ui",
+            status_code=303
+        )
+
+    valid_setup_modes = {
+        "new_vehicle",
+        "purchase_reset",
+        "as_is"
+    }
+
+    if setup_mode not in valid_setup_modes:
+
+        db.close()
+
+        return RedirectResponse(
+            url=f"/maintsch-ui/{vehicle_id}",
+            status_code=303
+        )
+    
     existing_items = db.query(
         MaintenanceSchedule
     ).filter(
@@ -123,6 +154,10 @@ def seed_default_maintenance_schedule(
             url=f"/maintsch-ui/{vehicle_id}",
             status_code=303
         )
+
+    vehicle.maintenance_baseline_mode = (
+        setup_mode
+    )    
 
     catalog_rows = load_maintenance_trackable_rows()
 
@@ -210,6 +245,84 @@ def seed_default_maintenance_schedule(
         )
 
         items_created += 1
+
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url=f"/maintsch-ui/{vehicle_id}",
+        status_code=303
+    )
+# --------------------------------------------------
+# Change Maintenance Schedule Setup Mode
+# --------------------------------------------------
+
+@router.post(
+    "/maintsch/{vehicle_id}/setup-mode"
+)
+def change_maintenance_setup_mode(
+
+    vehicle_id: int,
+
+    setup_mode: str = Form(...)
+
+):
+
+    db = SessionLocal()
+
+    vehicle = db.query(
+        Vehicle
+    ).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    if not vehicle:
+
+        db.close()
+
+        return RedirectResponse(
+            url="/vehicles-ui",
+            status_code=303
+        )
+
+    valid_setup_modes = {
+        "new_vehicle",
+        "purchase_reset",
+        "as_is"
+    }
+
+    if setup_mode not in valid_setup_modes:
+
+        db.close()
+
+        return RedirectResponse(
+            url=f"/maintsch-ui/{vehicle_id}",
+            status_code=303
+        )
+
+    vehicle.maintenance_baseline_mode = (
+        setup_mode
+    )
+
+    print(
+        "SAVING MAINTENANCE SETUP:",
+        vehicle_id,
+        setup_mode
+    )
+
+    vehicle.maintenance_baseline_mode = setup_mode
+
+    db.commit()
+
+    db.refresh(vehicle)
+
+    print(
+        "SAVED MAINTENANCE SETUP:",
+        vehicle.id,
+        vehicle.maintenance_baseline_mode
+    )
+
 
     db.commit()
 
@@ -291,131 +404,6 @@ def maintsch_add_item_page(
             "vehicle": vehicle
         }
     )
-
-# --------------------------------------------------
-# Seed Default Maintenance Schedule
-# --------------------------------------------------
-
-@router.post(
-    "/maintsch/{vehicle_id}/seed-defaults"
-)
-def seed_default_maintenance_schedule(
-    vehicle_id: int
-):
-
-    db = SessionLocal()
-
-    existing_items = db.query(
-        MaintenanceSchedule
-    ).filter(
-        MaintenanceSchedule.vehicle_id == vehicle_id
-    ).all()
-
-    if existing_items:
-
-        db.close()
-
-        return RedirectResponse(
-            url=f"/maintsch-ui/{vehicle_id}",
-            status_code=303
-        )
-
-    catalog_rows = load_maintenance_trackable_rows()
-
-    items_created = 0
-
-    for row in catalog_rows:
-
-        item_name = clean_csv_value(
-            row.get(
-                "service_item"
-            )
-        )
-
-        service_type_match = clean_csv_value(
-            row.get(
-                "service_type_match"
-            )
-        )
-
-        miles_interval = csv_int(
-            row.get(
-                "default_miles_interval"
-            ),
-            default=0
-        )
-
-        period_months = csv_int(
-            row.get(
-                "default_period_months"
-            ),
-            default=0
-        )
-
-        display_order = csv_int(
-            row.get(
-                "service_code"
-            ),
-            default=0
-        )
-
-        notes = clean_csv_value(
-            row.get(
-                "notes"
-            )
-        )
-
-        if not item_name:
-
-            continue
-
-        if not service_type_match:
-
-            service_type_match = item_name
-
-        if miles_interval == 0:
-
-            miles_interval = None
-
-        if period_months == 0:
-
-            period_months = None
-
-        schedule = MaintenanceSchedule(
-
-            vehicle_id=vehicle_id,
-
-            item_name=item_name,
-
-            service_type_match=service_type_match,
-
-            miles_interval=miles_interval,
-
-            period_months=period_months,
-
-            inactive=False,
-
-            notes=notes,
-
-            display_order=display_order
-
-        )
-
-        db.add(
-            schedule
-        )
-
-        items_created += 1
-
-    db.commit()
-
-    db.close()
-
-    return RedirectResponse(
-        url=f"/maintsch-ui/{vehicle_id}",
-        status_code=303
-    )
-
 
 # --------------------------------------------------
 # Edit Maintenance Schedule Item Page
@@ -575,6 +563,10 @@ def maintenance_due_vehicle_page(
         "due_items"
     ]
 
+    all_items = maintenance_due_summary[
+        "all_items"
+    ]
+
     next_due_item = maintenance_due_summary[
         "next_due_item"
     ]
@@ -618,6 +610,7 @@ def maintenance_due_vehicle_page(
             "due_items": due_items,
             "next_due_item": next_due_item,
             "history_needed_items": history_needed_items,
+            "all_items": all_items,
             "overdue_count": overdue_count,
             "due_soon_count": due_soon_count,
             "estimated_count": estimated_count,

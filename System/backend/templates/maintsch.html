@@ -1,7 +1,5 @@
 <!-- maintsch.html -->
 
-<!-- maintsch.html -->
-
 {% extends "base.html" %}
 
 {% block content %}
@@ -33,6 +31,161 @@
         + Add Schedule Item
     </a>
 </p>
+<!-- ============================================
+     Current Maintenance Setup
+============================================= -->
+
+<div class="card">
+
+    <h2>
+        Maintenance Schedule Setup
+    </h2>
+
+    <p>
+        <strong>
+            Current Setup:
+        </strong>
+
+        {% if vehicle.maintenance_baseline_mode == "new_vehicle" %}
+
+            New Vehicle
+
+        {% elif vehicle.maintenance_baseline_mode == "purchase_reset" %}
+
+            Used Vehicle: Reset at Purchase
+
+        {% elif vehicle.maintenance_baseline_mode == "as_is" %}
+
+            Used Vehicle: As-Is / Car Lot
+
+        {% else %}
+
+            Not Selected
+
+        {% endif %}
+    </p>
+
+    {% if vehicle.maintenance_baseline_mode %}
+
+        <p class="setup-help">
+            Changing the setup mode recalculates how missing service
+            history is handled. Existing maintenance visits, completed
+            services, documents, and schedule items will not be deleted.
+        </p>
+
+    {% else %}
+
+        <p class="setup-help">
+            Choose how Maintain Hub should handle schedule items when
+            an exact completed service record is unavailable.
+        </p>
+
+    {% endif %}
+
+    <form 
+        action="/maintsch/{{ vehicle.id }}/setup-mode"
+        method="post"
+        >
+        <div class="setup-choice-grid">
+
+            <label class="setup-choice">
+
+                <input
+                    type="radio"
+                    name="setup_mode"
+                    value="new_vehicle"
+                    {% if vehicle.maintenance_baseline_mode == "new_vehicle" %}
+                        checked
+                    {% endif %}
+                    required
+                >
+
+                <span class="setup-choice-title">
+                    New Vehicle
+                </span>
+
+                <span class="setup-choice-description">
+                    Use the vehicle's in-service date and starting
+                    mileage as the maintenance baseline.
+                </span>
+
+            </label>
+
+            <label class="setup-choice">
+
+                <input
+                    type="radio"
+                    name="setup_mode"
+                    value="purchase_reset"
+                    {% if vehicle.maintenance_baseline_mode == "purchase_reset" %}
+                        checked
+                    {% endif %}
+                    required
+                >
+
+                <span class="setup-choice-title">
+                    Used Vehicle: Reset at Purchase
+                </span>
+
+                <span class="setup-choice-description">
+                    Treat the acquisition date and mileage as a
+                    maintenance reset point, similar to a certified
+                    pre-owned vehicle.
+                </span>
+
+            </label>
+
+            <label class="setup-choice">
+
+                <input
+                    type="radio"
+                    name="setup_mode"
+                    value="as_is"
+                    {% if vehicle.maintenance_baseline_mode == "as_is" %}
+                        checked
+                    {% endif %}
+                    required
+                >
+
+                <span class="setup-choice-title">
+                    Used Vehicle: As-Is / Car Lot
+                </span>
+
+                <span class="setup-choice-description">
+                    Use exact service history first. For missing
+                    mileage history, use the odometer and mark the
+                    result as History Unknown.
+                </span>
+
+            </label>
+
+        </div>
+
+        <p class="setup-submit">
+
+            <button 
+                type="submit"
+                formmethod="post"
+                formaction="/maintsch/{{ vehicle.id }}/setup-mode"
+                >
+
+                {% if vehicle.maintenance_baseline_mode %}
+
+                    Change Maintenance Setup
+
+                {% else %}
+
+                    Save Maintenance Setup
+
+                {% endif %}
+
+            </button>
+
+        </p>
+
+    </form>
+
+</div>
 
 <div class="card">
 
@@ -115,23 +268,101 @@
 
 {% else %}
 
-    <p>
-        No maintenance schedule items found for this vehicle.
-    </p>
+    <div class="schedule-setup">
 
-    <p>
-        Create a default maintenance schedule to get started.
-    </p>
+        <h3>
+            Choose Maintenance Schedule Setup
+        </h3>
 
-    <form action="/maintsch/{{ vehicle.id }}/seed-defaults" method="post">
+        <p>
+            Select how Maintain Hub should calculate services
+            when an exact completed service record is unavailable.
+        </p>
 
-        <button type="submit">
-            Seed Default Schedule
-        </button>
+        <form  
+            action="/maintsch/{{ vehicle.id }}/seed-defaults" method="post">
 
-    </form>
+            <div class="setup-choice-grid">
+
+                <label class="setup-choice">
+
+                    <input
+                        type="radio"
+                        name="setup_mode"
+                        value="new_vehicle"
+                        required
+                    >
+
+                    <span class="setup-choice-title">
+                        New Vehicle
+                    </span>
+
+                    <span class="setup-choice-description">
+                        Use the vehicle's in-service date and starting
+                        mileage as the initial maintenance baseline.
+                    </span>
+
+                </label>
+
+                <label class="setup-choice">
+
+                    <input
+                        type="radio"
+                        name="setup_mode"
+                        value="purchase_reset"
+                        required
+                    >
+
+                    <span class="setup-choice-title">
+                        Used Vehicle: Reset at Purchase
+                    </span>
+
+                    <span class="setup-choice-description">
+                        Treat the acquisition date and mileage as a
+                        maintenance reset point, similar to a certified
+                        pre-owned vehicle.
+                    </span>
+
+                </label>
+
+                <label class="setup-choice">
+
+                    <input
+                        type="radio"
+                        name="setup_mode"
+                        value="as_is"
+                        required
+                    >
+
+                    <span class="setup-choice-title">
+                        Used Vehicle: As-Is / Car Lot
+                    </span>
+
+                    <span class="setup-choice-description">
+                        Use exact service history first. For missing
+                        mileage history, use the odometer and mark the
+                        result as History Unknown.
+                    </span>
+
+                </label>
+
+            </div>
+
+            <p class="setup-submit">
+
+                <button type="submit">
+                    Initialize Maintenance Schedule
+                </button>
+
+            </p>
+
+        </form>
+
+    </div>
 
 {% endif %}
+
+
 
 </div>
 
@@ -167,6 +398,58 @@
     .maintsch-table tr:nth-child(even) {
         background: #111827;
     }
+    .schedule-setup {
+        margin-top: 15px;
+    }
+
+    .setup-choice-grid {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(240px, 1fr)
+        );
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .setup-choice {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 18px;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        background: #111827;
+        cursor: pointer;
+    }
+
+    .setup-choice:hover {
+        border-color: #2563eb;
+        background: #172554;
+    }
+
+    .setup-choice input {
+        align-self: flex-start;
+    }
+
+    .setup-choice-title {
+        color: #93c5fd;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .setup-choice-description {
+        color: #d1d5db;
+        line-height: 1.5;
+    }
+
+    .setup-submit {
+        margin-top: 20px;
+    }
+    .setup-help {
+        color: #d1d5db;
+        line-height: 1.5;
+    }    
 
 </style>
 

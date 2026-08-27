@@ -519,6 +519,7 @@ def vehicle_edit_submit(
 
     )
 
+
     db.commit()
 
     create_vehicle_info_file(
@@ -1107,6 +1108,7 @@ def vehicle_maintenance_add_submit(
 
 
 ):
+    db = SessionLocal()
 
     vendor = db.query(
         Vendor

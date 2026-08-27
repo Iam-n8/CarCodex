@@ -325,7 +325,7 @@
                         </td>
                         <td>
                             <a
-                                href="{{ url_for('maintenance_add', vehicle_id=vehicle.id, schedule_id=item.schedule_id) }}"
+                                href="/vehicle/{{ vehicle.id }}/maintenance-add?schedule_id={{ item.schedule_id }}"
                                 class="btn btn-primary"
                             >
                                 Record Service
@@ -477,11 +477,174 @@
     {% endif %}
 
 {% endif %}
-
-
-
-    
+   
 </div>
+
+<!-- ============================================
+     Full Schedule Status
+============================================= -->
+
+{% if all_items %}
+
+    <div class="card full-schedule-card">
+
+        <details>
+
+            <summary>
+                Full Maintenance Schedule Status
+                ({{ all_items | length }} items)
+            </summary>
+
+            <p class="full-schedule-help">
+                This section includes every active schedule item,
+                including Overdue, Due Soon, Good, and History Needed.
+            </p>
+
+            <div class="full-schedule-table-wrapper">
+
+                <table class="full-schedule-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Status</th>
+                            <th>Item</th>
+                            <th>Source</th>
+                            <th>Last Date</th>
+                            <th>Last Mileage</th>
+                            <th>Miles Due</th>
+                            <th>Miles To Go</th>
+                            <th>Date Due</th>
+                            <th>Months To Go</th>
+                            <th>Mileage %</th>
+                            <th>Time %</th>
+                            <th>Due Basis</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in all_items %}
+
+                            <tr class="status-{{ item.status | lower | replace(' ', '-') }}">
+
+                                <td>
+                                    <strong>
+                                        {{ item.status }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ item.item_name }}
+                                </td>
+
+                                <td>
+                                    {{ item.baseline_source }}
+
+                                    {% if item.history_unknown %}
+
+                                        <br>
+
+                                        <span class="history-unknown-badge">
+                                            History Unknown
+                                        </span>
+
+                                    {% elif item.is_estimated %}
+
+                                        <br>
+
+                                        <span class="estimated-badge">
+                                            Estimated
+                                        </span>
+
+                                    {% else %}
+
+                                        <br>
+
+                                        <span class="completed-badge">
+                                            Recorded Service
+                                        </span>
+
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ item.last_date or "-" }}
+                                </td>
+
+                                <td>
+                                    {% if item.last_mileage is not none %}
+                                        {{ "{:,}".format(item.last_mileage) }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if item.miles_due is not none %}
+                                        {{ "{:,}".format(item.miles_due) }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if item.miles_to_go is not none %}
+                                        {{ "{:,}".format(item.miles_to_go) }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ item.date_due or "-" }}
+                                </td>
+
+                                <td>
+                                    {% if item.months_to_go is not none %}
+                                        {{ item.months_to_go }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if item.mileage_percent_used is not none %}
+                                        {{ item.mileage_percent_used }}%
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if item.time_percent_used is not none %}
+                                        {{ item.time_percent_used }}%
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ item.due_basis }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </details>
+
+    </div>
+
+{% endif %}
+
 
 <style>
 
@@ -667,8 +830,64 @@
         background: #1d4ed8;
         color: white;
         text-decoration: none;
+        }
+    .full-schedule-card {
+        margin-top: 20px;
     }
 
+    .full-schedule-card summary {
+        cursor: pointer;
+        color: #93c5fd;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .full-schedule-card summary:hover {
+        color: #f97316;
+    }
+
+    .full-schedule-help {
+        color: #d1d5db;
+    }
+
+    .full-schedule-table-wrapper {
+        overflow-x: auto;
+        margin-top: 15px;
+    }
+
+    .full-schedule-table {
+        width: 100%;
+        min-width: 1200px;
+        border-collapse: collapse;
+    }
+
+    .full-schedule-table th,
+    .full-schedule-table td {
+        padding: 8px;
+        border: 1px solid #374151;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .full-schedule-table th {
+        background: #1f2937;
+    }
+
+    .full-schedule-table .status-good {
+        background: #064e3b;
+    }
+
+    .full-schedule-table .status-overdue {
+        background: #7f1d1d;
+    }
+
+    .full-schedule-table .status-due-soon {
+        background: #78350f;
+    }
+
+    .full-schedule-table .status-no-history {
+        background: #374151;
+    }
 
 </style>
 

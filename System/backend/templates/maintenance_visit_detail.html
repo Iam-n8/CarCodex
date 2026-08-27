@@ -4,137 +4,321 @@
 
 {% block content %}
 
-<h1>Maintenance Visit</h1>
 
-<p>
+<h1>
+    Maintenance Visit
+</h1>
 
-    <a href="/maintenance-ui"
-       class="nav-link">
+<!-- ============================================
+     Navigation
+============================================= -->
 
-        ← Back To Maintenance
+<p class="visit-navigation">
 
-    </a>
+    {% if vehicle %}
+
+        /vehicle/{{ vehicle.id }}
+            ← Back To {{ vehicle.nickname }}
+        </a>
+
+    {% else %}
+
+        /maintenance-ui
+            ← Back To Maintenance
+        </a>
+
+    {% endif %}
+
+    {% if vendor %}
+
+        <span class="navigation-separator">
+            |
+        </span>
+
+        /vendor/{{ vendor.id }}
+            View Vendor
+        </a>
+
+    {% endif %}
 
 </p>
 
-<div class="card">
-
-    <h2>Visit Information</h2>
-
-    <p>
-        <strong>Date:</strong>
-        {{ visit.visit_date }}
-    </p>
-
-    <p>
-        <strong>Vendor:</strong>
-        {{ visit.vendor }}
-    </p>
-
-    <p>
-        <strong>Mileage:</strong>
-        {{ visit.mileage }}
-    </p>
-
-    <p>
-        <strong>Invoice:</strong>
-        {{ visit.invoice_number }}
-    </p>
-
-    <p>
-        <strong>Total Cost:</strong>
-        ${{ visit.total_cost }}
-    </p>
-
-    <p>
-        <strong>Notes:</strong>
-        {{ visit.notes }}
-    </p>
-
-</div>
+<!-- ============================================
+     Visit Information
+============================================= -->
 
 <div class="card">
 
-    <h2>Services Performed</h2>
- 
-    {% if services %}
+    <h2>
+        Visit Information
+    </h2>
 
-        {% for service in services %}
+    <div class="visit-summary-grid">
 
-            <div class="service-item">
+        {% if vehicle %}
 
-                <p>
+            <div class="summary-item">
 
-                    <strong>Primary Reason:</strong>
+                <strong>
+                    Vehicle
+                </strong>
 
-                    {{ service.primary_reason }}
-
-                </p>
-
-                <p>
-
-                    <strong>Parts Used:</strong>
-
-                    <br>
-
-                    {{ service.parts_used }}
-
-                </p>
-
-                <p>
-
-                    <strong>Additional Services:</strong>
-
-                    <br>
-
-                    {{ service.additional_services }}
-
-                </p>
-
-                <p>
-
-                    <strong>Notes:</strong>
-
-                    <br>
-
-                    {{ service.notes }}
-
-                </p>
-
-                <p>
-
-                    <a href="/service-edit/{{ service.id }}"
-                       class="nav-link">
-
-                        ✏ Edit Service Record
-
+                <span>
+                    <a href="/vehicle/{{ vehicle.id }}">
+                        {{ vehicle.nickname }}
                     </a>
+                </span>
 
-                </p>
-
-                <p>
-
-                    <a href="/service-archive/{{ service.id }}"
-                    class="nav-link">
-
-                        📦 Archive Service Record
-
-                    </a> 
-            </p>
+                <small>
+                    {{ vehicle.year }}
+                    {{ vehicle.make }}
+                    {{ vehicle.model }}
+                </small>
 
             </div>
 
-        {% endfor %}
+        {% endif %}
+
+        <div class="summary-item">
+
+            <strong>
+                Vendor
+            </strong>
+
+            <span>
+
+                {% if vendor %}
+
+                    /vendor/{{ vendor.id }}
+                        {{ vendor.name }}
+                    </a>
+
+                {% elif visit.vendor %}
+
+                    {{ visit.vendor }}
+
+                {% else %}
+
+                    Not entered
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+        <div class="summary-item">
+
+            <strong>
+                Visit Date
+            </strong>
+
+            <span>
+                {{ visit.visit_date or "Not entered" }}
+            </span>
+
+        </div>
+
+        <div class="summary-item">
+
+            <strong>
+                Mileage
+            </strong>
+
+            <span>
+
+                {% if visit.mileage is not none %}
+
+                    {{ "{:,}".format(visit.mileage) }}
+
+                {% else %}
+
+                    Not entered
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+        <div class="summary-item">
+
+            <strong>
+                Invoice Number
+            </strong>
+
+            <span>
+                {{ visit.invoice_number or "Not entered" }}
+            </span>
+
+        </div>
+
+        <div class="summary-item">
+
+            <strong>
+                Total Cost
+            </strong>
+
+            <span class="cost-value">
+
+                {% if visit.total_cost is not none %}
+
+                    ${{ "{:,.2f}".format(visit.total_cost) }}
+
+                {% else %}
+
+                    Not entered
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+    </div>
+
+    {% if visit.notes %}
+
+        <div class="visit-notes">
+
+            <strong>
+                Visit Notes
+            </strong>
+
+            <div>
+                {{ visit.notes }}
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+<!-- ============================================
+     Services Performed
+============================================= -->
+
+<div class="card">
+
+    <h2>
+        Services Performed
+    </h2>
+
+    {% if services %}
+
+        <div class="service-list">
+
+            {% for service in services %}
+
+                <div class="service-item">
+
+                    {% if service.primary_reason %}
+
+                        <div class="primary-service">
+
+                            <strong>
+                                Primary Service
+                            </strong>
+
+                            <span>
+                                {{ service.primary_reason }}
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                    {% if service.additional_services %}
+
+                        <div class="service-section">
+
+                            <strong>
+                                Additional Services
+                            </strong>
+
+                            <div class="additional-service-text">
+                                {{ service.additional_services }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                    {% if service.parts_used %}
+
+                        <div class="service-section">
+
+                            <strong>
+                                Parts Used
+                            </strong>
+
+                            <div class="service-text">
+                                {{ service.parts_used }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                    {% if service.notes %}
+
+                        <div class="service-section">
+
+                            <strong>
+                                Service Notes
+                            </strong>
+
+                            <div class="service-text">
+                                {{ service.notes }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                    {% if service.service_status %}
+
+                        <div class="service-status">
+
+                            <strong>
+                                Status:
+                            </strong>
+
+                            {{ service.service_status }}
+
+                        </div>
+
+                    {% endif %}
+
+                    <div class="service-actions">
+
+                        <a href="/service-edit/{{ service.id }}" class="nav-link">
+                            Edit Service Record
+                        </a>
+
+                        <a href="/service-archive/{{ service.id }}" class="nav-link">
+                            Archive Service Record
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
 
     {% else %}
 
         <p>
-
             No services recorded.
-
         </p>
 
     {% endif %}
+
+</div>
+
 
 <div class="card">
 
@@ -203,15 +387,201 @@
     text-decoration: underline;
 }
 
-.service-item {
-    background: #374151;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-}
+
 
 .card {
     margin-bottom: 20px;
+}
+.visit-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.navigation-separator {
+    color: #6b7280;
+}
+
+.visit-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(180px, 1fr)
+    );
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #1f2937;
+}
+
+.summary-item strong {
+    color: #93c5fd;
+}
+
+.summary-item small {
+    color: #d1d5db;
+}
+
+.cost-value {
+    color: #a7f3d0;
+    font-weight: bold;
+}
+
+
+.service-list {
+    display: grid;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.service-item {
+    padding: 18px;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    background: #111827;
+}
+
+.primary-service {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #1f2937;
+}
+
+
+.primary-service span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.service-section {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid #374151;
+}
+
+.additional-service-text {
+    margin-top: 6px;
+    color: #d1d5db;
+    white-space: pre-line;
+}
+
+.service-text {
+    margin-top: 6px;
+    color: #d1d5db;
+    white-space: pre-wrap;
+}
+
+.service-status {
+    margin-top: 15px;
+    color: #a7f3d0;
+}
+
+.service-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.service-action-link {
+    display: inline-block;
+    padding: 7px 10px;
+    border: 1px solid #2563eb;
+    border-radius: 6px;
+    background: #172554;
+    color: #93c5fd;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.service-action-link:visited {
+    color: #f97316;
+}
+
+.service-action-link:hover {
+    color: white;
+    background: #1d4ed8;
+    text-decoration: none;
+}
+
+
+.visit-notes div {
+    margin-top: 6px;
+    color: #d1d5db;
+    white-space: pre-wrap;
+}
+
+
+.primary-service strong,
+.service-section strong {
+    color: #93c5fd;
+}
+
+.primary-service span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.service-section {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid #374151;
+}
+
+.additional-service-text {
+    margin-top: 6px;
+    color: #d1d5db;
+    white-space: pre-line;
+}
+
+.service-text {
+    margin-top: 6px;
+    color: #d1d5db;
+    white-space: pre-wrap;
+}
+
+.service-status {
+    margin-top: 15px;
+    color: #a7f3d0;
+}
+
+.service-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.service-action-link {
+    display: inline-block;
+    padding: 7px 10px;
+    border: 1px solid #2563eb;
+    border-radius: 6px;
+    background: #172554;
+    color: #93c5fd;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.service-action-link:visited {
+    color: #f97316;
+}
+
+.service-action-link:hover {
+    color: white;
+    background: #1d4ed8;
+    text-decoration: none;
 }
 
 </style>

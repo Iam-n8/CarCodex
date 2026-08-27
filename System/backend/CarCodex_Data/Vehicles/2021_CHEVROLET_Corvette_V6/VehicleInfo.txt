@@ -1,0 +1,14 @@
+CarCodex Vehicle Information
+
+Vehicle ID: 6
+
+Nickname: Blue Rocket
+
+Year: 2021
+Make: CHEVROLET
+Model: Corvette
+Trim: Premium 3LT
+
+VIN: 1G1YC3D45M5100699
+
+Current Mileage: 6758

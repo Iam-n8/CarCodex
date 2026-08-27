@@ -147,7 +147,7 @@ def create_vehicle_info_file(
     ) as f:
 
         f.write(
-    f"""CarCodex Vehicle Information
+    f"""Maintain Hub Vehicle Information
 
 Vehicle ID: {vehicle.id}
 
@@ -236,7 +236,7 @@ def build_document_path(
     """
     Example:
 
-    CarCodex_Data/
+    YourDataFolder/
         Vehicles/
             2008_Chevrolet_Corvette_V17/
                 Documents/
@@ -274,7 +274,7 @@ def save_document_file(
 ):
     """
     Save an uploaded file using the
-    CarCodex storage convention.
+    Maintain Hub storage convention.
     """
 
     extension = uploaded_file.filename.split(

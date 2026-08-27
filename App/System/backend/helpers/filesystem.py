@@ -1,11 +1,43 @@
-# helpers/storage.py
+# --------------------------------------------------
+# storage.py
+#
+# Maintain Hub Storage Utilities
+#
+# Purpose:
+# - Centralize vehicle file storage
+# - Create vehicle folder structures
+# - Generate safe file and folder names
+# - Manage document storage locations
+# - Manage VIN decode file locations
+#
+# Notes:
+#
+# Vehicle data is stored under:
+#
+#   MaintainHub/
+#   └── YourDataFolder/
+#       └── Vehicles/
+#           └── <Vehicle Folder>
+#
+# Examples:
+#
+#   2021_CHEVROLET_Corvette_V6
+#   2019_LAND_ROVER_Discovery_Sport_V7
+#
+# The root vehicle path is obtained from:
+#
+#   helpers.app_paths.get_vehicle_data_folder()
+#
+# Never hardcode storage locations.
+# Always use app_paths.py.
+# --------------------------------------------------
 
 import os
 import re
 
-
-
-
+from helpers.app_paths import (
+    get_vehicle_data_folder
+)
 
 
 # --------------------------------------------------
@@ -14,11 +46,15 @@ import re
 
 def safe_name(value: str) -> str:
     """
-    Convert a display name into a safe folder name.
+    Convert a display name into a safe
+    file-system friendly name.
 
     Example:
+
         Corvette Blue
-        ->
+
+    becomes
+
         Corvette_Blue
     """
 
@@ -41,11 +77,14 @@ def get_vehicle_folder(
     nickname: str
 ) -> str:
     """
+    Return the full vehicle folder path.
+
     Example:
 
-    CarCodex_Data/
-        Vehicles/
-            Corvette_Blue_V17/
+    MaintainHub/
+    └── YourDataFolder/
+        └── Vehicles/
+            └── Corvette_Blue_V17
     """
 
     vehicle_folder = (
@@ -53,8 +92,7 @@ def get_vehicle_folder(
     )
 
     return os.path.join(
-        "CarCodex_Data",
-        "Vehicles",
+        str(get_vehicle_data_folder()),
         vehicle_folder
     )
 
@@ -117,16 +155,24 @@ def create_vehicle_folders(
 
 
 # --------------------------------------------------
-# Vehicle Info File
+# Vehicle Information File
 # --------------------------------------------------
 
 def create_vehicle_info_file(
     vehicle
 ):
+    """
+    Create or refresh VehicleInfo.txt.
+    """
 
     vehicle_folder = get_vehicle_folder(
         vehicle.id,
         vehicle.nickname
+    )
+
+    os.makedirs(
+        vehicle_folder,
+        exist_ok=True
     )
 
     info_file = os.path.join(
@@ -141,7 +187,7 @@ def create_vehicle_info_file(
     ) as f:
 
         f.write(
-f"""CarCodex Vehicle Information
+f"""Maintain Hub Vehicle Information
 
 Vehicle ID: {vehicle.id}
 
@@ -155,6 +201,11 @@ Trim: {vehicle.trim}
 VIN: {vehicle.vin}
 
 Current Mileage: {vehicle.current_mileage}
+
+Related Files:
+
+VINDecode.json
+VINDecode.csv
 """
         )
 
@@ -183,8 +234,35 @@ def build_document_filename(
         f"-D{document_id}"
         f".{extension.lower()}"
     )
+
+
+# --------------------------------------------------
+# Document Folder
+# --------------------------------------------------
+
 def get_document_folder(
     vehicle,
     document_type: str
-):
-    pass
+) -> str:
+    """
+    Return the folder used to store a
+    document category for a vehicle.
+    """
+
+    vehicle_folder = get_vehicle_folder(
+        vehicle.id,
+        vehicle.nickname
+    )
+
+    document_folder = os.path.join(
+        vehicle_folder,
+        "Documents",
+        safe_name(document_type)
+    )
+
+    os.makedirs(
+        document_folder,
+        exist_ok=True
+    )
+
+    return document_folder

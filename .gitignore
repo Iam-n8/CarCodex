@@ -22,3 +22,6 @@ System/Documents/
 
 # Backu* files
 *.bak
+
+# Maintain Hub customer data
+YourDataFolder/

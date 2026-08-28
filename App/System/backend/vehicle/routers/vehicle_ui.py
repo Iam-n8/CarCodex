@@ -16,8 +16,8 @@ from fastapi.responses import (
     JSONResponse
 )
 
-from fastapi.templating import (
-    Jinja2Templates
+from shared.template_loader import (
+    templates
 )
 
 from database import SessionLocal
@@ -49,13 +49,7 @@ from decimal import (
     ROUND_HALF_UP
 )
 
-
-
 router = APIRouter()
-
-templates = Jinja2Templates(
-    directory="templates"
-)
 
 # --------------------------------------------------
 # Currency Conversion

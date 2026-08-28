@@ -23,8 +23,8 @@ from fastapi.responses import (
     RedirectResponse
 )
 
-from fastapi.templating import (
-    Jinja2Templates
+from shared.template_loader import (
+    templates
 )
 
 from database import SessionLocal
@@ -41,9 +41,7 @@ from helpers.service_catalog_loader import (
 
 router = APIRouter()
 
-templates = Jinja2Templates(
-    directory="templates"
-)
+from shared.template_loader import templates
 
 
 

@@ -29,9 +29,10 @@ from fastapi.responses import (
     HTMLResponse
 )
 
-from fastapi.templating import (
-    Jinja2Templates
+from shared.template_loader import (
+    templates
 )
+
 from helpers.service_catalog_loader import (
     load_vehicle_service_catalog_rows,
     load_service_catalog_rows_for_domain,
@@ -40,14 +41,7 @@ from helpers.service_catalog_loader import (
     csv_int,
     csv_bool
 )
-
-
 router = APIRouter()
-
-templates = Jinja2Templates(
-    directory="templates"
-)
-
 
 # --------------------------------------------------
 # Service Catalog CSV

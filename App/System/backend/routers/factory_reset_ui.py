@@ -19,9 +19,7 @@ from fastapi.responses import (
     RedirectResponse
 )
 
-from fastapi.templating import (
-    Jinja2Templates
-)
+
 
 from helpers.factory_reset import (
     run_factory_reset
@@ -30,8 +28,8 @@ from helpers.factory_reset import (
 
 router = APIRouter()
 
-templates = Jinja2Templates(
-    directory="templates"
+from shared.template_loader import (
+    templates
 )
 
 

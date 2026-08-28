@@ -42,9 +42,9 @@ from helpers.storage import (
 
 router = APIRouter()
 
-templates = Jinja2Templates(
-    directory="templates"
-)
+from shared.template_loader import templates
+
+
 # --------------------------------------------------
 # VIN Decode Display Filtering
 # --------------------------------------------------
@@ -479,7 +479,7 @@ def vehicle_advanced_information_page(
 
     return templates.TemplateResponse(
         request=request,
-        name="vehicle/vehicle_advanced.html",
+        name="vehicle_advanced.html",
         context={
             "request": request,
             "vehicle": vehicle,

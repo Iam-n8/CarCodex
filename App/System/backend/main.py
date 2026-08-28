@@ -21,9 +21,7 @@ from fastapi.responses import (
     RedirectResponse
 )
 
-from fastapi.templating import (
-    Jinja2Templates
-)
+from shared.template_loader import templates
 
 
 # ==================================================
@@ -91,10 +89,7 @@ from vehicle.routers import (
     vendor_ui,
     mileage,
     services,
-    maintsch_ui
-)
-
-from routers.vehicle import (
+    maintsch_ui,
     vehicle_adv
 )
 
@@ -105,9 +100,18 @@ from routers.vehicle import (
 
 app = FastAPI()
 
-templates = Jinja2Templates(
-    directory="templates"
+from jinja2 import (
+    Environment,
+    FileSystemLoader
 )
+
+template_loader = FileSystemLoader([
+    "templates",
+    "vehicle/templates"
+])
+
+from shared.template_loader import templates
+
 # ==================================================
 # Vehicle Domain Routers
 # ==================================================

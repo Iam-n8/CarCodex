@@ -1,44 +1,71 @@
+# --------------------------------------------------
 # main.py
+#
+# Maintain Hub
+# Application Entry Point
+# --------------------------------------------------
 
-# import os
-from routers import maintsch_ui, vehicles
-from fastapi import FastAPI
-from fastapi.responses import (
-    HTMLResponse,
-    RedirectResponse
-)
+
+# ==================================================
+# Framework
+# ==================================================
+
 from fastapi import (
+    FastAPI,
     Request,
     Form
 )
 
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import (
+    HTMLResponse,
+    RedirectResponse
+)
 
-from database import engine
-from database import SessionLocal
+from fastapi.templating import (
+    Jinja2Templates
+)
 
-from routers import mileage
-from routers import events
-from routers import documents
-from routers import costs
-from routers import snapshots
-from models  import Base, ServiceRecord
-from routers import uploads
-from routers import maintenance
-from routers import maintenance_schedule
-from routers import maintenance_visit
-from routers import vendor
+
+# ==================================================
+# Database
+# ==================================================
+
+from database import (
+    engine,
+    SessionLocal
+)
+
 from models import (
+    Base,
     Vehicle,
     Vendor,
     MaintenanceVisit,
+    MaintenanceSchedule,
     Document,
-    MaintenanceSchedule
+    ServiceRecord
 )
 
-from routers import vehicle_ui
-from routers import maintenance_ui
-from routers import vendor_ui
+
+# ==================================================
+# Application-Wide Routers
+# ==================================================
+
+from routers import (
+    events,
+    costs,
+    snapshots,
+    factory_reset_ui,
+    service_catalog_ui
+)
+
+
+# ==================================================
+# Helpers
+# ==================================================
+
+from helpers.db_migrations import (
+    run_database_migrations
+)
 
 from helpers.storage import (
     create_vehicle_folders,
@@ -46,78 +73,80 @@ from helpers.storage import (
     create_vehicle_info_file
 )
 
-from routers import maintsch_ui
-from routers import factory_reset_ui
 
-from helpers.db_migrations import (
-    run_database_migrations
+# ==================================================
+# Vehicle Domain
+# ==================================================
+
+from vehicle.routers import (
+    vehicles,
+    vehicle_ui,
+    maintenance,
+    maintenance_ui,
+    maintenance_visit,
+    maintsch_ui,
+    maintenance_schedule,
+    uploads,
+    vendor,
+    vendor_ui,
+    mileage,
+    services,
+    maintsch_ui
 )
+
 from routers.vehicle import (
     vehicle_adv
 )
 
 
-# --------------------------------------------------
-# Routers
-# --------------------------------------------------
-from routers import services
+# ==================================================
+# Application Setup
+# ==================================================
+
 app = FastAPI()
-
-from routers import service_catalog_ui
-
-
 
 templates = Jinja2Templates(
     directory="templates"
 )
-
-# templates = Jinja2Templates(directory=r"C:\CarCodex\System\backend\templates")
+# ==================================================
+# Vehicle Domain Routers
+# ==================================================
 
 app.include_router(vehicles.router)
-app.include_router(services.router) 
+app.include_router(vehicle_ui.router)
+app.include_router(vehicle_adv.router)
+
+app.include_router(maintenance.router)
+app.include_router(maintenance_ui.router)
+app.include_router(maintenance_visit.router)
+app.include_router(maintsch_ui.router)
+app.include_router(maintenance_schedule.router)
+app.include_router(maintsch_ui.router)
+
+app.include_router(uploads.router)
+
+app.include_router(vendor.router)
+app.include_router(vendor_ui.router)
+
 app.include_router(mileage.router)
+
+app.include_router(services.router)
+
+# ==================================================
+# Application-Wide Routers
+# ==================================================
+
 app.include_router(events.router)
-app.include_router(documents.router)
 app.include_router(costs.router)
 app.include_router(snapshots.router)
-app.include_router(uploads.router)
-app.include_router(maintenance.router)
-app.include_router(
-    maintenance_schedule.router
-)
-app.include_router(
-    maintenance_visit.router
-)
-app.include_router(vendor.router)
-app.include_router(vehicle_ui.router)
-app.include_router(maintenance_ui.router)
-app.include_router(
-    vendor_ui.router
-)
 
-app.include_router(
-    maintsch_ui.router
-)
+app.include_router(service_catalog_ui.router)
 
-app.include_router(
-    service_catalog_ui.router
-)
-app.include_router(
-    vehicle_ui.router
-)
-app.include_router(
-    factory_reset_ui.router
-)
-app.include_router(
-    vehicle_adv.router
-)
+app.include_router(factory_reset_ui.router)
 
-
-
-
-Base.metadata.create_all(
-    bind=engine
-)
+# ==================================================
+# Database Initialization
+# ==================================================
 
 run_database_migrations()
 
@@ -227,7 +256,6 @@ def maintenance_visit_detail(
             "documents": documents
         }
     )
-
 # --------------------------------------------------
 # Settings
 # --------------------------------------------------

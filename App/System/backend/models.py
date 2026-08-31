@@ -477,9 +477,17 @@ class Document(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    vehicle_id = Column(Integer, ForeignKey("vehicles.id"))
+    domain = Column(
+        String,
+        default="Vehicle",
+        nullable=False
+    )
 
-    
+    vehicle_id = Column(
+        Integer,
+        ForeignKey("vehicles.id")
+    )
+
     maintenance_visit_id = Column(
         Integer,
         nullable=True
@@ -495,8 +503,10 @@ class Document(Base):
 
     notes = Column(String)
 
-    archived = Column(Boolean, default=False)
-
+    archived = Column(
+        Boolean,
+        default=False
+    )
 class MaintenanceSchedule(Base):
     __tablename__ = "maintenance_schedule"
 

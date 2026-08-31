@@ -39,7 +39,6 @@ from models import (
     Vendor,
     MaintenanceVisit,
     MaintenanceSchedule,
-    Document,
     ServiceRecord
 )
 
@@ -89,8 +88,8 @@ from vehicle.routers import (
     vendor_ui,
     mileage,
     services,
-    maintsch_ui,
-    vehicle_adv
+    vehicle_adv,
+    document_vehicle,
 )
 
 
@@ -120,12 +119,15 @@ app.include_router(vehicles.router)
 app.include_router(vehicle_ui.router)
 app.include_router(vehicle_adv.router)
 
+app.include_router(
+    document_vehicle.router
+)
+
 app.include_router(maintenance.router)
 app.include_router(maintenance_ui.router)
 app.include_router(maintenance_visit.router)
 app.include_router(maintsch_ui.router)
 app.include_router(maintenance_schedule.router)
-app.include_router(maintsch_ui.router)
 
 app.include_router(uploads.router)
 

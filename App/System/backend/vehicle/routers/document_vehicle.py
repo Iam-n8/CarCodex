@@ -28,6 +28,7 @@
 # - Document search/filtering
 # - Bulk document export
 # --------------------------------------------------
+import os
 
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
@@ -35,6 +36,11 @@ from fastapi.responses import FileResponse
 from database import SessionLocal
 from models import Document
 from schemas.document import DocumentCreate
+
+from helpers.storage import (
+    get_absolute_storage_path
+)
+
 
 router = APIRouter()
 
@@ -125,8 +131,17 @@ def download_document(document_id: int):
             "error": "Document not found"
         }
 
+    stored_path = document.file_path
+
+    if os.path.isabs(stored_path):
+        full_path = stored_path
+    else:
+        full_path = get_absolute_storage_path(
+            stored_path
+        )
+
     return FileResponse(
-        path=document.file_path,
+        path=full_path,
         filename=document.file_name
     )
 

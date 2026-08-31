@@ -94,28 +94,17 @@
         ← Back to Vehicles
 </p>
 
-<p>
-    </a>  
-       <a href="/vehicle/{{ vehicle.id }}/advanced">
-            Advanced Vehicle Information
+
+  
+    </a>
+        
+        <a href="/vehicle/{{ vehicle.id }}/maintenance-add"
+        class="nav-link">
+        
+        🔧 Add Maintenance 
         </a>
-</p>
+
     
-
-    <a href="/vehicle-edit/{{ vehicle.id }}"
-       class="nav-link">
-
-        ✏ Edit Vehicle
-
-    </a>
-        </p>
-    <a href="/vehicle/{{ vehicle.id }}/maintenance-add"
-       class="nav-link">
-       
-       🔧 Add Maintenance
-    </a>
-
-    <p>
         <a href="/maintenance-due-ui/{{ vehicle.id }}"
             class="nav-link">
             🧭 Maintenance Due
@@ -126,9 +115,18 @@
 
             📋 Maintenance Schedule
         </a>
+    <p>
+    </a>  
+       <a href="/vehicle/{{ vehicle.id }}/advanced">
+           Advanced Vehicle Information
+        </a>    <p>
 
+    <a href="/vehicle-edit/{{ vehicle.id }}"
+       class="nav-link">
 
-
+        ✏ Edit Vehicle
+    </p>  
+        </p>
         <a href="/vehicle-archive/{{ vehicle.id }}" 
             class="nav-link">
 

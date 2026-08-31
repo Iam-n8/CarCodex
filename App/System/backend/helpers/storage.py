@@ -6,8 +6,12 @@ import json
 import csv
 
 from helpers.app_paths import (
-    get_vehicle_data_folder
+    get_vehicle_data_folder,
+    get_customer_data_folder
 )
+
+from pathlib import Path
+
 
 # --------------------------------------------------
 # Safe File/Folder Naming
@@ -31,6 +35,48 @@ def safe_name(value: str) -> str:
         "_",
         value.strip()
     )
+
+# --------------------------------------------------
+# Relative Path Helpers
+# --------------------------------------------------
+
+def get_relative_storage_path(
+    full_path: str
+) -> str:
+    """
+    Convert an absolute path into a path relative
+    to YourDataFolder.
+
+    Example:
+
+    C:\MaintainHub\YourDataFolder\Vehicles\...
+    
+    becomes
+    
+    Vehicles\...
+    """
+
+    return str(
+        Path(full_path).relative_to(
+            get_customer_data_folder()
+        )
+    )
+
+
+def get_absolute_storage_path(
+    stored_path: str
+) -> str:
+    """
+    Convert a stored relative path into a full path.
+    """
+
+    return str(
+        get_customer_data_folder()
+        / stored_path
+    )
+
+
+
 
 # --------------------------------------------------
 # Vehicle Folder

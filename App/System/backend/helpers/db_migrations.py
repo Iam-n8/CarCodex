@@ -894,6 +894,51 @@ def migration_011_maintenance_setup_mode(
         "maintenance_baseline_mode",
         "TEXT"
     )
+# --------------------------------------------------
+# Migration 012: Document Domain
+# --------------------------------------------------
+
+def migration_012_document_domain(
+    connection
+):
+    """
+    Add a domain field to documents so Maintain Hub
+    can support Vehicle, House, Boat, Pet, and future
+    domains while keeping a single Documents table.
+    """
+
+    if not table_exists(
+        "documents"
+    ):
+
+        raise RuntimeError(
+            "Migration 012 requires the "
+            "documents table."
+        )
+
+    add_column_if_missing(
+        connection,
+        "documents",
+        "domain",
+        "TEXT"
+    )
+
+    connection.execute(
+        text(
+            """
+            UPDATE documents
+            SET domain = 'Vehicle'
+            WHERE
+                domain IS NULL
+                OR TRIM(domain) = ''
+            """
+        )
+    )
+
+    print(
+        "Migration 012 populated "
+        "documents.domain"
+    )
     # ----------------------------------------------
     # Validate Service Group Codes
     # ----------------------------------------------
@@ -1098,6 +1143,11 @@ MIGRATIONS = [
         "id": "011",
         "name": "maintenance_setup_mode",
         "function": migration_011_maintenance_setup_mode
+    },
+    {
+        "id": "012",
+        "name": "document_domain",
+        "function": migration_012_document_domain
     }
 
     

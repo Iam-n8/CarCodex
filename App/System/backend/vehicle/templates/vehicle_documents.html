@@ -11,24 +11,15 @@
 <h1>
     {{ vehicle.nickname }} Documents
 </h1>
-
 <p>
-
     <a href="/vehicle/{{ vehicle.id }}">
-
         ← Back To Vehicle
-
     </a>
-
 </p>
-
 <p>
-
     <a href="/vehicle/{{ vehicle.id }}/document-add" class="nav-link">
         📄 Add Document
-
     </a>
-
 </p>
 
 <!-- =====================================
@@ -66,7 +57,13 @@
                         {{ document.file_name }}
 
                     </p>
-
+ <!--                  
+                    <div class="document-preview">
+                        <iframe
+                            src="/documents/{{ document.id }}/download#page=1">
+                        </iframe>
+                    </div>
+-->  
                     <p>
 
                         <strong>ID:</strong>

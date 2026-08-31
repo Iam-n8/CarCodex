@@ -14,7 +14,8 @@ import os
 import shutil
 
 from helpers.storage import (
-    save_document_file
+    save_document_file,
+    get_relative_storage_path
 )
 
 
@@ -64,6 +65,7 @@ def upload(
             }
 
         new_document = Document(
+            domain="Vehicle",
             vehicle_id=vehicle_id,
             document_type=category,
             upload_date=upload_date,
@@ -82,7 +84,9 @@ def upload(
             file
         )
 
-        new_document.file_path = destination
+        new_document.file_path = get_relative_storage_path(
+            destination
+        )
 
         new_document.file_name = os.path.basename(
             destination

@@ -37,7 +37,9 @@ from helpers.storage import (
     create_vehicle_folders,
     create_vehicle_info_file,
     get_maintenance_folder,
+    get_relative_storage_path,
     save_vin_decode_files
+
     )
 from helpers.service_catalog_loader import (
     load_available_domains
@@ -1221,6 +1223,8 @@ def vehicle_maintenance_add_submit(
 
         document = Document(
 
+            domain="Vehicle",
+
             vehicle_id=vehicle_id,
 
             maintenance_visit_id=visit.id,
@@ -1231,7 +1235,9 @@ def vehicle_maintenance_add_submit(
                 destination
             ),
 
-            file_path=destination,
+            file_path=get_relative_storage_path(
+                destination
+            ),
 
             upload_date=visit_date,
 
@@ -1517,7 +1523,18 @@ def maintenance_document_add_submit(
             document_file.file.read()
         )
 
+    relative_path = get_relative_storage_path(
+    
+    destination
+    
+    )
+    print("DESTINATION =", destination)
+    print("RELATIVE PATH =", relative_path)
+
+
     document = Document(
+
+        domain="Vehicle",
 
         vehicle_id=vehicle.id,
 
@@ -1527,7 +1544,9 @@ def maintenance_document_add_submit(
 
         file_name=filename,
 
-        file_path=destination,
+        file_path=get_relative_storage_path(
+            destination
+        ),
 
         upload_date=visit.visit_date,
 

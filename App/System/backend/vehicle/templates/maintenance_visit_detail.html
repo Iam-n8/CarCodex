@@ -17,13 +17,13 @@
 
     {% if vehicle %}
 
-        /vehicle/{{ vehicle.id }}
+        <a href="/vehicle/{{ vehicle.id }}">
             ← Back To {{ vehicle.nickname }}
         </a>
 
     {% else %}
 
-        /maintenance-ui
+        <a href="/maintenance-ui">
             ← Back To Maintenance
         </a>
 
@@ -35,7 +35,7 @@
             |
         </span>
 
-        /vendor/{{ vendor.id }}
+        <a href="/vendor/{{ vendor.id }}">
             View Vendor
         </a>
 
@@ -297,7 +297,7 @@
                             Edit Service Record
                         </a>
 
-                        <a href="/service-archive/{{ service.id }}" class="nav-link">
+                        <a href="/service-archive/{{ service.id }}" class="nav-link" onclick="return confirm('Archive this service record? This will hide it from the active maintenance visit until you restore it from Settings.');">
                             Archive Service Record
                         </a>
 
@@ -328,21 +328,60 @@
 
     {% if documents %}
 
-        {% for document in documents %}
+        <div class="attached-documents-row">
+            {% for document in documents %}
+                {% set ext = (document.file_name.rsplit('.', 1)[-1] if '.' in document.file_name else '').lower() %}
 
-            <p>
+                <div class="attached-document-card">
+                    <div class="attached-document-preview">
+                        {% if ext in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif'] %}
+                            <img
+                                src="/documents/{{ document.id }}/preview"
+                                alt="{{ document.file_name }}"
+                            >
+                        {% elif ext == 'pdf' %}
+                            <iframe
+                                src="/documents/{{ document.id }}/preview#page=1"
+                                title="{{ document.file_name }}"
+                                loading="lazy"
+                            ></iframe>
+                        {% else %}
+                            <div class="attached-document-file-icon">
+                                {% if ext == 'xlsx' %}
+                                    📗
+                                {% elif ext in ['doc', 'docx'] %}
+                                    📘
+                                {% else %}
+                                    📄
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
 
-                📄
+                    <div class="attached-document-body">
+                        <h3>
+                            {{ document.document_type or 'Document' }}
+                        </h3>
 
-                <a href="/documents/{{ document.id }}/download" class="nav-link">
+                        {% if document.notes %}
+                            <p class="attached-document-description">
+                                {{ document.notes }}
+                            </p>
+                        {% endif %}
 
-                    {{ document.file_name }}
+                        <p class="attached-document-filename">
+                            {{ document.file_name }}
+                        </p>
 
-                </a>
-
-            </p>
-
-        {% endfor %}
+                        <div class="attached-document-actions">
+                            <a href="/documents/{{ document.id }}/preview" target="_blank" rel="noopener noreferrer" class="nav-link">
+                                👁 View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
     {% else %}
 
@@ -582,6 +621,81 @@
     color: white;
     background: #1d4ed8;
     text-decoration: none;
+}
+
+.attached-documents-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.attached-document-card {
+    display: flex;
+    flex-direction: column;
+    width: 220px;
+    background: #111827;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.attached-document-preview {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(135deg, #1f2937, #111827);
+    border-bottom: 1px solid #374151;
+}
+
+.attached-document-preview img,
+.attached-document-preview iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+}
+
+.attached-document-preview img {
+    object-fit: cover;
+}
+
+.attached-document-file-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    font-weight: bold;
+    color: #e2e8f0;
+}
+
+.attached-document-body {
+    padding: 12px 14px 14px;
+}
+
+.attached-document-body h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+}
+
+.attached-document-description {
+    margin: 0 0 8px;
+    color: #d1d5db;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.attached-document-filename {
+    margin: 0 0 10px;
+    color: #bfdbfe;
+    word-break: break-word;
+    font-size: 0.85rem;
+}
+
+.attached-document-actions {
+    margin-top: 8px;
 }
 
 </style>

@@ -26,6 +26,8 @@ ALLOWED_EXTENSIONS = [
     "jpg",
     "jpeg",
     "png",
+    "heic",
+    "heif",
     "txt",
     "csv",
     "docx",

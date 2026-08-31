@@ -28,21 +28,62 @@
 # - Document search/filtering
 # - Bulk document export
 # --------------------------------------------------
+import io
 import os
 
 from fastapi import APIRouter
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
+
+from PIL import Image
+
+try:
+    from pillow_heif import register_heif_opener
+except ImportError:  # pragma: no cover
+    register_heif_opener = None
 
 from database import SessionLocal
 from models import Document
 from schemas.document import DocumentCreate
 
 from helpers.storage import (
-    get_absolute_storage_path
+get_absolute_storage_path
 )
 
 
 router = APIRouter()
+
+
+def _get_inline_document_response(document, full_path: str):
+    """Return a file response that shows in-browser when possible."""
+    filename = document.file_name or "document"
+    extension = os.path.splitext(filename)[1].lower()
+
+    if extension in [".heic", ".heif"]:
+        if register_heif_opener is not None:
+            register_heif_opener()
+
+        image = Image.open(full_path)
+        if image.mode not in ("RGB", "L"):
+            image = image.convert("RGB")
+
+        preview_buffer = io.BytesIO()
+        image.save(preview_buffer, format="JPEG", quality=85, optimize=True)
+        preview_buffer.seek(0)
+
+        preview_name = os.path.splitext(filename)[0] + ".jpg"
+        return StreamingResponse(
+            preview_buffer,
+            media_type="image/jpeg",
+            headers={
+                "Content-Disposition": f'inline; filename="{preview_name}"'
+            }
+        )
+
+    return FileResponse(
+        path=full_path,
+        filename=filename,
+        content_disposition_type="inline"
+    )
 
 
 # --------------------------------------------------
@@ -54,7 +95,9 @@ def get_documents():
 
     db = SessionLocal()
 
-    documents = db.query(Document).all()
+    documents = db.query(Document).filter(
+        Document.domain == "Vehicle"
+    ).all()
 
     results = []
 
@@ -84,6 +127,7 @@ def create_document(document: DocumentCreate):
     db = SessionLocal()
 
     new_document = Document(
+        domain=document.domain or "Vehicle",
         vehicle_id=document.vehicle_id,
 
         maintenance_visit_id=
@@ -114,13 +158,43 @@ def create_document(document: DocumentCreate):
 # Download / View Document
 # --------------------------------------------------
 
+@router.get("/documents/{document_id}/preview")
+def preview_document(document_id: int):
+
+    db = SessionLocal()
+
+    document = db.query(Document).filter(
+        Document.id == document_id,
+        Document.domain == "Vehicle"
+    ).first()
+
+    db.close()
+
+    if not document:
+        return {
+            "error": "Document not found"
+        }
+
+    stored_path = document.file_path
+
+    if os.path.isabs(stored_path):
+        full_path = stored_path
+    else:
+        full_path = get_absolute_storage_path(
+            stored_path
+        )
+
+    return _get_inline_document_response(document, full_path)
+
+
 @router.get("/documents/{document_id}/download")
 def download_document(document_id: int):
 
     db = SessionLocal()
 
     document = db.query(Document).filter(
-        Document.id == document_id
+        Document.id == document_id,
+        Document.domain == "Vehicle"
     ).first()
 
     db.close()
@@ -142,7 +216,8 @@ def download_document(document_id: int):
 
     return FileResponse(
         path=full_path,
-        filename=document.file_name
+        filename=document.file_name,
+        content_disposition_type="inline"
     )
 
 
@@ -156,7 +231,8 @@ def archive_document(document_id: int):
     db = SessionLocal()
 
     document = db.query(Document).filter(
-        Document.id == document_id
+        Document.id == document_id,
+        Document.domain == "Vehicle"
     ).first()
 
     if not document:

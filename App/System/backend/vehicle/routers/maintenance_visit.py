@@ -137,7 +137,8 @@ def get_maintenance_visit(
     documents = db.query(
         Document
     ).filter(
-        Document.maintenance_visit_id == visit_id
+        Document.maintenance_visit_id == visit_id,
+        Document.domain == "Vehicle"
     ).all()
 
     service_list = []

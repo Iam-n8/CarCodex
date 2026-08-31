@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Archived Service Records</h1>
+
+<p>
+    Archived service records can be restored if they were removed in error.
+</p>
+
+{% if services %}
+    <div class="service-grid">
+        {% for service in services %}
+            <div class="service-card">
+                <h2>
+                    {{ service.primary_reason or "Service Record" }}
+                </h2>
+
+                <p>
+                    <strong>Vehicle ID:</strong>
+                    {{ service.vehicle_id }}
+                </p>
+
+                <p>
+                    <strong>Visit ID:</strong>
+                    {{ service.maintenance_visit_id or "N/A" }}
+                </p>
+
+                {% if service.service_status %}
+                    <p>
+                        <strong>Status:</strong>
+                        {{ service.service_status }}
+                    </p>
+                {% endif %}
+
+                {% if service.notes %}
+                    <p>
+                        <strong>Notes:</strong>
+                        {{ service.notes[:160] }}{% if service.notes|length > 160 %}...{% endif %}
+                    </p>
+                {% endif %}
+
+                <form method="post" action="/service-restore/{{ service.id }}">
+                    <button type="submit" class="restore-button">
+                        ↩ Restore Service Record
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card">
+        <p>No archived service records found.</p>
+    </div>
+{% endif %}
+
+<p>
+    <a href="/settings" class="nav-link">
+        ← Back To Settings
+    </a>
+</p>
+
+<style>
+    .service-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .service-card {
+        background: #1f2937;
+        border-radius: 10px;
+        padding: 20px;
+        border: 1px solid #374151;
+    }
+
+    .service-card h2 {
+        margin-top: 0;
+    }
+
+    .restore-button {
+        margin-top: 12px;
+        background: #14532d;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .restore-button:hover {
+        background: #166534;
+    }
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+{% endblock %}

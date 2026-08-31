@@ -25,77 +25,75 @@
 <!-- =====================================
      Documents
 ====================================== -->
-
 <div class="card">
-
     <h2>Documents</h2>
 
     {% if documents %}
-
         <div class="document-grid">
-
             {% for document in documents %}
+                {% set ext = (document.file_name.rsplit('.', 1)[-1] if '.' in document.file_name else '').lower() %}
 
                 <div class="document-card">
+                    <div class="document-preview">
+                        {% if ext in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif'] %}
+                            <img
+                                src="/documents/{{ document.id }}/preview"
+                                alt="{{ document.file_name }}"
+                            >
+                        {% elif ext == 'pdf' %}
+                            <iframe
+                                src="/documents/{{ document.id }}/preview#page=1"
+                                title="{{ document.file_name }}"
+                                loading="lazy"
+                            ></iframe>
+                        {% elif ext in ['xlsx', 'xls'] %}
+                            <div class="file-icon">📗 XLSX</div>
+                        {% elif ext in ['doc', 'docx'] %}
+                            <div class="file-icon">📘 DOCX</div>
+                        {% else %}
+                            <div class="file-icon">📄 FILE</div>
+                        {% endif %}
+                        <span class="preview-badge">{{ ext.upper() if ext else 'FILE' }}</span>
+                    </div>
 
                     <h3>
-                        {{ document.title }}
+                        {{ document.document_type }}
                     </h3>
 
-                    <p>
+                    {% if document.notes %}
+                        <p class="document-description">
+                            {{ document.notes }}
+                        </p>
+                    {% endif %}
 
-                        <strong>Type:</strong>
-
-                        {{ document.document_type }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>File:</strong>
-
-                        {{ document.file_name }}
-
-                    </p>
- <!--                  
-                    <div class="document-preview">
-                        <iframe
-                            src="/documents/{{ document.id }}/download#page=1">
-                        </iframe>
+                    <div class="document-meta">
+                        <p>
+                            <strong>Type:</strong>
+                            {{ document.document_type }}
+                        </p>
+                        <p>
+                            <strong>File:</strong>
+                            {{ document.file_name }}
+                        </p>
+                        <p>
+                            <strong>ID:</strong>
+                            {{ document.id }}
+                        </p>
                     </div>
--->  
-                    <p>
 
-                        <strong>ID:</strong>
-
-                        {{ document.id }}
-
-                    </p>
-
-                    <p>
-
-                        <a href="/documents/{{ document.id }}/download">
-
+                    <p class="document-actions">
+                        <a href="/documents/{{ document.id }}/preview" target="_blank" rel="noopener noreferrer">
                             👁 View
-
                         </a>
-
                     </p>
-
                 </div>
-
             {% endfor %}
-
         </div>
-
     {% else %}
-
         <p>
             No documents found.
         </p>
-
     {% endif %}
-
 </div>
 
 <!-- =====================================
@@ -103,7 +101,6 @@
 ====================================== -->
 
 <style>
-
     .nav-link {
         color: #60a5fa;
         text-decoration: none;
@@ -136,6 +133,89 @@
         margin-top: 0;
     }
 
+    .document-preview {
+        position: relative;
+        width: 100%;
+        height: 180px;
+        margin-bottom: 12px;
+        overflow: hidden;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #1f2937, #111827);
+        border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .document-preview img,
+    .document-preview iframe {
+        width: 100%;
+        height: 100%;
+        display: block;
+        border: 0;
+    }
+
+    .document-preview img {
+        object-fit: cover;
+    }
+
+    .document-preview iframe {
+        background: #ffffff;
+    }
+
+    .preview-badge {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        color: #e2e8f0;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .document-description {
+        margin: 8px 0 12px;
+        color: #d1d5db;
+        line-height: 1.5;
+        font-size: 0.92rem;
+        min-height: 48px;
+    }
+
+    .document-meta {
+        margin-top: 10px;
+        border-top: 1px solid rgba(148, 163, 184, 0.2);
+        padding-top: 10px;
+    }
+
+    .document-meta p {
+        margin: 6px 0;
+    }
+
+    .document-actions {
+        margin-top: 12px;
+    }
+
+    .document-actions a {
+        display: inline-block;
+        color: #7dd3fc;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .document-actions a:hover {
+        text-decoration: underline;
+    }
+
+    .file-icon {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: bold;
+        color: #f8fafc;
+    }
 </style>
 
 {% endblock %}

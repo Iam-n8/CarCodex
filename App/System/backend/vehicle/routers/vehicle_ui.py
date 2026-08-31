@@ -51,6 +51,8 @@ from decimal import (
     ROUND_HALF_UP
 )
 
+from datetime import datetime
+
 router = APIRouter()
 
 # --------------------------------------------------
@@ -174,6 +176,58 @@ def vehicle_detail(
         MaintenanceVisit.vehicle_id == vehicle_id
     ).all()
 
+    def visit_sort_key(visit):
+        date_value = visit.visit_date or ""
+
+        try:
+            parsed_date = datetime.strptime(
+                str(date_value),
+                "%Y-%m-%d"
+            )
+        except ValueError:
+            try:
+                parsed_date = datetime.strptime(
+                    str(date_value),
+                    "%m/%d/%Y"
+                )
+            except ValueError:
+                parsed_date = datetime.min
+
+        return (
+            parsed_date,
+            visit.id
+        )
+
+    visits = sorted(
+        visits,
+        key=visit_sort_key,
+        reverse=True
+    )
+
+    for visit in visits:
+        primary_service = db.query(
+            ServiceRecord
+        ).filter(
+            ServiceRecord.maintenance_visit_id == visit.id,
+            ServiceRecord.archived == False
+        ).order_by(
+            ServiceRecord.id.asc()
+        ).first()
+
+        visit.primary_service = (
+            primary_service.primary_reason
+            if primary_service and primary_service.primary_reason
+            else "Service Visit"
+        )
+
+        visit.document_count = db.query(
+            Document
+        ).filter(
+            Document.maintenance_visit_id == visit.id,
+            Document.domain == "Vehicle",
+            Document.archived == False
+        ).count()
+
     # Display highest mileage found
     display_mileage = vehicle.current_mileage
 
@@ -198,18 +252,8 @@ def vehicle_detail(
     documents = db.query(
         Document
     ).filter(
-        Document.vehicle_id == vehicle_id
-    ).all()
-
-    schedules = db.query(
-        MaintenanceSchedule
-    ).filter(
-        MaintenanceSchedule.vehicle_id == vehicle_id
-    ).all()
-    documents = db.query(
-        Document
-    ).filter(
-        Document.vehicle_id == vehicle_id
+        Document.vehicle_id == vehicle_id,
+        Document.domain == "Vehicle"
     ).all()
 
     db.close()

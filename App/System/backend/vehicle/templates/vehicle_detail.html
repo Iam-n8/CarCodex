@@ -8,369 +8,193 @@
 ====================================== -->
 
 <h1>{{ vehicle.nickname }}</h1>
+
 {% if vehicle.archived %}
-
 <div class="card">
-
     <h2>⚠ Archived Vehicle</h2>
-
-    <p>
-
-        This vehicle is currently archived.
-
-    </p>
-
+    <p>This vehicle is currently archived.</p>
 </div>
-
 {% endif %}
 
 <!-- =====================================
      Vehicle Stats Dashboard
 ====================================== -->
 <div class="stats-grid">
-
     <div class="stat-card">
-
-        <h3>Mileage</h3>
-
-        <div class="stat-value">
-            {{ display_mileage }}
-        </div>
-
+       <h3>Mileage</h3>
+       <div class="stat-value">{{ display_mileage }}</div>
     </div>
 
-     <a href="/vehicle/{{ vehicle.id }}/maintenance"
-       class="card-link">
-
-        <div class="stat-card">
-
-            <h3>Visits</h3>
-
-            <div class="stat-value">
-                {{ visit_count }}
-            </div>
-
-        </div>
-
+    <a href="/vehicle/{{ vehicle.id }}/maintenance" class="card-link">
+       <div class="stat-card">
+           <h3>Visits</h3>
+           <div class="stat-value">{{ visit_count }}</div>
+       </div>
     </a>
 
-    <a href="/vehicle/{{ vehicle.id }}/documents"
-       class="card-link">
-
-        <div class="stat-card">
-
-            <h3>Documents</h3>
-
-            <div class="stat-value">
-                {{ document_count }}
-            </div>
-
-        </div>
-
+    <a href="/vehicle/{{ vehicle.id }}/documents" class="card-link">
+       <div class="stat-card">
+           <h3>Documents</h3>
+           <div class="stat-value">{{ document_count }}</div>
+       </div>
     </a>
 
     <div class="stat-card">
-
-        <h3>Vendors</h3>
-
-        <div class="stat-value">
-            {{ vendor_count }}
-        </div>
-
+       <h3>Vendors</h3>
+       <div class="stat-value">{{ vendor_count }}</div>
     </div>
-
 </div>
-
 
 <!-- =====================================
      Navigation
 ====================================== -->
-
-<p>
-
-    <a href="/vehicles-ui" 
-        class="nav-link">
-
-        ← Back to Vehicles
-</p>
-
-
-  
-    </a>
-        
-        <a href="/vehicle/{{ vehicle.id }}/maintenance-add"
-        class="nav-link">
-        
-        🔧 Add Maintenance 
-        </a>
-
-    
-        <a href="/maintenance-due-ui/{{ vehicle.id }}"
-            class="nav-link">
-            🧭 Maintenance Due
-        </a>    
-        
-        <a href="/maintsch-ui/{{ vehicle.id }}"
-            class="nav-link">
-
-            📋 Maintenance Schedule
-        </a>
+<div class="nav-stack">
     <p>
-    </a>  
-       <a href="/vehicle/{{ vehicle.id }}/advanced">
-           Advanced Vehicle Information
-        </a>    <p>
-
-    <a href="/vehicle-edit/{{ vehicle.id }}"
-       class="nav-link">
-
-        ✏ Edit Vehicle
-    </p>  
-        </p>
-        <a href="/vehicle-archive/{{ vehicle.id }}" 
-            class="nav-link">
-
-            🗑 Archive Vehicle
-
-        </a>
+       <a href="/vehicles-ui" class="nav-link">← Back to Vehicles</a>
     </p>
+
+    <p>
+       <a href="/vehicle/{{ vehicle.id }}/maintenance-add" class="nav-link">🔧 Add Maintenance</a>
+       &nbsp;|&nbsp;
+       <a href="/maintenance-due-ui/{{ vehicle.id }}" class="nav-link">🧭 Maintenance Due</a>
+       &nbsp;|&nbsp;
+       <a href="/maintsch-ui/{{ vehicle.id }}" class="nav-link">📋 Maintenance Schedule</a>
+       &nbsp;|&nbsp;
+       <a href="/vehicle/{{ vehicle.id }}/advanced" class="nav-link">Advanced Vehicle Information</a>
+       &nbsp;|&nbsp;
+       <a href="/vehicle-edit/{{ vehicle.id }}" class="nav-link">✏ Edit Vehicle</a>
+       &nbsp;|&nbsp;
+       <a href="/vehicle-archive/{{ vehicle.id }}" class="nav-link">🗑 Archive Vehicle</a>
+    </p>
+
     {% if vehicle.archived %}
-
     <p>
-
-        <a href="/vehicle-restore/{{ vehicle.id }}"
-           class="nav-link">
-
-            ♻ Restore Vehicle
-
-        </a>
-
+       <a href="/vehicle-restore/{{ vehicle.id }}" class="nav-link">♻ Restore Vehicle</a>
     </p>
-
-{% endif %}
-</p>
-
-    </a>
-
-</p>
+    {% endif %}
+</div>
 
 <!-- =====================================
      Vehicle Information
 ====================================== -->
-
 <div class="card">
-
     <h2>Vehicle Information</h2>
 
-    <p>
-        <strong>Year:</strong>
-        {{ vehicle.year }}
-    </p>
-
-    <p>
-        <strong>Make:</strong>
-        {{ vehicle.make }}
-    </p>
-
-    <p>
-        <strong>Model:</strong>
-        {{ vehicle.model }}
-    </p>
-
-    <p>
-        <strong>Trim:</strong>
-        {{ vehicle.trim }}
-    </p>
-
-    <p>
-        <strong>Mileage:</strong>
-        {{ vehicle.display_mileage }}
-    </p>
-
-    <p>
-        <strong>VIN:</strong>
-        {{ vehicle.vin }}
-    </p>
-
+    <p><strong>Year:</strong> {{ vehicle.year }}</p>
+    <p><strong>Make:</strong> {{ vehicle.make }}</p>
+    <p><strong>Model:</strong> {{ vehicle.model }}</p>
+    <p><strong>Trim:</strong> {{ vehicle.trim }}</p>
+    <p><strong>Mileage:</strong> {{ vehicle.display_mileage }}</p>
+    <p><strong>VIN:</strong> {{ vehicle.vin }}</p>
 </div>
 
 <!-- =====================================
      Recent Maintenance Visits
 ====================================== -->
-
 <div class="card">
-
     <h2>Recent Maintenance Visits</h2>
 
     <div class="visit-grid">
+       {% if visits %}
+           {% for visit in visits %}
+               <a href="/maintenance-visit/{{ visit.id }}" class="visit-link">
+                   <div class="visit-card">
+                       <h3>{{ visit.visit_date or 'Unknown Date' }}</h3>
 
-        {% if visits %}
-
-            {% for visit in visits %}
-
-                <a href="/maintenance-visit/{{ visit.id }}"
-                   class="visit-link">
-
-                    <div class="visit-card">
-
-                        <h3>{{ visit.visit_date }}</h3>
-
-                        <p>
-                            <strong>Vendor:</strong>
-                            {{ visit.vendor }}
-                        </p>
-
-                        <p>
-                            <strong>Mileage:</strong>
-                            {{ visit.mileage }}
-                        </p>
-
-                        <p>
-                            <strong>Invoice:</strong>
-                            {{ visit.invoice_number }}
-                        </p>
-
-                        <p>
-                            <strong>Cost:</strong>
-                            ${{ visit.total_cost }}
-                        </p>
-
-                    </div>
-
-                </a>
-
-            {% endfor %}
-
-        {% else %}
-
-            <p>No maintenance visits recorded.</p>
-
-        {% endif %}
-
+                       <p><strong>Primary Service:</strong> {{ visit.primary_service or 'Service Visit' }}</p>
+                       <p><strong>Documents:</strong> {{ visit.document_count or 0 }}</p>
+                       <p><strong>Mileage:</strong> {{ visit.mileage if visit.mileage is not none else 'N/A' }}</p>
+                   </div>
+               </a>
+           {% endfor %}
+       {% else %}
+           <p>No maintenance visits recorded.</p>
+       {% endif %}
     </div>
-
-</div>
-
-<!-- =====================================
-     Upcoming Maintenance
-====================================== -->
-
-<div class="card">
-
-    <h2>Upcoming Maintenance</h2>
-
-    {% if schedules %}
-
-        {% for schedule in schedules %}
-
-            <p>
-
-                <strong>
-                    {{ schedule.service_type }}
-                </strong>
-
-            </p>
-
-        {% endfor %}
-
-    {% else %}
-
-        <p>
-            No maintenance schedule found.
-        </p>
-
-    {% endif %}
-
 </div>
 
 <!-- =====================================
      Page Specific Styles
 ====================================== -->
-
 <style>
-
     .nav-link {
-        color: #60a5fa;
-        text-decoration: none;
+       color: #60a5fa;
+       text-decoration: none;
     }
 
     .nav-link:hover {
-        text-decoration: underline;
+       text-decoration: underline;
+    }
+
+    .nav-stack p {
+       margin: 8px 0;
     }
 
     .card {
-        margin-bottom: 20px;
+       margin-bottom: 20px;
     }
 
-    /* -------------------------------------
-       Top Dashboard Cards
-    -------------------------------------- */
-
     .stats-grid {
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
+       display: flex;
+       gap: 20px;
+       flex-wrap: wrap;
+       margin-bottom: 20px;
     }
 
     .stat-card {
-        background: #1f2937;
-        border-radius: 10px;
-        padding: 20px;
-        width: 180px;
-        text-align: center;
+       background: #1f2937;
+       border-radius: 10px;
+       padding: 20px;
+       width: 180px;
+       text-align: center;
     }
 
     .stat-value {
-        font-size: 36px;
-        font-weight: bold;
-        margin-top: 10px;
+       font-size: 36px;
+       font-weight: bold;
+       margin-top: 10px;
     }
 
-    /* -------------------------------------
-       Maintenance Visit Cards
-    -------------------------------------- */
-
     .visit-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
+       display: flex;
+       flex-wrap: wrap;
+       gap: 20px;
     }
 
     .visit-link {
-        text-decoration: none;
-        color: inherit;
+       text-decoration: none;
+       color: inherit;
     }
 
     .visit-card {
-        background: #374151;
-        border-radius: 10px;
-        padding: 20px;
-        width: 250px;
-        transition: all 0.2s ease;
+       background: #374151;
+       border-radius: 10px;
+       padding: 20px;
+       width: 250px;
+       transition: all 0.2s ease;
     }
 
     .visit-card:hover {
-        background: #4b5563;
-        transform: translateY(-2px);
-        cursor: pointer;
+       background: #4b5563;
+       transform: translateY(-2px);
+       cursor: pointer;
     }
 
     .visit-card h3 {
-        margin-top: 0;
+       margin-top: 0;
     }
+
     .card-link {
-        text-decoration: none;
-        color: inherit;
+       text-decoration: none;
+       color: inherit;
     }
 
     .card-link:hover .stat-card {
-        background: #374151;
-        cursor: pointer;
-        transform: translateY(-2px);
-        transition: all 0.2s ease;
+       background: #374151;
+       cursor: pointer;
+       transform: translateY(-2px);
+       transition: all 0.2s ease;
     }
-
 </style>
 
 {% endblock %}

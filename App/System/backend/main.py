@@ -39,7 +39,8 @@ from models import (
     Vendor,
     MaintenanceVisit,
     MaintenanceSchedule,
-    ServiceRecord
+    ServiceRecord,
+    Document
 )
 
 
@@ -245,6 +246,7 @@ def maintenance_visit_detail(
         Document
     ).filter(
         Document.maintenance_visit_id == visit_id,
+        Document.domain == "Vehicle",
         Document.archived == False
     ).all()
 

@@ -83,55 +83,61 @@
 {% if history_needed_items %}
 
     <div class="card history-needed-card">
-
+ 
         <details>
-
+ 
             <summary>
                 Maintenance History Needed
                 ({{ history_needed_count }})
             </summary>
-
+ 
             <p class="history-needed-explanation">
                 Maintain Hub cannot calculate these schedule items
                 because no matching completed service or usable
                 vehicle acquisition baseline was found.
             </p>
-
+ 
             <div class="history-needed-list">
-
+ 
                 {% for item in history_needed_items %}
-
+ 
                     <div class="history-needed-item">
+ 
+                        <img
+                            src="{{ item.icon_url }}"
+                            alt="{{ item.item_name }}"
+                            class="maintenance-service-icon history-service-icon"
+                        >
 
                         <strong>
                             {{ item.item_name }}
                         </strong>
-
+ 
                         <span>
                             Service Match:
                             {{ item.service_type_match }}
                         </span>
-
+ 
                         {% if item.notes %}
-
+ 
                             <span>
                                 {{ item.notes }}
                             </span>
-
+ 
                         {% endif %}
-
+ 
                         <a href="/vehicle/{{ vehicle.id }}/maintenance-add?schedule_id={{ item.schedule_id }}" class="btn btn-primary">
                             Add Service History
                         </a>
-
+ 
                     </div>
-
+ 
                 {% endfor %}
-
+ 
             </div>
-
+ 
         </details>
-
+ 
     </div>
 
 {% endif %}
@@ -163,6 +169,7 @@
 
             <thead>
                 <tr>
+                    <th>Icon</th>
                     <th>Status</th>
                     <th>Item</th>
                     <th>Calculation Source</th>
@@ -187,6 +194,14 @@
                 {% for item in due_items %}
 
                     <tr class="status-{{ item.status | lower | replace(' ', '-') }}">
+
+                        <td>
+                            <img
+                                src="{{ item.icon_url }}"
+                                alt="{{ item.item_name }}"
+                                class="maintenance-service-icon"
+                            >
+                        </td>
 
                         <td>
                             <strong>
@@ -362,9 +377,16 @@
                 Next Scheduled Service
             </h3>
 
-            <h4>
-                {{ next_due_item.item_name }}
-            </h4>
+            <div class="next-service-header">
+                <img
+                    src="{{ next_due_item.icon_url }}"
+                    alt="{{ next_due_item.item_name }}"
+                    class="maintenance-service-icon next-service-icon"
+                >
+                <h4>
+                    {{ next_due_item.item_name }}
+                </h4>
+            </div>
 
             <p>
                 <strong>Status:</strong>
@@ -505,8 +527,9 @@
                 <table class="full-schedule-table">
 
                     <thead>
-
+ 
                         <tr>
+                            <th>Icon</th>
                             <th>Status</th>
                             <th>Item</th>
                             <th>Source</th>
@@ -520,7 +543,7 @@
                             <th>Time %</th>
                             <th>Due Basis</th>
                         </tr>
-
+ 
                     </thead>
 
                     <tbody>
@@ -528,6 +551,14 @@
                         {% for item in all_items %}
 
                             <tr class="status-{{ item.status | lower | replace(' ', '-') }}">
+
+                                <td>
+                                    <img
+                                        src="{{ item.icon_url }}"
+                                        alt="{{ item.item_name }}"
+                                        class="maintenance-service-icon"
+                                    >
+                                </td>
 
                                 <td>
                                     <strong>
@@ -887,6 +918,46 @@
 
     .full-schedule-table .status-no-history {
         background: #374151;
+    }
+
+    .maintenance-service-icon {
+        display: block;
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.04);
+        padding: 4px;
+        margin: 0 auto;
+    }
+
+    .history-service-icon {
+        width: 36px;
+        height: 36px;
+        margin-right: 12px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .history-needed-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .next-service-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .next-service-icon {
+        width: 48px;
+        height: 48px;
     }
 
 </style>

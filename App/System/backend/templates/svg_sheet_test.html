@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vecteezy SVG Sheet Test</title>
+    <style>
+        :root {
+            --bg: #0b1220;
+            --panel: #111827;
+            --line: rgba(148, 163, 184, 0.25);
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #0b1220 0%, #050b14 100%);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 32px;
+        }
+
+        .page {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            margin: 0 0 24px;
+            color: var(--muted);
+            line-height: 1.5;
+            max-width: 980px;
+        }
+
+        .card {
+            background: rgba(17, 24, 39, 0.9);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 18px 30px rgba(0,0,0,0.2);
+        }
+
+        .sheet-wrap {
+            overflow: auto;
+            background: #f3f3f3;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .sheet-wrap img {
+            display: block;
+            width: 100%;
+            max-width: none;
+            min-width: 1100px;
+            height: auto;
+            background: #ffffff;
+        }
+
+        .notes {
+            margin-top: 22px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .notes strong {
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <h1>Converted Vecteezy SVG Sheet</h1>
+        <p class="subtitle">
+            This is the converted sheet from the Vecteezy automotive service pack. It is a full icon sheet,
+            not a set of individually named icons yet. For the app, we should either use it as a reference
+            source or extract the individual icons we want into separate SVG files for cleaner use.
+        </p>
+
+        <div class="card">
+            <div class="sheet-wrap">
+                <img src="/svg/vecteezy-car-service.svg" alt="Vecteezy car service icon sheet" />
+            </div>
+        </div>
+
+        <div class="notes">
+            <strong>Important:</strong> this asset is a complete sprite sheet. It is useful as a source pack,
+            but each icon is not yet isolated as a separate web asset. The cleanest app workflow is to
+            select the exact maintenance icons we want and save those as separate SVGs in their own folder
+            for the UI.
+        </div>
+    </div>
+</body>
+</html>

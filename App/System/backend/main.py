@@ -13,13 +13,17 @@
 from fastapi import (
     FastAPI,
     Request,
-    Form
+    Form,
+    HTTPException
 )
 
 from fastapi.responses import (
     HTMLResponse,
-    RedirectResponse
+    RedirectResponse,
+    FileResponse
 )
+
+from pathlib import Path
 
 from shared.template_loader import templates
 
@@ -93,6 +97,8 @@ from vehicle.routers import (
     document_vehicle,
 )
 
+from house.routers import house_ui
+
 
 # ==================================================
 # Application Setup
@@ -138,6 +144,8 @@ app.include_router(vendor_ui.router)
 app.include_router(mileage.router)
 
 app.include_router(services.router)
+
+app.include_router(house_ui.router)
 
 # ==================================================
 # Application-Wide Routers
@@ -192,6 +200,106 @@ def dashboard(
             "document_count": document_count
         }
     )
+
+@app.get(
+    "/icon-test",
+    response_class=HTMLResponse
+)
+def icon_dashboard_test(
+    request: Request
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="icon_dashboard_test.html",
+        context={
+            "request": request
+        }
+    )
+
+@app.get(
+    "/svg-test",
+    response_class=HTMLResponse
+)
+def svg_dashboard_test(
+    request: Request
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="svg_dashboard_test.html",
+        context={
+            "request": request
+        }
+    )
+
+@app.get(
+    "/svg-six-test",
+    response_class=HTMLResponse
+)
+def svg_dashboard_six_test(
+    request: Request
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="svg_dashboard_six_test.html",
+        context={
+            "request": request
+        }
+    )
+
+@app.get(
+    "/svg-sheet-test",
+    response_class=HTMLResponse
+)
+def svg_sheet_test(
+    request: Request
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="svg_sheet_test.html",
+        context={
+            "request": request
+        }
+    )
+
+@app.get("/svg/{filename}")
+def serve_svg(filename: str):
+    svg_dir = Path(__file__).resolve().parent / "vehicle" / "templates" / "SVG"
+    possible_paths = [
+        svg_dir / filename,
+        svg_dir / f"{filename}.svg",
+        svg_dir / f"{filename}.svg.xml",
+        svg_dir / f"{filename}.xml",
+    ]
+
+    for candidate in possible_paths:
+        if candidate.exists() and candidate.is_file():
+            return FileResponse(
+                path=str(candidate),
+                media_type="image/svg+xml",
+                filename=candidate.name
+            )
+
+    raise HTTPException(status_code=404, detail="SVG not found")
+
+
+@app.get("/service-icon/{filename}")
+def serve_service_icon(filename: str):
+    icon_dir = Path(__file__).resolve().parent / "vehicle" / "templates" / "images" / "png"
+    possible_paths = [
+        icon_dir / filename,
+        icon_dir / f"{filename}.png",
+        icon_dir / f"{filename}.PNG",
+    ]
+
+    for candidate in possible_paths:
+        if candidate.exists() and candidate.is_file():
+            return FileResponse(
+                path=str(candidate),
+                media_type="image/png",
+                filename=candidate.name
+            )
+
+    raise HTTPException(status_code=404, detail="Service icon not found")
 
 @app.get(
     "/maintenance-visit/{visit_id}",
@@ -279,6 +387,22 @@ def settings_page(
     return templates.TemplateResponse(
         request=request,
         name="settings.html",
+        context={
+            "request": request
+        }
+    )
+
+@app.get(
+    "/legal",
+    response_class=HTMLResponse
+)
+def legal_page(
+    request: Request
+):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="legal.html",
         context={
             "request": request
         }

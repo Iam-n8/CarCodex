@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Icon Test</title>
+    <style>
+        :root {
+            --bg: #111827;
+            --panel: #1f2937;
+            --panel-alt: #0f172a;
+            --card: #1b2432;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+            --line: #111111;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --green: #22c55e;
+            --blue: #60a5fa;
+            --gray: #cbd5e1;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 32px;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .intro {
+            margin-bottom: 26px;
+        }
+
+        .intro h1 {
+            margin: 0 0 10px;
+            font-size: 30px;
+        }
+
+        .intro p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 18px;
+        }
+
+        .icon-card {
+            background: rgba(31, 41, 55, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 14px;
+            padding: 18px 14px 14px;
+            text-align: center;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+        }
+
+        .icon-card h3 {
+            margin: 12px 0 0;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .icon-card small {
+            color: var(--muted);
+            display: block;
+            margin-top: 4px;
+            font-size: 11px;
+        }
+
+        .status-icon {
+            width: 72px;
+            height: 72px;
+            display: block;
+        }
+
+        .legend {
+            margin-top: 28px;
+            padding: 18px 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+        }
+
+        .legend h2 {
+            margin: 0 0 12px;
+            font-size: 18px;
+        }
+
+        .legend-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .swatch {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="intro">
+            <h1>Dashboard Icon Test</h1>
+            <p>Transparent background, dark outline, red/amber/green status fills, consistent square style.</p>
+        </div>
+
+        <div class="icon-grid">
+            {% set icons = [
+                ('Check Engine', 'amber', 'check-engine'),
+                ('Battery', 'green', 'battery'),
+                ('Oil', 'amber', 'oil'),
+                ('Brake', 'red', 'brake'),
+                ('Tire Pressure', 'amber', 'tire-pressure'),
+                ('ABS', 'amber', 'abs'),
+                ('Temperature', 'red', 'temp'),
+                ('Coolant', 'amber', 'coolant'),
+                ('Fuel', 'green', 'fuel'),
+                ('Seat Belt', 'red', 'seatbelt'),
+                ('Door Ajar', 'amber', 'door'),
+                ('Headlight', 'amber', 'headlight'),
+                ('Parking Brake', 'red', 'parking-brake'),
+                ('Service', 'amber', 'service'),
+                ('Charging', 'green', 'charging')
+            ] %}
+
+            {% for name, color, key in icons %}
+            <div class="icon-card">
+                {% if key == 'check-engine' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Check Engine icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 22h32l-5 20H21l-5-20Z" fill="#f59e0b"/>
+                            <path d="M22 22V16h20v6M22 30h20M22 36h12"/>
+                            <path d="M41 30h6l4 8h-6l-4-8Z" fill="#111111" stroke="none"/>
+                        </g>
+                    </svg>
+                {% elif key == 'battery' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Battery icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="10" y="18" width="36" height="28" rx="4" fill="#22c55e"/>
+                            <rect x="46" y="26" width="8" height="12" rx="2" fill="#22c55e"/>
+                            <path d="M18 28h10M18 38h18M32 28h4M32 38h4"/>
+                            <path d="M28 22v4M28 38v4"/>
+                        </g>
+                    </svg>
+                {% elif key == 'oil' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Oil icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M24 14h16l5 20v14H19V34l5-20Z" fill="#f59e0b"/>
+                            <path d="M24 14V10h16v4"/>
+                            <path d="M26 26h12M26 32h10M26 38h8"/>
+                        </g>
+                    </svg>
+                {% elif key == 'brake' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Brake icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="32" cy="32" r="18" fill="#ef4444"/>
+                            <circle cx="32" cy="32" r="8"/>
+                            <path d="M24 24l16 16M40 24L24 40"/>
+                            <path d="M32 12v8M32 44v8M12 32h8M44 32h8"/>
+                        </g>
+                    </svg>
+                {% elif key == 'tire-pressure' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Tire pressure icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="32" cy="32" r="18" fill="#f59e0b"/>
+                            <circle cx="32" cy="32" r="8"/>
+                            <path d="M32 14v8M32 42v8M14 32h8M42 32h8"/>
+                            <path d="M30 22h4v8h-4z" fill="#111111" stroke="none"/>
+                            <path d="M32 34v10"/>
+                        </g>
+                    </svg>
+                {% elif key == 'abs' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="ABS icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="32" cy="32" r="18" fill="#f59e0b"/>
+                            <path d="M22 22l20 20M42 22L22 42"/>
+                            <path d="M32 14v8M32 42v8M14 32h8M42 32h8"/>
+                            <text x="32" y="38" text-anchor="middle" font-size="8" font-weight="700" fill="#111111" font-family="Arial, Helvetica, sans-serif">ABS</text>
+                        </g>
+                    </svg>
+                {% elif key == 'temp' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Temperature icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="24" y="12" width="16" height="30" rx="6" fill="#ef4444"/>
+                            <path d="M32 18v16M32 42v2"/>
+                            <path d="M24 30h16"/>
+                            <path d="M28 48h8"/>
+                        </g>
+                    </svg>
+                {% elif key == 'coolant' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Coolant icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 22h28v18H18z" fill="#f59e0b"/>
+                            <path d="M22 22V16c0-4 3-8 7-8h6c4 0 7 4 7 8v6M24 30h16M24 36h12"/>
+                            <path d="M32 18v12"/>
+                        </g>
+                    </svg>
+                {% elif key == 'fuel' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Fuel icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 20h18v24H18z" fill="#22c55e"/>
+                            <path d="M36 26h8l4 4v16h-12V26Z" fill="#22c55e"/>
+                            <path d="M22 30h10M22 36h10M22 42h8"/>
+                            <path d="M40 16v8"/>
+                        </g>
+                    </svg>
+                {% elif key == 'seatbelt' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Seat belt icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 20c6-6 18-6 24 0l-4 6c-4-4-12-4-16 0l-4-6Z" fill="#ef4444"/>
+                            <path d="M20 28l-8 20M44 28l8 20M26 28h12M32 22v20"/>
+                            <circle cx="32" cy="22" r="4" fill="#111111" stroke="none"/>
+                        </g>
+                    </svg>
+                {% elif key == 'door' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Door ajar icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 18h26l7 7v20H16V18Z" fill="#f59e0b"/>
+                            <path d="M24 18v28M16 30h26M16 38h26"/>
+                            <path d="M42 20l6 6"/>
+                        </g>
+                    </svg>
+                {% elif key == 'headlight' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Headlight icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 36h24l-4 14H24l-4-14Z" fill="#f59e0b"/>
+                            <path d="M20 36V22h24v14"/>
+                            <path d="M26 16l6 6 6-6"/>
+                            <path d="M24 42h16"/>
+                        </g>
+                    </svg>
+                {% elif key == 'parking-brake' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Parking brake icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="32" cy="32" r="18" fill="#ef4444"/>
+                            <path d="M22 42l10-20 10 20"/>
+                            <path d="M26 34h12"/>
+                            <path d="M32 24v22"/>
+                        </g>
+                    </svg>
+                {% elif key == 'service' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Service icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M26 16l-9 9 7 7-9 9 8 8"/>
+                            <path d="M38 16l9 9-7 7 9 9-8 8"/>
+                            <circle cx="32" cy="32" r="10" fill="#f59e0b"/>
+                        </g>
+                    </svg>
+                {% elif key == 'charging' %}
+                    <svg class="status-icon" viewBox="0 0 64 64" aria-label="Charging icon" role="img">
+                        <g fill="none" stroke="#111111" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="10" y="18" width="34" height="28" rx="4" fill="#22c55e"/>
+                            <rect x="44" y="26" width="8" height="12" rx="2" fill="#22c55e"/>
+                            <path d="M20 24l8 10h-6l8 10-2-8h6l-8-10h6z" fill="#111111" stroke="none"/>
+                        </g>
+                    </svg>
+                {% endif %}
+                <h3>{{ name }}</h3>
+                <small>{{ color }}</small>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="legend">
+            <h2>Palette</h2>
+            <div class="legend-row">
+                <span class="swatch"><span class="dot" style="background:#ef4444;"></span> Red</span>
+                <span class="swatch"><span class="dot" style="background:#f59e0b;"></span> Yellow / Amber</span>
+                <span class="swatch"><span class="dot" style="background:#22c55e;"></span> Green</span>
+                <span class="swatch"><span class="dot" style="background:#111111;"></span> Strong black outline</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

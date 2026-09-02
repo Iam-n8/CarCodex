@@ -1,0 +1,61 @@
+<!-- house_detail.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>House Details</h1>
+
+<p>
+    <a href="/house-ui" class="nav-link">← Back to Houses</a>
+</p>
+
+<p>
+    <a href="/house/{{ house.id }}/edit" class="nav-link">✏️ Edit House</a>
+</p>
+
+<div class="house-card">
+    <h2>{{ house.address }}</h2>
+    <p>{{ house.city }}, {{ house.county }}, {{ house.state }} {{ house.zip_code }}</p>
+    <p>Type: {{ house.property_type }}</p>
+    {% if house.bedrooms is not none %}
+        <p>Bedrooms: {{ house.bedrooms }}</p>
+    {% endif %}
+    {% if house.bathrooms is not none %}
+        <p>Bathrooms: {{ house.bathrooms }}</p>
+    {% endif %}
+</div>
+
+<form action="/house/{{ house.id }}/delete" method="post">
+    <button type="submit" class="danger-btn">Delete House</button>
+</form>
+
+<style>
+    .house-card {
+        background: #1f2937;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        width: 360px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+
+    .danger-btn {
+        background: #b91c1c;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

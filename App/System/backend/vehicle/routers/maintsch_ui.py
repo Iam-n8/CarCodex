@@ -46,6 +46,44 @@ from helpers.service_catalog_loader import (
 
 router = APIRouter()
 
+SERVICE_ICON_MAP = [
+    ("oil", "oil.png"),
+    ("engine", "engine_transparent.png"),
+    ("tire", "tire_transparent.png"),
+    ("brake", "brake_transparent.png"),
+    ("inspection", "inspection.png"),
+    ("air filter", "air_filter.png"),
+    ("belt", "belt_transparent.png"),
+    ("radiator", "radiator.png"),
+    ("exhaust", "exhaust.png"),
+    ("drivetrain", "drivetrain_transparent.png"),
+    ("cost", "cost_transparent.png"),
+]
+
+
+def normalize_service_icon_lookup(value):
+    if not value:
+        return ""
+    normalized = value.strip().lower().replace("_", " ").replace("-", " ")
+    return " ".join(normalized.split())
+
+
+def get_service_icon_filename(item_name, service_type_match=None):
+    lookup_values = [
+        normalize_service_icon_lookup(service_type_match),
+        normalize_service_icon_lookup(item_name),
+    ]
+
+    combined = " ".join(
+        value for value in lookup_values if value
+    )
+
+    for keyword, icon_name in SERVICE_ICON_MAP:
+        if keyword in combined:
+            return icon_name
+
+    return "inspection.png"
+
 
 # --------------------------------------------------
 # Vehicle Maintenance Schedule Items
@@ -558,17 +596,46 @@ def maintenance_due_vehicle_page(
         "due_items"
     ]
 
+    for item in due_items:
+        item["icon_filename"] = get_service_icon_filename(
+            item.get("item_name"),
+            item.get("service_type_match")
+        )
+        item["icon_url"] = f"/service-icon/{item['icon_filename']}"
+
     all_items = maintenance_due_summary[
         "all_items"
     ]
+
+    for item in all_items:
+        item["icon_filename"] = get_service_icon_filename(
+            item.get("item_name"),
+            item.get("service_type_match")
+        )
+        item["icon_url"] = f"/service-icon/{item['icon_filename']}"
 
     next_due_item = maintenance_due_summary[
         "next_due_item"
     ]
 
+    if next_due_item:
+        next_due_item["icon_filename"] = get_service_icon_filename(
+            next_due_item.get("item_name"),
+            next_due_item.get("service_type_match")
+        )
+        next_due_item["icon_url"] = f"/service-icon/{next_due_item['icon_filename']}"
+
     history_needed_items = maintenance_due_summary[
         "history_needed_items"
     ]
+
+    for item in history_needed_items:
+        item["icon_filename"] = get_service_icon_filename(
+            item.get("item_name"),
+            item.get("service_type_match")
+        )
+        item["icon_url"] = f"/service-icon/{item['icon_filename']}"
+
     overdue_count = sum(
         1
         for item in due_items

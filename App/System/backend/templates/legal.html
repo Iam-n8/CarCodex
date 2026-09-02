@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Licenses & Attribution</h1>
+
+<div class="card legal-card">
+    <h2>Third-party artwork</h2>
+
+    <p>
+        MaintainHub includes automotive service and garage icon artwork that was sourced from
+        Vecteezy. These assets are used in accordance with the applicable Vecteezy license terms.
+    </p>
+
+    <p>
+        If the downloaded asset was provided under the free license, attribution is required and
+        should include <strong>Vecteezy.com</strong> with a link where practical.
+    </p>
+
+    <p>
+        Source files and the original licensing document are retained in the project source files so
+        the attribution and license history can be reviewed later.
+    </p>
+
+    <div class="notice-box">
+        <strong>Attribution:</strong>
+        <br />
+        “Vecteezy.com”
+        <br />
+        <a href="https://www.vecteezy.com" target="_blank" rel="noopener noreferrer">
+            https://www.vecteezy.com
+        </a>
+    </div>
+</div>
+
+<div class="card legal-card">
+    <h2>License summary</h2>
+
+    <ul>
+        <li>Use of source artwork is subject to the applicable Vecteezy license.</li>
+        <li>Free-license assets may require attribution.</li>
+        <li>Commercial use is only allowed in compliance with the license terms.</li>
+        <li>This app keeps source files and license records with the project for legal reference.</li>
+    </ul>
+
+    <p>
+        This page is intended as an internal attribution and compliance reference. It does not replace
+        the original vendor license agreement.
+    </p>
+</div>
+
+<div class="card legal-card">
+    <h2>Source reference</h2>
+
+    <p>
+        Vecteezy automotive service icon set with editable stroke and white design.
+    </p>
+
+    <p>
+        <a href="/settings" class="nav-link">← Back to Settings</a>
+    </p>
+</div>
+
+<style>
+    .legal-card {
+        margin-top: 20px;
+    }
+
+    .notice-box {
+        margin-top: 18px;
+        padding: 16px 18px;
+        border-left: 4px solid #60a5fa;
+        background: rgba(96, 165, 250, 0.08);
+        border-radius: 10px;
+        line-height: 1.7;
+    }
+
+    ul {
+        margin: 0 0 0 20px;
+        padding: 0;
+        line-height: 1.8;
+    }
+</style>
+
+{% endblock %}

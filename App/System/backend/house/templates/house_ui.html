@@ -1,0 +1,76 @@
+<!-- house_ui.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>House</h1>
+<p>
+    <a href="/house-add" class="nav-link">
+        + Add House
+    </a>
+</p>
+
+<p>
+    <a href="/ui" class="nav-link">
+        ← Back to Dashboard
+    </a>
+</p>
+
+<div class="house-grid">
+    {% for house in houses %}
+        <a href="/house/{{ house.id }}" class="house-link">
+            <div class="house-card">
+                <h2>{{ house.address }}</h2>
+                <p>{{ house.city }}, {{ house.county }}, {{ house.state }} {{ house.zip_code }}</p>
+                <p>Type: {{ house.property_type }}</p>
+                {% if house.bedrooms is not none %}
+                    <p>Bedrooms: {{ house.bedrooms }}</p>
+                {% endif %}
+                {% if house.bathrooms is not none %}
+                    <p>Bathrooms: {{ house.bathrooms }}</p>
+                {% endif %}
+            </div>
+        </a>
+    {% else %}
+        <p>No houses added yet.</p>
+    {% endfor %}
+</div>
+
+<style>
+    .house-grid {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .house-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .house-card {
+        background: #1f2937;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        width: 300px;
+        padding: 20px;
+        transition: all 0.2s ease;
+    }
+
+    .house-card:hover {
+        background: #374151;
+        transform: translateY(-3px);
+        cursor: pointer;
+    }
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+{% endblock %}

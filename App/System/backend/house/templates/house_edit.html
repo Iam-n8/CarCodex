@@ -1,0 +1,105 @@
+<!-- house_edit.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Edit House</h1>
+
+<p>
+    <a href="/house/{{ house.id }}" class="nav-link">← Back to House</a>
+</p>
+
+<form action="/house/{{ house.id }}/edit" method="post" class="house-form">
+    <label>
+        Street Address
+        <input type="text" name="address" value="{{ house.address }}" required>
+    </label>
+
+    <label>
+        City
+        <input type="text" name="city" value="{{ house.city }}" required>
+    </label>
+
+    <label>
+        County
+        <input type="text" name="county" value="{{ house.county }}" required>
+    </label>
+
+    <label>
+        State
+        <input type="text" name="state" value="{{ house.state }}" maxlength="2" required>
+    </label>
+
+    <label>
+        ZIP Code
+        <input type="text" name="zip_code" value="{{ house.zip_code }}" required>
+    </label>
+
+    <label>
+        Property Type
+        <select name="property_type">
+            <option value="Single Family" {% if house.property_type == 'Single Family' %}selected{% endif %}>Single Family</option>
+            <option value="Condo" {% if house.property_type == 'Condo' %}selected{% endif %}>Condo</option>
+            <option value="Townhome" {% if house.property_type == 'Townhome' %}selected{% endif %}>Townhome</option>
+            <option value="Multi Family" {% if house.property_type == 'Multi Family' %}selected{% endif %}>Multi Family</option>
+        </select>
+    </label>
+
+    <label>
+        Bedrooms
+        <input type="number" name="bedrooms" min="0" value="{{ house.bedrooms if house.bedrooms is not none else '' }}">
+    </label>
+
+    <label>
+        Bathrooms
+        <input type="number" name="bathrooms" min="0" step="0.5" value="{{ house.bathrooms if house.bathrooms is not none else '' }}">
+    </label>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<style>
+    .house-form {
+        display: grid;
+        gap: 14px;
+        max-width: 500px;
+        background: #1f2937;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #374151;
+    }
+
+    .house-form label {
+        display: grid;
+        gap: 6px;
+        font-weight: bold;
+    }
+
+    .house-form input,
+    .house-form select,
+    .house-form button {
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #4b5563;
+        font-size: 16px;
+    }
+
+    .house-form button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+{% endblock %}

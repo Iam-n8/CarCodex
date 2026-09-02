@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Address Lookup Test</title>
+    <style>
+        body {
+            background: #111827;
+            color: #e5e7eb;
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+        .panel {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        form {
+            display: grid;
+            gap: 12px;
+        }
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        input, button {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #4b5563;
+            font-size: 16px;
+        }
+        input {
+            background: #0f172a;
+            color: #f8fafc;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+        .result {
+            margin-top: 24px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <h1>House Address Lookup Test</h1>
+
+        <form action="/house/lookup-form" method="post">
+            <input type="text" name="street" placeholder="Street address" value="123 Main St" required>
+            <div class="row">
+                <input type="text" name="city" placeholder="City" value="Sarasota" required>
+                <input type="text" name="state" placeholder="State (FL)" value="FL" maxlength="2" required>
+            </div>
+            <input type="text" name="zip_code" placeholder="ZIP code" value="34236" required>
+            <button type="submit">Lookup Address</button>
+        </form>
+
+        <div class="result" id="result-box">
+{
+  "address": {
+    "street": "123 Main St",
+    "city": "Sarasota",
+    "state": "FL",
+    "zip_code": "34236",
+    "country": "US"
+  },
+  "geocode": {
+    "status": "ok",
+    "county": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "parcel": {
+    "status": "not_found",
+    "message": "No live municipal parcel source is configured yet for this sandbox test."
+  }
+}
+        </div>
+    </div>
+</body>
+</html>

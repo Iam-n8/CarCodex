@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 128 96"
+     width="128"
+     height="96">
+
+  <!-- TPMS Horseshoe -->
+  <path d="
+    M32 80
+    C18 68 12 51 12 34
+    C12 16 21 6 28 4
+    L34 16
+    C29 20 26 28 26 37
+    C26 49 30 61 38 72
+
+    L90 72
+
+    C98 61 102 49 102 37
+    C102 28 99 20 94 16
+    L100 4
+    C107 6 116 16 116 34
+    C116 51 110 68 96 80
+  "
+  fill="none"
+  stroke="#FFD54A"
+  stroke-width="8"
+  stroke-linecap="round"
+  stroke-linejoin="round"/>
+
+  <!-- Tire tread -->
+  <g fill="#FFD54A">
+    <rect x="38" y="72" width="4" height="8" rx="1"/>
+    <rect x="48" y="72" width="4" height="8" rx="1"/>
+    <rect x="58" y="72" width="4" height="8" rx="1"/>
+    <rect x="68" y="72" width="4" height="8" rx="1"/>
+    <rect x="78" y="72" width="4" height="8" rx="1"/>
+    <rect x="88" y="72" width="4" height="8" rx="1"/>
+  </g>
+
+  <!-- Exclamation mark -->
+  <rect x="59" y="24" width="10" height="28" rx="5" fill="#FFD54A"/>
+  <circle cx="64" cy="62" r="5" fill="#FFD54A"/>
+
+</svg>

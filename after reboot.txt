@@ -1,5 +1,5 @@
 Step 1: Open Command Prompt
-C:\CarCodex
+C:\MaintainHub\App\
 
 Step 2: Activate the Virtual Environment
 .venv\Scripts\activate.bat
@@ -29,3 +29,21 @@ cd C:\carcodex\
 git add .
 git commit -m "things"
 git push
+
+
+
+C:\>cd maintainhub
+
+C:\MaintainHub>.venv\Scripts\activate.bat
+The system cannot find the path specified.
+
+C:\MaintainHub>cd app
+
+C:\MaintainHub\App>.venv\Scripts\activate.bat
+
+(.venv) C:\MaintainHub\App>cd System\backend
+
+(.venv) C:\MaintainHub\App\System\backend> uvicorn main:app --reload
+
+
+

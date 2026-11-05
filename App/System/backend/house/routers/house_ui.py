@@ -1,9 +1,15 @@
+# App/System/backend/house/routers/house_ui.py
+
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 
 from shared.template_loader import templates
 from house.services.address_lookup_service import AddressLookupService
 from house.services.data_export_service import HouseDataExportService
+
+from database import SessionLocal
+from house.models.house_model import House
+
 
 router = APIRouter()
 address_service = AddressLookupService()
@@ -21,12 +27,23 @@ def get_house_or_none(house_id: int):
 
 @router.get("/house-ui", response_class=HTMLResponse)
 def house_ui(request: Request):
+
+    db = SessionLocal()
+
+    houses = db.query(
+        House
+    ).filter(
+        House.archived == False
+    ).all()
+
+    db.close()
+
     return templates.TemplateResponse(
         request=request,
         name="house_ui.html",
         context={
             "request": request,
-            "houses": HOUSE_LIST,
+            "houses": houses,
         },
     )
 
@@ -44,10 +61,28 @@ def house_lookup(address: str = Form(""), city: str = Form(""), state: str = For
 
 
 @router.get("/house/{house_id}", response_class=HTMLResponse)
-def house_detail_page(request: Request, house_id: int):
-    house = get_house_or_none(house_id)
+def house_detail_page(
+    request: Request,
+    house_id: int
+):
+
+    db = SessionLocal()
+
+    house = db.query(
+        House
+    ).filter(
+        House.id == house_id,
+        House.archived == False
+    ).first()
+
+    db.close()
+
     if house is None:
-        return RedirectResponse(url="/house-ui", status_code=303)
+
+        return RedirectResponse(
+            url="/house-ui",
+            status_code=303
+        )
 
     return templates.TemplateResponse(
         request=request,
@@ -58,12 +93,29 @@ def house_detail_page(request: Request, house_id: int):
         },
     )
 
-
 @router.get("/house/{house_id}/edit", response_class=HTMLResponse)
-def house_edit_page(request: Request, house_id: int):
-    house = get_house_or_none(house_id)
+def house_edit_page(
+    request: Request,
+    house_id: int
+):
+
+    db = SessionLocal()
+
+    house = db.query(
+        House
+    ).filter(
+        House.id == house_id,
+        House.archived == False
+    ).first()
+
+    db.close()
+
     if house is None:
-        return RedirectResponse(url="/house-ui", status_code=303)
+
+        return RedirectResponse(
+            url="/house-ui",
+            status_code=303
+        )
 
     return templates.TemplateResponse(
         request=request,
@@ -86,33 +138,41 @@ def house_add_page(request: Request):
 
 @router.post("/house-add")
 def house_add_submit(
+    name: str = Form(""),
+    parcel_id: str = Form(""),
     address: str = Form(""),
     city: str = Form(""),
     county: str = Form(""),
     state: str = Form(""),
-    zip_code: str = Form(""),
-    property_type: str = Form(""),
-    bedrooms: int | None = Form(None),
-    bathrooms: int | None = Form(None),
+    zip_code: str = Form("")
 ):
+    cleaned_name = name.strip() or cleaned_address
+    cleaned_parcel_id = parcel_id.strip()
     cleaned_address = address.strip() or "Address Unknown"
     cleaned_city = city.strip() or "City Unknown"
     cleaned_county = county.strip() or "County Unknown"
     cleaned_state = state.strip() or "ST"
     cleaned_zip = zip_code.strip() or "00000"
-    cleaned_type = property_type.strip() or "House"
 
-    house = {
-        "id": len(HOUSE_LIST) + 1,
-        "address": cleaned_address,
-        "city": cleaned_city,
-        "county": cleaned_county,
-        "state": cleaned_state,
-        "zip_code": cleaned_zip,
-        "property_type": cleaned_type,
-        "bedrooms": bedrooms,
-        "bathrooms": bathrooms,
-    }
+    db = SessionLocal()
+
+    house = House(
+        name=cleaned_name,
+        parcel_id=cleaned_parcel_id,
+        address=cleaned_address,
+        city=cleaned_city,
+        county=cleaned_county,
+        state=cleaned_state,
+        zip_code=cleaned_zip
+    )
+
+    db.add(house)
+
+    db.commit()
+
+    db.refresh(house)
+
+    db.close()
 
     # Run property lookup and save data
     lookup_result = address_service.lookup_address({
@@ -121,14 +181,25 @@ def house_add_submit(
         "state": cleaned_state,
         "zip_code": cleaned_zip,
     })
+    house_data = {
+        "id": house.id,
+        "name": house.name,
+        "parcel_id": house.parcel_id,
+        "address": house.address,
+        "city": house.city,
+        "county": house.county,
+        "state": house.state,
+        "zip_code": house.zip_code
+    }    
 
-    # Save lookup data to JSON and CSV
-    data_export_service.save_lookup_data(house, lookup_result)
-    
-    # Save house info to text file
-    data_export_service.save_house_info(house)
+    data_export_service.save_lookup_data(
+        house_data,
+        lookup_result
+    )
 
-    HOUSE_LIST.append(house)
+    data_export_service.save_house_info(
+        house_data
+    )
 
     return RedirectResponse(
         url="/house-ui",
@@ -137,11 +208,27 @@ def house_add_submit(
 
 
 @router.post("/house/{house_id}/delete")
-def house_delete_submit(house_id: int):
-    for index, house in enumerate(HOUSE_LIST):
-        if house["id"] == house_id:
-            del HOUSE_LIST[index]
-            break
+def house_delete_submit(
+    house_id: int
+):
+
+    db = SessionLocal()
+
+    house = db.query(
+        House
+    ).filter(
+        House.id == house_id
+    ).first()
+
+    if house:
+
+        db.delete(
+            house
+        )
+
+        db.commit()
+
+    db.close()
 
     return RedirectResponse(
         url="/house-ui",
@@ -152,27 +239,31 @@ def house_delete_submit(house_id: int):
 @router.post("/house/{house_id}/edit")
 def house_edit_submit(
     house_id: int,
+    name: str = Form(""),
+    parcel_id: str = Form(""),
     address: str = Form(""),
     city: str = Form(""),
     county: str = Form(""),
     state: str = Form(""),
-    zip_code: str = Form(""),
-    property_type: str = Form(""),
-    bedrooms: int | None = Form(None),
-    bathrooms: int | None = Form(None),
-):
-    house = get_house_or_none(house_id)
+    zip_code: str = Form(""),):
+    db = SessionLocal()
+
+    house = db.query(
+        House
+    ).filter(
+        House.id == house_id,
+        House.archived == False
+    ).first()
     if house is None:
         return RedirectResponse(url="/house-ui", status_code=303)
 
+    house["name"] = name.strip() or house.get("name", "Property")
+    house["parcel_id"] = parcel_id.strip() or house.get("parcel_id", "")
     house["address"] = address.strip() or house.get("address", "Address Unknown")
     house["city"] = city.strip() or house.get("city", "City Unknown")
     house["county"] = county.strip() or house.get("county", "County Unknown")
     house["state"] = state.strip() or house.get("state", "ST")
     house["zip_code"] = zip_code.strip() or house.get("zip_code", "00000")
-    house["property_type"] = property_type.strip() or house.get("property_type", "House")
-    house["bedrooms"] = bedrooms if bedrooms is not None else house.get("bedrooms")
-    house["bathrooms"] = bathrooms if bathrooms is not None else house.get("bathrooms")
 
     return RedirectResponse(
         url=f"/house/{house_id}",

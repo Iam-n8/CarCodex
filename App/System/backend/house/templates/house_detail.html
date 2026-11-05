@@ -14,16 +14,59 @@
 </p>
 
 <div class="house-card">
-    <h2>{{ house.address }}</h2>
-    <p>{{ house.city }}, {{ house.county }}, {{ house.state }} {{ house.zip_code }}</p>
-    <p>Type: {{ house.property_type }}</p>
-    {% if house.bedrooms is not none %}
-        <p>Bedrooms: {{ house.bedrooms }}</p>
+
+    <h2>{{ house.name }}</h2>
+
+    <p>
+        {{ house.address }}
+    </p>
+
+    <p>
+        {{ house.city }},
+        {{ house.county }},
+        {{ house.state }}
+        {{ house.zip_code }}
+    </p>
+
+    {% if house.parcel_id %}
+        <p>
+            Parcel ID:
+            {{ house.parcel_id }}
+        </p>
     {% endif %}
-    {% if house.bathrooms is not none %}
-        <p>Bathrooms: {{ house.bathrooms }}</p>
+
+    {% if house.date_acquired %}
+        <p>
+            Date Acquired:
+            {{ house.date_acquired }}
+        </p>
     {% endif %}
+
+    {% if house.purchase_price_cents %}
+        <p>
+            Purchase Price:
+            ${{ "%.2f"|format(house.purchase_price_cents / 100) }}
+        </p>
+    {% endif %}
+
 </div>
+
+<hr>
+
+<h2>Documents</h2>
+
+<p>
+    <a href="/house/{{ house.id }}/documents">
+        View Documents
+    </a>
+</p>
+
+<p>
+    <a href="/house/{{ house.id }}/upload">
+        Upload Document
+    </a>
+</p>
+
 
 <form action="/house/{{ house.id }}/delete" method="post">
     <button type="submit" class="danger-btn">Delete House</button>

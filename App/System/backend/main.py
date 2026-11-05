@@ -97,7 +97,14 @@ from vehicle.routers import (
     document_vehicle,
 )
 
-from house.routers import house_ui
+# ==================================================
+# House Domain
+# ==================================================
+
+from house.routers import (
+    house_ui,
+    houses
+)
 
 
 # ==================================================
@@ -145,7 +152,17 @@ app.include_router(mileage.router)
 
 app.include_router(services.router)
 
+
+# ==================================================
+# House Domain Routers
+# ==================================================
+
+
 app.include_router(house_ui.router)
+app.include_router(houses.router)
+
+
+
 
 # ==================================================
 # Application-Wide Routers

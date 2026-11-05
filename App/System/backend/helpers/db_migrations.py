@@ -939,6 +939,52 @@ def migration_012_document_domain(
         "Migration 012 populated "
         "documents.domain"
     )
+    # --------------------------------------------------
+# Migration 013: House Table
+# --------------------------------------------------
+
+def migration_013_house_table(
+    connection
+):
+    """
+    Create the House table.
+
+    House is the primary entity for the House domain.
+
+    Parcel ID is optional because some houses may be
+    entered manually without a county lookup.
+    """
+
+    connection.execute(
+        text(
+            """
+            CREATE TABLE IF NOT EXISTS houses (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                name TEXT NOT NULL,
+
+                parcel_id TEXT,
+
+                address TEXT NOT NULL,
+                city TEXT NOT NULL,
+                county TEXT NOT NULL,
+                state TEXT NOT NULL,
+                zip_code TEXT NOT NULL,
+
+                date_acquired TEXT,
+
+                purchase_price_cents INTEGER,
+
+                archived INTEGER NOT NULL DEFAULT 0
+            )
+            """
+        )
+    )
+
+    print(
+        "Migration 013 created houses table"
+    )
+
     # ----------------------------------------------
     # Validate Service Group Codes
     # ----------------------------------------------
@@ -1148,8 +1194,12 @@ MIGRATIONS = [
         "id": "012",
         "name": "document_domain",
         "function": migration_012_document_domain
+    },
+    {
+        "id": "013",
+        "name": "house_table",
+        "function": migration_013_house_table
     }
-
     
 
 
